@@ -27,6 +27,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -84,6 +85,7 @@ public class QueryViewer extends Activity implements OnClickListener{
 	boolean _rebuildMenu = false;
 	private String _tableDialogString;
 	private boolean logging;
+	private boolean _showTip = false;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -121,8 +123,14 @@ public class QueryViewer extends Activity implements OnClickListener{
 			} else {
 				Utils.logD("Database open", logging);
 			}
-			Utils.logD("Show Tip	" + 2, logging);
-			Utils.showTip(getString(R.string.Tip2), 2, _cont);
+			if (savedInstanceState != null) {
+				Utils.logD("savedInstance true", logging);
+				if (savedInstanceState.getBoolean("showTip")) {
+					Utils.logD("showHint true", logging);
+					showTip(getText(R.string.Tip2), 2);
+				}
+			} else
+				showTip(getText(R.string.Tip2), 2);
 		}
 	}
 	
@@ -131,6 +139,15 @@ public class QueryViewer extends Activity implements OnClickListener{
 		Utils.logD("QueryViewer onRestart", logging);
 		_db = DBViewer.database;
 		super.onRestart();
+	}
+	
+	@Override
+	public void onSaveInstanceState(Bundle savedInstanceState) {
+	  // Save UI state changes to the savedInstanceState.
+	  // This bundle will be passed to onCreate if the process is
+	  // killed and restarted.
+	  savedInstanceState.putBoolean("showTip", _showTip );
+	  super.onSaveInstanceState(savedInstanceState);
 	}
 	
 	/* (non-Javadoc)
@@ -218,6 +235,46 @@ public class QueryViewer extends Activity implements OnClickListener{
 			row.addView(c);
 		}
 		table.addView(row, new TableLayout.LayoutParams());
+	}
+
+	/**
+	 * Show a tip if not disabled
+	 * @param tip
+	 *          a CharSequence with the tip
+	 * @param tipNo
+	 *          a int with the tip number
+	 */
+	private void showTip(CharSequence tip, final int tipNo) {
+		Utils.logD("Show Tip	" + tipNo, logging);
+		final boolean logging = Prefs.getLogging(_cont);
+		Utils.logD("TipNo " + tipNo, logging);
+		SharedPreferences prefs = _cont.getSharedPreferences(
+				"dk.andsen.asqlitemanager_tips", Context.MODE_PRIVATE);
+		boolean showTip = prefs.getBoolean("TipNo" + tipNo, true);
+		if (showTip) {
+			final Dialog dial = new Dialog(_cont);
+			dial.setContentView(R.layout.tip);
+			dial.setTitle(R.string.Tip);
+			Button _btOK = (Button) dial.findViewById(R.id.OK);
+			TextView tvTip = (TextView) dial.findViewById(R.id.TextViewTip);
+			tvTip.setText(tip);
+			_btOK.setOnClickListener(new OnClickListener() {
+				public void onClick(View v) {
+					CheckBox _remember = (CheckBox) dial.findViewById(R.id.ShowTipAgain);
+					_remember.setText(R.string.ShowTipAgain);
+					SharedPreferences prefs = _cont.getSharedPreferences(
+							"dk.andsen.asqlitemanager_tips", Context.MODE_PRIVATE);
+					Editor edt = prefs.edit();
+					Utils.logD("Show again " + _remember.isChecked(), logging);
+					edt.putBoolean("TipNo" + tipNo, _remember.isChecked());
+					edt.commit();
+					_showTip = false;
+					dial.dismiss();
+				}
+			});
+			_showTip = true;
+			dial.show();
+		}
 	}
 
 	/**

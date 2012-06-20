@@ -73,15 +73,17 @@ public class DBViewer extends Activity implements OnClickListener {
 //	private String databaseTemp;
 	
 	private int _dialogClicked;
-	private boolean logging = false;
+	private boolean _logging = false;
 	private boolean newFeatures = true;
+	private boolean _showTip = false;
+	private boolean _inWizard = false;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Utils.logD("DBViewer onCreate", logging);
+		Utils.logD("DBViewer onCreate", _logging);
 		setContentView(R.layout.dbviewer);
-		logging = Prefs.getLogging(this);
+		_logging = Prefs.getLogging(this);
 		TextView tvDB = (TextView)this.findViewById(R.id.DatabaseToView);
 		Button bTab = (Button) this.findViewById(R.id.Tables);
 		Button bVie = (Button) this.findViewById(R.id.Views);
@@ -99,13 +101,13 @@ public class DBViewer extends Activity implements OnClickListener {
 			_cont = tvDB.getContext();
 			_dbPath = extras.getString("db");
 			tvDB.setText(getText(R.string.Database) + ": " + _dbPath);
-			Utils.logD("Opening database " + _dbPath, logging);
+			Utils.logD("Opening database " + _dbPath, _logging);
 			if ((new File(_dbPath).canRead())) {
 				// it is a readable file no root access needed
 				database = new Database(_dbPath, _cont);
 				//_SQLiteDb = SQLiteDatabase.openDatabase(_dbPath, null, SQLiteDatabase.OPEN_READWRITE);
 				if (!database.isDatabase) {
-					Utils.logD("User has opened something that is not a database!", logging);
+					Utils.logD("User has opened something that is not a database!", _logging);
 					Utils.showMessage(getText(R.string.Error).toString(),
 							_dbPath + " " + getText(R.string.IsNotADatabase).toString(), _cont);
 				} else {
@@ -136,11 +138,20 @@ public class DBViewer extends Activity implements OnClickListener {
 				//TODO implement aShels way of opening system databases
 				Utils.showMessage(getText(R.string.Error).toString(), "No editing of system databases yet", _cont);
 				//openRootFile(_dbPath);
-				
 			}
 		}
-		Utils.logD("Show Tip	" + 3, logging);
-		Utils.showTip(getText(R.string.Tip3), 3, _cont);
+		Utils.logD("Show Tip	" + 3, _logging);
+		if (savedInstanceState != null) {
+			Utils.logD("savedInstance true", _logging);
+			if (savedInstanceState.getBoolean("showTip")) {
+				Utils.logD("showHint true", _logging);
+				showTip(getText(R.string.Tip3), 3);
+			}
+		} else
+			showTip(getText(R.string.Tip3), 3);
+		if(savedInstanceState != null) {
+      restoreWizard(savedInstanceState);
+    }
 	}
 	
 	/**
@@ -172,7 +183,7 @@ public class DBViewer extends Activity implements OnClickListener {
 	}
 	
 	/**
-	 * This just check if the temporary cataloge for files to be edited is present
+	 * This just check if the temporary catalog for files to be edited is present
 	 * if not it is created
 	 */
 	private void testTempDir() {
@@ -194,11 +205,10 @@ public class DBViewer extends Activity implements OnClickListener {
 			}
 		}
 	}
-
 	
 	@Override
 	protected void onDestroy() {
-		Utils.logD("DBViewer onDestroy", logging);
+		Utils.logD("DBViewer onDestroy", _logging);
 		if (database != null)
 			database.close();
 		super.onDestroy();
@@ -206,18 +216,35 @@ public class DBViewer extends Activity implements OnClickListener {
 
 	@Override
 	protected void onPause() {
-		Utils.logD("DBViewer onPause", logging);
+		Utils.logD("DBViewer onPause", _logging);
 		super.onPause();
 	}
 
 	@Override
 	protected void onRestart() {
-		Utils.logD("DBViewer onRestart", logging);
+		Utils.logD("DBViewer onRestart", _logging);
 		if (database == null)
 			database = new Database(_dbPath, _cont);
 		super.onRestart();
 	}
 
+	@Override
+  protected void onSaveInstanceState(Bundle saveState) {
+      super.onSaveInstanceState(saveState);
+      Utils.logD("onSaveInstanceState", _logging);
+      saveState.putBoolean("inWizard", _inWizard );
+      if (_inWizard) {
+        //TODO save current wizard status
+      	
+      }
+      saveState.putBoolean("showTip", _showTip );
+  }
+	
+	private void restoreWizard(Bundle savedInstanceState) {
+    Utils.logD("restoreWizard", _logging);
+
+  }
+	
 	/**
 	 * Build / rebuild the lists with tables, views and indexes
 	 * @param type
@@ -255,7 +282,7 @@ public class DBViewer extends Activity implements OnClickListener {
 			list.setOnItemLongClickListener(new OnItemLongClickListener() {
 				public boolean onItemLongClick(AdapterView<?> parent, View v,
 						int position, long arg3) {
-					Utils.logD("Long click on list", logging);
+					Utils.logD("Long click on list", _logging);
 					dropSelected(type, position);
 					return false;
 				}
@@ -301,7 +328,7 @@ public class DBViewer extends Activity implements OnClickListener {
 			sql = "";
 			msg = "This is not happening ;-)";
 		}
-		Utils.logD(msg, logging);
+		Utils.logD(msg, _logging);
 		if (sql.equals("")) {
 			Utils.showMessage(getText(R.string.Error).toString(), msg, _cont);
 		} else {
@@ -321,6 +348,46 @@ public class DBViewer extends Activity implements OnClickListener {
 					buildList(type);
 				}});
 			yesNoDialog.show();
+		}
+	}
+	
+	/**
+	 * Show a tip if not disabled
+	 * @param tip
+	 *          a CharSequence with the tip
+	 * @param tipNo
+	 *          a int with the tip number
+	 */
+	private void showTip(CharSequence tip, final int tipNo) {
+		Utils.logD("Show Tip	" + tipNo, _logging);
+		//final boolean logging = Prefs.getLogging(_cont);
+		Utils.logD("TipNo " + tipNo, _logging);
+		SharedPreferences prefs = _cont.getSharedPreferences(
+				"dk.andsen.asqlitemanager_tips", Context.MODE_PRIVATE);
+		boolean showTip = prefs.getBoolean("TipNo" + tipNo, true);
+		if (showTip) {
+			final Dialog dial = new Dialog(_cont);
+			dial.setContentView(R.layout.tip);
+			dial.setTitle(R.string.Tip);
+			Button _btOK = (Button) dial.findViewById(R.id.OK);
+			TextView tvTip = (TextView) dial.findViewById(R.id.TextViewTip);
+			tvTip.setText(tip);
+			_btOK.setOnClickListener(new OnClickListener() {
+				public void onClick(View v) {
+					CheckBox _remember = (CheckBox) dial.findViewById(R.id.ShowTipAgain);
+					_remember.setText(R.string.ShowTipAgain);
+					SharedPreferences prefs = _cont.getSharedPreferences(
+							"dk.andsen.asqlitemanager_tips", Context.MODE_PRIVATE);
+					Editor edt = prefs.edit();
+					Utils.logD("Show again " + _remember.isChecked(), _logging);
+					edt.putBoolean("TipNo" + tipNo, _remember.isChecked());
+					edt.commit();
+					_showTip = false;
+					dial.dismiss();
+				}
+			});
+			_showTip = true;
+			dial.show();
 		}
 	}
 
@@ -352,7 +419,7 @@ public class DBViewer extends Activity implements OnClickListener {
 			try {
 				startActivity(i);
 			} catch (Exception e) {
-				Utils.logE("Error in TableViewer showing a view)", logging);
+				Utils.logE("Error in TableViewer showing a view)", _logging);
 				e.printStackTrace();
 				Utils.showException("Plase report this error with descriptions of hov to generate it", _cont);
 			}
@@ -365,7 +432,7 @@ public class DBViewer extends Activity implements OnClickListener {
 			try {
 				startActivity(i);
 			} catch (Exception e) {
-				Utils.logE("Error in TableViewer showing a table)", logging);
+				Utils.logE("Error in TableViewer showing a table)", _logging);
 				e.printStackTrace();
 				Utils.showException("Plase report this error with descriptions of hov to generate it", _cont);
 			}
@@ -377,12 +444,12 @@ public class DBViewer extends Activity implements OnClickListener {
 	 */
 	public void onClick(View v) {
 		if (!database.isDatabase) {
-			Utils.logD("User trying to do things with something that is not a database!", logging);
+			Utils.logD("User trying to do things with something that is not a database!", _logging);
 			Utils.showMessage(getText(R.string.Error).toString(),
 					_dbPath + " " + getText(R.string.IsNotADatabase).toString(), _cont);
 			return;
 		}
-		Utils.logD("DBViewer OnCLick", logging);
+		Utils.logD("DBViewer OnCLick", _logging);
 		int key = v.getId();
 		if (key == R.id.Tables) {
 			buildList("Tables");
@@ -397,7 +464,7 @@ public class DBViewer extends Activity implements OnClickListener {
 			try {
 				startActivity(i);
 			} catch (Exception e) {
-				Utils.logE("Error in QueryViewer", logging);
+				Utils.logE("Error in QueryViewer", _logging);
 				e.printStackTrace();
 				Utils.showException("Plase report this error with descriptions of how to generate it", _cont);
 			}
@@ -410,7 +477,7 @@ public class DBViewer extends Activity implements OnClickListener {
 	 * @see android.app.Activity#onWindowFocusChanged(boolean)
 	 */
 	public void onWindowFocusChanged(boolean hasFocus) {
-		Utils.logD("DBViewer onWindowFocusChanged: " + hasFocus, logging);
+		Utils.logD("DBViewer onWindowFocusChanged: " + hasFocus, _logging);
 		if(hasFocus & _update) {
 			_update = false;
 //			tables = _db.getTables();
@@ -430,10 +497,10 @@ public class DBViewer extends Activity implements OnClickListener {
 			menu.add(0, MENU_CREATETABLE, 0, getText(R.string.CreateTable));
 		return true;
 	}
-
+	
 	public boolean onOptionsItemSelected(MenuItem item) {
 		if (!database.isDatabase) {
-			Utils.logD("User trying to do things with something that is not a database!", logging);
+			Utils.logD("User trying to do things with something that is not a database!", _logging);
 			Utils.showMessage(getText(R.string.Error).toString(),
 					_dbPath + " " + getText(R.string.IsNotADatabase).toString(), _cont);
 			return false;  
@@ -456,19 +523,28 @@ public class DBViewer extends Activity implements OnClickListener {
 			Utils.showMessage(getText(R.string.DatabaseInfo).toString(), versionStr, _cont);
 			break;
 		case MENU_CREATETABLE:
-			createTableDialog();
+			Intent i = new Intent(this, CreateTableWizard.class);
+			try {
+				startActivity(i);
+			} catch (Exception e) {
+				Utils.logE("Error in CreateTableWizard", _logging);
+				e.printStackTrace();
+				Utils.showException("Plase report this error with descriptions of how to generate it", _cont);
+			}
+			createTableWizard();
 			break;
 		}
 		return false;
 	}
 	
 	/**
-	 * Open a create table dialog where the user can define the table
+	 * Open a create table wizard where the user can define the table
 	 * by adding fields
 	 * 
 	 * TODO It should be possible to regret a single field before creating the table
 	 */
-	private void createTableDialog() {
+	private void createTableWizard() {
+		_inWizard = true;
 		Button newTabNewField;
 		Button newTabCancel;
 		Button newTabOk;
@@ -543,7 +619,7 @@ public class DBViewer extends Activity implements OnClickListener {
 				});
 				fPK.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 					public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-						Utils.logD("Turning autoinc on / off", logging);
+						Utils.logD("Turning autoinc on / off", _logging);
 						if (isChecked) {
 							//Only turn AutoInc if field is INTEGER
 							int iType = fSPType.getSelectedItemPosition();
@@ -562,7 +638,7 @@ public class DBViewer extends Activity implements OnClickListener {
 					public void onClick(View v) {
 						int iType = fSPType.getSelectedItemPosition();
 						String stype = type[iType];
-						Utils.logD("Field type = " + stype, logging);
+						Utils.logD("Field type = " + stype, _logging);
 						//Check for name and type not null, FK field and table both set or both unset
 						boolean fkCheck = true;
 						if ((fFKFie.getText().toString().trim().equals("") && !fFKTab.getText().toString().trim().equals(""))
@@ -623,7 +699,7 @@ public class DBViewer extends Activity implements OnClickListener {
 									+ fName.getEditableText().toString() + "]) REFERENCES ["
 									+ fFKTab.getEditableText().toString() + "]([" 
 									+ fFKFie.getEditableText().toString() + "])";
-								Utils.logD("FK " + fk , logging);
+								Utils.logD("FK " + fk , _logging);
 							}
 							// Create a LiniearLayout with the new field definition
 							LinearLayout ll = new LinearLayout(_cont);
@@ -653,16 +729,16 @@ public class DBViewer extends Activity implements OnClickListener {
 						} else {
 							String msg = "";
 							if (fName.getEditableText().toString().trim().equals("")) {
-								Utils.logD("No field name", logging);
+								Utils.logD("No field name", _logging);
 								msg = getText(R.string.MustEnterFieldName).toString();
 							}
 							if ((fAutoInc.isChecked() && fDesc.isChecked())) {
-								Utils.logD("DESC & AutoInc", logging);
+								Utils.logD("DESC & AutoInc", _logging);
 								getText(R.string.DescAutoIncError).toString();
 								msg += "\n" + getText(R.string.DescAutoIncError).toString();
 							}
 							if (!fkCheck) {
-								Utils.logD("FK check fail", logging);
+								Utils.logD("FK check fail", _logging);
 								getText(R.string.FKDefError).toString();
 								msg += "\n" + getText(R.string.FKDefError).toString();
 							}
@@ -676,6 +752,7 @@ public class DBViewer extends Activity implements OnClickListener {
 		});
 		newTabCancel.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
+				_inWizard = false;
 				createTab.dismiss();
 			}
 		});
@@ -709,8 +786,9 @@ public class DBViewer extends Activity implements OnClickListener {
 						sql += ")";
 					//Utils.showMessage("SQL", sql, _cont);
 					//Execute sql
-					Utils.logD("Executing " + sql, logging);
+					Utils.logD("Executing " + sql, _logging);
 					database.executeStatement(sql, _cont);
+					_inWizard = false;
 					createTab.dismiss();
 					//Refresh list of tables
 					buildList("Tables");   
@@ -785,7 +863,7 @@ public class DBViewer extends Activity implements OnClickListener {
 					try {
 						startActivity(i);
 					} catch (Exception e) {
-						Utils.logE("Error in NewFilePicker", logging);
+						Utils.logE("Error in NewFilePicker", _logging);
 						e.printStackTrace();
 						Utils.showException("Plase report this error with descriptions of how to generate it", _cont);
 					}

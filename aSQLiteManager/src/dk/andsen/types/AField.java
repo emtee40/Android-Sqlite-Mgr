@@ -4,7 +4,7 @@ public class AField {
 	private String fieldData;
 	private FieldType fieldType;
 	
-  public enum FieldType {
+	public enum FieldType {
     NULL,
     INTEGER,
     REAL,

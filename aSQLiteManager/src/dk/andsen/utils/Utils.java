@@ -41,34 +41,34 @@ public class Utils {
 	 * @param tipNo - The number of tip
 	 * @param cont - The content of the screen to show the tip
 	 */
-	public static void showTip(CharSequence tip, final int tipNo, Context cont) {
-		//TODO Should perhaps not show the tip first time a form is entered???
-		final boolean logging = Prefs.getLogging(cont);
-		final Context _cont = cont;
-		Utils.logD("TipNo " + tipNo, logging);
-		SharedPreferences prefs = _cont.getSharedPreferences("dk.andsen.asqlitemanager_tips", Context.MODE_PRIVATE);
-		boolean showTip = prefs.getBoolean("TipNo" + tipNo, true);
-		if(showTip) {
-			final Dialog dial = new Dialog(cont);
-			dial.setContentView(R.layout.tip);
-			dial.setTitle(R.string.Tip);
-			Button _btOK = (Button)dial.findViewById(R.id.OK);
-			TextView tvTip = (TextView)dial.findViewById(R.id.TextViewTip);
-			tvTip.setText(tip);
-			_btOK.setOnClickListener(new OnClickListener() {
-				public void onClick(View v) {
-					CheckBox _remember = (CheckBox) dial.findViewById(R.id.ShowTipAgain);
-					_remember.setText(R.string.ShowTipAgain);
-					SharedPreferences prefs = _cont.getSharedPreferences("dk.andsen.asqlitemanager_tips", Context.MODE_PRIVATE);
-					Editor edt = prefs.edit();
-					Utils.logD("Show again " + _remember.isChecked(), logging);
-					edt.putBoolean("TipNo" + tipNo, _remember.isChecked());
-					edt.commit();
-					dial.dismiss();
-				} });
-			dial.show();
-		}
-	}
+//	public static void showTip(CharSequence tip, final int tipNo, Context cont) {
+//		//TODO Should perhaps not show the tip first time a form is entered???
+//		final boolean logging = Prefs.getLogging(cont);
+//		final Context _cont = cont;
+//		Utils.logD("TipNo " + tipNo, logging);
+//		SharedPreferences prefs = _cont.getSharedPreferences("dk.andsen.asqlitemanager_tips", Context.MODE_PRIVATE);
+//		boolean showTip = prefs.getBoolean("TipNo" + tipNo, true);
+//		if(showTip) {
+//			final Dialog dial = new Dialog(cont);
+//			dial.setContentView(R.layout.tip);
+//			dial.setTitle(R.string.Tip);
+//			Button _btOK = (Button)dial.findViewById(R.id.OK);
+//			TextView tvTip = (TextView)dial.findViewById(R.id.TextViewTip);
+//			tvTip.setText(tip);
+//			_btOK.setOnClickListener(new OnClickListener() {
+//				public void onClick(View v) {
+//					CheckBox _remember = (CheckBox) dial.findViewById(R.id.ShowTipAgain);
+//					_remember.setText(R.string.ShowTipAgain);
+//					SharedPreferences prefs = _cont.getSharedPreferences("dk.andsen.asqlitemanager_tips", Context.MODE_PRIVATE);
+//					Editor edt = prefs.edit();
+//					Utils.logD("Show again " + _remember.isChecked(), logging);
+//					edt.putBoolean("TipNo" + tipNo, _remember.isChecked());
+//					edt.commit();
+//					dial.dismiss();
+//				} });
+//			dial.show();
+//		}
+//	}
 	
 	/**
 	 * Write a debug message to the log
@@ -87,7 +87,10 @@ public class Utils {
 	 */
 	public static void logE(String msg, boolean logging) {
 		if (logging)
-			Log.e(app, msg);
+			if (msg != null)
+				Log.e(app, msg);
+			else
+				Log.e(app, "Unknown error");
 	}
 
 	/**

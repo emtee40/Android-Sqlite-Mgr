@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Dialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -36,6 +37,7 @@ import dk.andsen.types.FieldDescr;
 import dk.andsen.types.ForeignKeyHolder;
 import dk.andsen.types.QueryResult;
 import dk.andsen.types.Record;
+import dk.andsen.types.ViewUpdateable;
 import dk.andsen.utils.Utils;
 /**
  * @author Andsen
@@ -324,7 +326,8 @@ public class Database {
 	 * @param view
 	 * @return
 	 */
-	public Record[] getTableData(String table, int offset, int limit, boolean view) {
+	public Record[] getTableData(String table, int offset, String order, int limit, boolean view) {
+		Utils.logD("getTableData view " + view, logging);
 		String sql = "";
 		if (view)
 			sql = "select ";
@@ -336,7 +339,7 @@ public class Database {
 			if (i < fieldNames.length - 1)
 				sql += ", ";
 		}
-		sql += " from [" + table + "] limit " + limit + " offset " + offset;
+		sql += " from [" + table + "] " + order + " " + " limit " + limit + " offset " + offset;
 		Utils.logD(sql, logging);
 		Cursor cursor = _db.rawQuery(sql, null);
 		int columns = cursor.getColumnCount() / 2;
@@ -505,7 +508,7 @@ public class Database {
 	 */
 	public String[][] getSQL(String table) {
 		testDB();
-		String sql = "select sql from sqlite_master where tbl_name = '" + table +"'	";
+		String sql = "select sql from sqlite_master where UPPER(tbl_name) = '" + table.toUpperCase() +"'	";
 		Cursor cursor = _db.rawQuery(sql, null);
 		int i = 0;
 		String[][] res = new String[cursor.getCount()][1];
@@ -1405,17 +1408,16 @@ public class Database {
 	 * @param cont on which to show errors
 	 */
 	public void updateRecord(String tableName, long rowId, TableField[] fields, Context cont) {
-		String sql = "update [" + tableName + "] set ";
-		for (TableField fld: fields) {
-			if (!fld.getName().equals("rowid")) {
-				sql += "[" + fld.getName() + "] = " + quoteStrings(fld) + ", ";
-			}
-		}
-		sql = sql.substring(0, sql.length() - 2);
-		sql += " where rowid = " + rowId;
-		Utils.logD("Update SQL = " + sql, logging);
+    ContentValues values = new ContentValues();
 		try {
-			_db.execSQL(sql);
+			for (TableField fld: fields) {
+				String val = fld.getValue();
+				if (val.trim().equals(""))
+					val = null;
+				values.put(fld.getName(), val);
+			}
+			String[] args = {"" + rowId};
+			_db.update(tableName, values, "rowId = ?", args);
 		} catch (Exception e) {
 			Utils.showMessage("Error", e.getLocalizedMessage(), cont);
 			Utils.logE(e.getMessage(), logging);
@@ -1424,30 +1426,73 @@ public class Database {
 	}
 	
 	/**
-	 * @param fld
-	 * @return
+	 * This is used to update views
+	 * @param tableName
+	 * @param oldData
+	 * @param res
+	 * @param cont
 	 */
-	private String quoteStrings(TableField fld) {
-		boolean quete = true;
-		if (fld.getValue() == null || fld.getValue().equals(""))
-			return "null";
-		switch (fld.getType()) {
-		case TableField.TYPE_BOOLEAN:
-		case TableField.TYPE_FLOAT:
-		case TableField.TYPE_INTEGER:
-			quete = false;
-			break;
+	public void updateViewRecord(String tableName, Record oldData, TableField[] res,
+			Context cont) {
+    ContentValues values = new ContentValues();
+		try {
+			for (TableField fld: res) {
+				String val = fld.getValue();
+				if (val.trim().equals(""))
+					val = null;
+				values.put(fld.getName(), val);
+			}
+			//TODO build where with old data
+			String where = "";
+			boolean first = true;
+			String[] args = new String[oldData.getFields().length-1];
+			String[] fieldNames = getFieldsNames(tableName);
+			for (String fld: fieldNames) {
+				if (!first)
+					where += " and ";
+				first = false;
+				where += fld + " = ? ";
+			}
+			for (int i = 0; i < oldData.getFields().length - 1; i++) {
+				args[i] = oldData.getFields()[i+1].getFieldData();
+				Utils.logD("arg " + i + ":" + args[i], logging);
+			}
+			Utils.logD("where: " + where, logging);
+			_db.update(tableName, values, where, args);
+		} catch (Exception e) {
+			if (e != null) {
+				Utils.showMessage("Error", e.getLocalizedMessage(), cont);
+				Utils.logE(e.getMessage(), logging);
+			}
+			Utils.printStackTrace(e, logging);
 		}
-		if (quete)
-			return "\"" + fld.getValue()+"\"";
-		else
-			if (fld.getType() == TableField.TYPE_BOOLEAN)
-				if (fld.getValue().equalsIgnoreCase("true"))
-					return "1";
-				else
-					return "0";
-			return fld.getValue();
 	}
+
+//	/**
+//	 * @param fld
+//	 * @return
+//	 */
+//	private String quoteStrings(TableField fld) {
+//		boolean quete = true;
+//		if (fld.getValue() == null || fld.getValue().equals(""))
+//			return "null";
+//		switch (fld.getType()) {
+//		case TableField.TYPE_BOOLEAN:
+//		case TableField.TYPE_FLOAT:
+//		case TableField.TYPE_INTEGER:
+//			quete = false;
+//			break;
+//		}
+//		if (quete)
+//			return "\"" + fld.getValue()+"\"";
+//		else
+//			if (fld.getType() == TableField.TYPE_BOOLEAN)
+//				if (fld.getValue().equalsIgnoreCase("true"))
+//					return "1";
+//				else
+//					return "0";
+//			return fld.getValue();
+//	}
 
 	/**
 	 * @param tableName
@@ -1456,40 +1501,20 @@ public class Database {
 	 */
 	public void insertRecord(String tableName, TableField[] fields, Context cont) {
 		// TODO Test insert with default values
-		String sql = "insert into '" + tableName + "' (";
-		String strFields = " ";
-		String strValues = " ";
-		for (TableField fld: fields) {
-			if (!fld.getValue().equals("")) {
-				strFields += "'" + fld.getName() + "', ";
-				strValues += quoteStrings(fld) + ", ";
+		//TODO rewrite like updateRecord
+
+    ContentValues values = new ContentValues();
+		try {
+			for (TableField fld: fields) {
+				String val = fld.getValue();
+				if (!val.trim().equals(""))
+					values.put(fld.getName(), val);
 			}
-				//sql += "'" + fld.getName() + "', ";
-		}
-		// Something to update?
-		if(strFields.length() < 2) {
-			Utils.showMessage(_cont.getText(R.string.Error).toString(),
-					cont.getText(R.string.NothingToInsert).toString(), cont);
-		} else {
-			if (strFields.length() > 1)
-				strFields = strFields.substring(0, strFields.length() - 2);
-			if (strValues .length() > 1)
-				strValues = strValues.substring(0, strValues.length() - 2);
-			// remove last ,
-			//sql = sql.substring(0, sql.length() - 2) + ") values (";
-//			for (TableField fld: fields) {
-//				sql += quoteStrings(fld) + ", ";
-//			}
-//			sql = sql.substring(0, sql.length() - 2) + ")";
-			sql += strFields + ") values (" + strValues + ")";
-			Utils.logD("Insert SQL = " + sql, logging);
-			try {
-				_db.execSQL(sql);
-			} catch (Exception e) {
-				Utils.showMessage("Error", e.getLocalizedMessage(), cont);
-				Utils.logE(e.getMessage(), logging);
-				Utils.printStackTrace(e, logging);
-			}
+			_db.insert(tableName, null, values);
+		} catch (Exception e) {
+			Utils.showMessage("Error", e.getLocalizedMessage(), cont);
+			Utils.logE(e.getMessage(), logging);
+			Utils.printStackTrace(e, logging);
 		}
 	}
 
@@ -1731,6 +1756,27 @@ public class Database {
 		}
 	}
 	
+	public void deleteViewRecord(String tableName, Record oldData, Context cont) {
+		String where = "";
+		boolean first = true;
+		String[] args = new String[oldData.getFields().length-1];
+		String[] fieldNames = getFieldsNames(tableName);
+		for (String fld: fieldNames) {
+			if (!first)
+				where += " and ";
+			first = false;
+			where += fld + " = ? ";
+		}
+		for (int i = 0; i < oldData.getFields().length - 1; i++) {
+			args[i] = oldData.getFields()[i+1].getFieldData();
+			Utils.logD("arg " + i + ":" + args[i], logging);
+		}
+		Utils.logD("where: " + where, logging);
+		_db.delete(tableName, where, args);
+	}
+
+
+	
 	public int getNoOfRecords(String tableName, String where) {
 		int recs = 0;
 		if (where.trim().equals("")) {
@@ -1837,7 +1883,7 @@ public class Database {
 	 */
 	public void FKOn() {
 		int res = 0;
-		Utils.logD("Torning on foreign keys checkin", logging);
+		Utils.logD("Turning on foreign keys checkin", logging);
 		_db.execSQL("PRAGMA foreign_keys = on");
 		try {
 			Cursor curs = _db.rawQuery("Pragma foreign_keys", null);
@@ -1855,5 +1901,40 @@ public class Database {
 			Utils.showMessage("Error", "Could not turn on foreign keys - too old Android?", _cont);
 		}
 	}
-	
+
+	/**
+	 * Test if data from a view can updated, deleted or new data can be
+	 * inserted through INSTEAD OF trigger
+	 * @param viewName
+	 * @return a ViewUpdatable 
+	 */
+	public ViewUpdateable isViewUpdatable(String viewName) {
+		ViewUpdateable res = new ViewUpdateable();
+		// TODO not tested
+		String sql = "select sql from sqlite_master where type = \"trigger\" " +
+				"and Upper(tbl_name) = \"" + viewName.toUpperCase() + "\"";
+		String trigger = null;
+		res.setDeleteable(false);
+		res.setUpdateable(false);
+		res.setInsertable(false);
+		try {
+			Cursor curs = _db.rawQuery(sql, null);
+			Utils.logD("Recs: " + curs.getCount(), logging);
+			while(curs.moveToNext()) {
+				trigger = curs.getString(0);
+				if (trigger.toUpperCase().contains("INSTEAD OF UPDATE"))
+					res.setUpdateable(true);
+				if (trigger.toUpperCase().contains("INSTEAD OF INSERT"))
+					res.setInsertable(true);
+				if (trigger.toUpperCase().contains("INSTEAD OF DELETE"))
+					res.setDeleteable(true);
+			}
+			curs.close();
+		} catch (Exception e) {
+			Utils.logE("Could not determine triggeer type", logging);
+			e.printStackTrace();
+		}
+		Utils.logD("View updateable: " + res, logging);
+		return res;
+	}
 }
