@@ -19,8 +19,7 @@
     <activity android:name="dk.andsen.utils.NewFilePicker"></activity>
     <activity android:name="dk.andsen.utils.RootFilePicker"></activity>
     <activity android:name=".DBViewer"></activity>
-    <activity android:name=".TableViewer"
-        android:configChanges="orientation|keyboardHidden"></activity>
+    <activity android:name=".TableViewer"></activity>
 <!--         android:configChanges="orientation|keyboardHidden" -->
 
     <activity android:name="DataGridOld"></activity>

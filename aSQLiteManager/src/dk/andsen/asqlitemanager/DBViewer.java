@@ -50,6 +50,7 @@ import dk.andsen.utils.NewFilePicker;
 import dk.andsen.utils.Recently;
 import dk.andsen.utils.Utils;
 
+@SuppressWarnings("deprecation")
 public class DBViewer extends Activity implements OnClickListener {
 	private String _dbPath;
 	public static Database database = null;
@@ -523,14 +524,14 @@ public class DBViewer extends Activity implements OnClickListener {
 			Utils.showMessage(getText(R.string.DatabaseInfo).toString(), versionStr, _cont);
 			break;
 		case MENU_CREATETABLE:
-			Intent i = new Intent(this, CreateTableWizard.class);
-			try {
-				startActivity(i);
-			} catch (Exception e) {
-				Utils.logE("Error in CreateTableWizard", _logging);
-				e.printStackTrace();
-				Utils.showException("Plase report this error with descriptions of how to generate it", _cont);
-			}
+//			Intent i = new Intent(this, CreateTableWizard.class);
+//			try {
+//				startActivity(i);
+//			} catch (Exception e) {
+//				Utils.logE("Error in CreateTableWizard", _logging);
+//				e.printStackTrace();
+//				Utils.showException("Plase report this error with descriptions of how to generate it", _cont);
+//			}
 			createTableWizard();
 			break;
 		}

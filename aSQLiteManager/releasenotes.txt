@@ -1,7 +1,6 @@
 Download binaries here: http://market.android.com/details?pub=Andsen
 
 ToDo:
-	Paging and filter are reset during rotation of device on Android 4 (not 2.2)
 
 Next version:
 	10-06-2012 now more than 40,000 total user installs
@@ -12,6 +11,7 @@ Next version:
 		Welcome and Tip screens now works with with with change in orientation
 		Table definitions shows triggers regardless of case
 		Data entry / editor tool now handle strings with quotation marks
+		Paging and filter are no longer reset during rotation of device
 
 Version (3.2):
 	Select where to create a new database using a directory picker

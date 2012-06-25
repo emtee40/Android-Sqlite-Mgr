@@ -378,8 +378,17 @@ public class Database {
 		return recs;
 	}
 
-	public Record[] getTableDataWithWhere(String table, String where, int offset, int limit, boolean view) {
-		//TODO change to something like select typeof(1), 1, typeof(2), 2, typeof(3), 3
+	/**
+	 * Retrieve data for table viewer
+	 * @param table Name of table
+	 * @param where Where clause for filter
+	 * @param order Order if data sorted (by clicking on title)
+	 * @param offset Offset if paging
+	 * @param limit Page size
+	 * @param view indication of view (with out on update trigger) 
+	 * @return a list of Records
+	 */
+	public Record[] getTableDataWithWhere(String table, String where, String order, int offset, int limit, boolean view) {
 		String sql = "";
 		if (view)
 			sql = "select ";
@@ -395,15 +404,15 @@ public class Database {
 			if (i < fieldNames.length - 1)
 				sql += ", ";
 		}
-		sql += " from [" + table + "] " + where + " limit " + limit + " offset " + offset;
+		sql += " from [" + table + "] " + where + order + " limit " + limit + " offset " + offset;
 		Record[] recs = null;
 		Utils.logD(sql, logging);
 		try {
 			Cursor cursor = _db.rawQuery(sql, null);
 			int columns = cursor.getColumnCount() / 2;
-			Utils.logD("Columns: " + columns, logging);
+			//Utils.logD("Columns: " + columns, logging);
 			int rows = cursor.getCount();
-			Utils.logD("Rows = " + rows, logging);
+			//Utils.logD("Rows = " + rows, logging);
 			recs = new Record[rows];
 			int i = 0;
 			while(cursor.moveToNext()) {

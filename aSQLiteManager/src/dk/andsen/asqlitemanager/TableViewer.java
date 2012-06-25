@@ -48,6 +48,7 @@ import dk.andsen.types.Record;
 import dk.andsen.types.Types;
 import dk.andsen.types.ViewUpdateable;
 import dk.andsen.utils.Utils;
+@SuppressWarnings("deprecation")
 public class TableViewer extends Activity implements OnClickListener {
 	private Database _db = null;
 	private String _table;
@@ -77,7 +78,6 @@ public class TableViewer extends Activity implements OnClickListener {
 	private boolean _canInsertInView = false;
 	private boolean _canUpdateView = false;
 	private boolean _canDeleteView = false;
-	private boolean _isView = false;
 	
 	Record[] _data;
 	private boolean _fieldMode = false;
@@ -135,28 +135,41 @@ public class TableViewer extends Activity implements OnClickListener {
 			Utils.logD("Database open", _logging);
 			if (sourceType == Types.TABLE) {
 				tvDB.setText(getString(R.string.DBTable) + " " + _table);
-				_isView = false;
 			}
 			else if (sourceType == Types.VIEW) {
 				tvDB.setText(getString(R.string.DBView) + " " + _table);
-				_isView = true;
 			}
+
+			if (savedInstanceState != null) {
+				Utils.logD("TableViewer RestoreInstanceState", _logging);
+				offset = savedInstanceState.getInt("PageOffset", 0);
+				Utils.logD("Offset " + offset, _logging);
+				_where = savedInstanceState.getString("WhereClause");
+				if (_where == null)
+					_where = "";
+				Utils.logD("_where " + _where, _logging);
+
+				_order = savedInstanceState.getString("Order");
+				Utils.logD("_order " + _order, _logging);
+				_increasing = savedInstanceState.getBoolean("Increasing");
+				Utils.logD("_increasing " + _increasing, _logging);
+				
+				if (savedInstanceState.getBoolean("showTip")) {
+					Utils.logD("showHint true", _logging);
+					showTip(getText(R.string.Tip4), 4);
+				}
+			} else
+				showTip(getText(R.string.Tip4), 4);
+
 			switch(Prefs.getDefaultView(_cont)){
 			case 2:
+				updateButtons(true);
 				onClick(bData);
 				break;
 			default:
 				onClick(bFields);
 			}
 		}
-		if (savedInstanceState != null) {
-			Utils.logD("savedInstance true", _logging);
-			if (savedInstanceState.getBoolean("showTip")) {
-				Utils.logD("showHint true", _logging);
-				showTip(getText(R.string.Tip4), 4);
-			}
-		} else
-			showTip(getText(R.string.Tip4), 4);
 	}
 	
 	@Override
@@ -168,20 +181,9 @@ public class TableViewer extends Activity implements OnClickListener {
 	  savedInstanceState.putBoolean("showTip", _showTip);
 	  savedInstanceState.putInt("PageOffset", offset);
 	  savedInstanceState.putString("WhereClause", _where);
+	  savedInstanceState.putString("Order", _order);
+	  savedInstanceState.putBoolean("Increasing", _increasing);
 	  super.onSaveInstanceState(savedInstanceState);
-	}
-
-	@Override
-	public void onRestoreInstanceState(Bundle savedInstanceState) {
-	  super.onRestoreInstanceState(savedInstanceState);
-		Utils.logD("TableViewer onRestoreInstanceState", _logging);
-
-		offset = savedInstanceState.getInt("PageOffset", 0);
-		Utils.logD("Offset " + offset, _logging);
-		_where = savedInstanceState.getString("WhereClause");
-		if (_where == null)
-			_where = "";
-		Utils.logD("_where " + _where, _logging);
 	}
 
 	@Override
@@ -237,54 +239,39 @@ public class TableViewer extends Activity implements OnClickListener {
 			_fieldMode = false;
 			//offset = 0;
 			checkForUpdateableView();
-			updateData();
+			fillDataTableWithArgs();
 		} else if (key == R.id.NewRec) {
 			addNewRecord();
-//			offset = 0;
-//			String [] fieldNames = {"SQL"};
-//			setTitles(_aTable, fieldNames, false);
-//			String [][] data = _db.getSQL(_table);
-//			updateButtons(false);
-//			oldappendRows(_aTable, data, false);
 		} else if (key == R.id.PgDwn) {
 			int childs = _aTable.getChildCount();
 			Utils.logD("Table childs: " + childs, _logging);
 			if (childs >= limit) {  //  No more data on to display - no need to PgDwn
 				offset += limit;
-				String [] fieldNames = _db.getFieldsNames(_table);
-				setTitles(_aTable, fieldNames, !_isView);
-				Record[] data = _db.getTableDataWithWhere(_table, _where, offset, limit, _isView);
-				appendRows(_aTable, data, !_isView);
+				fillDataTableWithArgs();
+//				String [] fieldNames = _db.getFieldsNames(_table);
+//				setTitles(_aTable, fieldNames, !_isView);
+//				Record[] data = _db.getTableDataWithWhere(_table, _where, offset, limit, _isView);
+//				appendRows(_aTable, data, !_isView);
 			}
 			Utils.logD("PgDwn:" + offset, _logging);
 		} else if (key == R.id.PgUp) {
 			offset -= limit;
 			if (offset < 0)
 				offset = 0;
-			String [] fieldNames = _db.getFieldsNames(_table);
-			setTitles(_aTable, fieldNames, !_isView);
-			Record[] data = _db.getTableDataWithWhere(_table, _where, offset, limit, _isView);
-			appendRows(_aTable, data, !_isView);
-			Utils.logD("PgUp: " + offset, _logging);
+			fillDataTableWithArgs();
+//			String [] fieldNames = _db.getFieldsNames(_table);
+//			setTitles(_aTable, fieldNames, !_isView);
+//			Record[] data = _db.getTableDataWithWhere(_table, _where, offset, limit, _isView);
+//			appendRows(_aTable, data, !_isView);
+//			Utils.logD("PgUp: " + offset, _logging);
 		}
 	}
 	
 	private void updateData() {
 		checkForUpdateableView();
 		try {
-			String [] fieldNames = _db.getFieldsNames(_table);
-			setTitles(_aTable, fieldNames, !_isView);
-			String order = "";
-			if (!_order.equals("")) {
-				order = " order by " + _order;
-				if (_increasing)
-					order += " ASC";
-				else
-					order += " DESC";
-			}
-			_data = _db.getTableData(_table, offset, order, limit, _isView && !(_canDeleteView || _canInsertInView || _canUpdateView));
+			fillDataTableWithArgs();
 			updateButtons(true);
-			appendRows(_aTable, _data, (!_isView || (_canInsertInView || _canUpdateView || _canDeleteView)));
 		} catch (Exception e) {
 			Utils.logE(e.getLocalizedMessage(), _logging);
 			e.printStackTrace();
@@ -796,12 +783,21 @@ public class TableViewer extends Activity implements OnClickListener {
 			TextView c = new TextView(this);
 			c.setTextSize(_fontSize);
 			c.setTextAppearance(this, Typeface.BOLD);
-			c.setText(titles[i]);
+			String title = titles[i];
+			if (title.equals(_order))
+				if (_increasing)
+					title += " ↓";
+				else
+					title += " ↑";
+			c.setText(title);
 			c.setPadding(3, 3, 3, 3);
 			if (!_fieldMode)
 			c.setOnClickListener(new OnClickListener() {
 				public void onClick(View v) {
 					String newOrder = ((TextView) v).getText().toString();
+					if (newOrder.endsWith("↑") || newOrder.endsWith("↓"))
+						newOrder = newOrder.substring(0, newOrder.length() - 2);
+					Utils.logD("newOrder: " + newOrder, _logging);
 					// if same field clicked twice reverse sorting
 					if (newOrder.equals(_order)) {
 						_increasing = !_increasing; 
@@ -809,6 +805,7 @@ public class TableViewer extends Activity implements OnClickListener {
 						_order  = newOrder;
 						_increasing = true; 
 					}
+					fillDataTableWithArgs();
 					updateData();
 					Utils.logD("Sort by " + _order + " increasing = " + _increasing, _logging);
 				}
@@ -886,13 +883,13 @@ public class TableViewer extends Activity implements OnClickListener {
     	return true;
     case MENU_FIRST_REC:
     	offset = 0;
-    	fillDataTableWithWhere(_table, _where);
+    	fillDataTableWithArgs();
     	return true;
     case MENU_LAST_REC:
 			int childs = _db.getNoOfRecords(_table, _where); 
 			Utils.logD("Records = " + childs, _logging);
 			offset = childs - limit;
-			fillDataTableWithWhere(_table, _where);
+			fillDataTableWithArgs();
     	return true;
     case MENU_FILETR:
     	buildFilerMenu(_table);
@@ -949,7 +946,7 @@ public class TableViewer extends Activity implements OnClickListener {
 				} else {
 					_where = where;
 				}
-				fillDataTableWithWhere(_table, _where);
+				fillDataTableWithArgs();
 			}});
 		lmain.addView(btn);
 		dial.setContentView(lmain);
@@ -957,7 +954,7 @@ public class TableViewer extends Activity implements OnClickListener {
 		dial.show();
 	}
 
-	private void fillDataTableWithWhere(String tableName, String where) {
+	private void fillDataTableWithArgs() {
 		boolean isUnUpdateableView = false;
 		if (sourceType == Types.VIEW) {
 			if (viewIsUpdateable)
@@ -965,10 +962,18 @@ public class TableViewer extends Activity implements OnClickListener {
 			else
 				isUnUpdateableView = true;
 		}
-		Record[] data = _db.getTableDataWithWhere(tableName, where, offset, limit, isUnUpdateableView);
+		String order = "";
+		if (!_order.equals("")) {
+			order = " order by " + _order;
+			if (_increasing)
+				order += " ASC";
+			else
+				order += " DESC ";
+		}
+		Record[] data = _db.getTableDataWithWhere(_table, _where, order, offset, limit, isUnUpdateableView);
 		setTitles(_aTable, _db.getFieldsNames(_table), !isUnUpdateableView);
 		appendRows(_aTable, data, !isUnUpdateableView);
-		Utils.logD("where = " + where, _logging);
+		Utils.logD("where = " + _where, _logging);
 	}
 
 	public class DialogButtonClickHandler implements DialogInterface.OnClickListener {
