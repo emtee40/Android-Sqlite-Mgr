@@ -302,7 +302,11 @@ public class TableViewer extends Activity implements OnClickListener {
 						if (msg == null) {
 							//Utils.logD("Record edited; " + rowid);
 							TableField[] res = re.getEditedData(sv);
-							_db.insertRecord(_table, res, _cont);
+							try {
+								_db.insertRecord(_table, res, _cont);
+							} catch (Exception e) {
+								Utils.showException(e.getLocalizedMessage(), sv.getContext());
+							}
 							dial.dismiss();
 							_updateTable = true;
 						}
@@ -964,11 +968,11 @@ public class TableViewer extends Activity implements OnClickListener {
 		}
 		String order = "";
 		if (!_order.equals("")) {
-			order = " order by " + _order;
+			order = " order by [" + _order;
 			if (_increasing)
-				order += " ASC";
+				order += "] ASC";
 			else
-				order += " DESC ";
+				order += "] DESC ";
 		}
 		Record[] data = _db.getTableDataWithWhere(_table, _where, order, offset, limit, isUnUpdateableView);
 		setTitles(_aTable, _db.getFieldsNames(_table), !isUnUpdateableView);

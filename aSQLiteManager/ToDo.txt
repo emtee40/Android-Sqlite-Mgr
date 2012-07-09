@@ -1,6 +1,7 @@
 Working on:
 
 ToDo / unsorted list of ideas for coming development:
+	Use of external editor to edit scripts
 	Progress indicator during queries
 	Real integration with DropBox
 		https://www.dropbox.com/developers/reference/sdk

@@ -78,6 +78,7 @@ public class DBViewer extends Activity implements OnClickListener {
 	private boolean newFeatures = true;
 	private boolean _showTip = false;
 	private boolean _inWizard = false;
+	private boolean _testNewWizard = true; //TODO only while testing!!!
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -524,15 +525,20 @@ public class DBViewer extends Activity implements OnClickListener {
 			Utils.showMessage(getText(R.string.DatabaseInfo).toString(), versionStr, _cont);
 			break;
 		case MENU_CREATETABLE:
-//			Intent i = new Intent(this, CreateTableWizard.class);
-//			try {
-//				startActivity(i);
-//			} catch (Exception e) {
-//				Utils.logE("Error in CreateTableWizard", _logging);
-//				e.printStackTrace();
-//				Utils.showException("Plase report this error with descriptions of how to generate it", _cont);
-//			}
-			createTableWizard();
+			if (_testNewWizard) {
+				Intent i = new Intent(this, CreateTableWizard.class);
+				try {
+					_update = true;
+					startActivity(i);
+				} catch (Exception e) {
+					Utils.logE("Error in CreateTableWizard", _logging);
+					e.printStackTrace();
+					Utils.showException("Plase report this error with descriptions of how to generate it", _cont);
+				}
+			} else {
+				createTableWizard();
+			}
+			
 			break;
 		}
 		return false;

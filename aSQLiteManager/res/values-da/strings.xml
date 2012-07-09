@@ -247,7 +247,8 @@
 			\nSe den SQL der er brugt til at oprette tabellen. Denne kan kopieres til
 			"clip board" ved at tappe cellen
 		</string>
-        
+    <string name="DeleteField">Slet feltet</string>
+		    
     <!-- From here text changes in every version -->
         
     <string name="HelpText">

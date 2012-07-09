@@ -256,12 +256,18 @@
 		    		    		    
     <!-- Place new text above here -->
     <string name="Translation">Translate aSQLiteManager to your language and get your name here</string>
-
-    <!-- Translated to Danish to here -->
         
     <!-- Translated to German to here -->
+    <!-- Translated to Catalan to here -->
+    <!-- Translated to French to here -->
+    <!-- Translated to Italian to here -->
+    <!-- Translated to Brazilian to here -->
+    <!-- Translated to Spanish to here -->
 
-        
+    <string name="DeleteField">Delete field</string>
+
+    <!-- Translated to Danish to here -->
+    
     <!-- From here text changes in every version -->
     
     <!-- List of functionality for help screen -->

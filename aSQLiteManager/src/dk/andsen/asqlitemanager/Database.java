@@ -1509,9 +1509,6 @@ public class Database {
 	 * @param cont on which to display errors
 	 */
 	public void insertRecord(String tableName, TableField[] fields, Context cont) {
-		// TODO Test insert with default values
-		//TODO rewrite like updateRecord
-
     ContentValues values = new ContentValues();
 		try {
 			for (TableField fld: fields) {
@@ -1519,7 +1516,7 @@ public class Database {
 				if (!val.trim().equals(""))
 					values.put(fld.getName(), val);
 			}
-			_db.insert(tableName, null, values);
+			_db.insertOrThrow(tableName, null, values);
 		} catch (Exception e) {
 			Utils.showMessage("Error", e.getLocalizedMessage(), cont);
 			Utils.logE(e.getMessage(), logging);
