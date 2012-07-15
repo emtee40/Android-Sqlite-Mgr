@@ -265,7 +265,6 @@
     <!-- Translated to Spanish to here -->
 
     <string name="DeleteField">Delete field</string>
-
     <!-- Translated to Danish to here -->
     
     <!-- From here text changes in every version -->
@@ -277,7 +276,10 @@
       \nTo get a complete list of the functionality supported by aSQLiteManager. 
       \n\nYou can also send comments bug reports and feature requests to me at:
       \nandroid41cv@gmail.com
-      \n\n
+      
+      \n\nData entry / editor tool allow insert, update and delete on views
+			with instead of insert, update and delete triggers 
+			\nSort data in table viewer by clicking on title of column
       \nA create databases tool to easily create tables 
       \nEasy deletion of tables, views and indexes
       \nForeign key constraint checking can be turned on
@@ -304,22 +306,25 @@
       \nUse aShell (Beta) to edit system databases on rooted devices
       \n\nMartin
     </string>
-
     <!-- Here write what is new in this version -->
     <string name="WelcomeMsg">aSQLiteManager is a free open source
   	  SQLite manager / front end for Android devices.
-      \n\nNew in this version (3.2):
-			\n\n•	Select where to create a new database using a directory picker – thanks to Malte Heizelmann
-			\n•	You get tips about what is possible in the different parts of the program
-			\n•	Foreign key selection lists now show a string representation of the records not just the FK fields. The field that the foreign key refers to MUST be the primary key in the referenced table
-			\n•	More checking in create table wizard
-			\n•	Hopefully back on the French version of Google Play (I had placed an unfinished French translation in a wrong place)
-			\n•	French translation – thanks to Jean-Luc Rostini + Nicolas Gourdon
-			\n•	Italian translation – thanks to Giuseppe Tumino https://play.google.com/store/apps/developer?id=Giuseppe+Tumino
-			\n•	Catalan translation – thanks to Paco Rivière
-			\n•	Brazilian translation – thanks to Leandro Lopes
-			\n•	Spanish translation – thanks to Gonzalo Rodriguez
-			\n•	Several bug fixes – thanks for reporting!
+      \n\nNew in this version (3.3):
+      \n\n•	A new CREATE TABLE wizard where entered fields can be edited / deleted
+			\n•	Data entry / editor tool allow insert, update and delete on views
+				with instead of insert, update and delete triggers 
+			\n•	Sort data in table viewer by clicking on title of column
+			\n\nBug fixes – thanks for reporting!:
+			\n•	Welcome and Tip screens now works with with with change in orientation
+			\n•	Table definitions shows triggers regardless of case
+			\n•	Data entry / editor tool now handle strings with quotation marks
+			\n•	Paging and filter are no longer reset during rotation of device
+			\n\nYou can edit system database on rooted devices with aSQLiteManager using
+			aShell(beta). You find aShell here:
+      \nhttp://market.android.com/search?q=pub:Andsen
+      \n\nPlease report problems with aShell. I have only access to a few
+      rooted phones so testing is difficult. When aShell works properly the
+      functionality will be implemented in aSQLiteManager
       \n\nFor a description of all features check:
       \naaa.andsen.dk/aSQLiteManager.html
       \n\nComments, bug reports and feature requests are welcome.

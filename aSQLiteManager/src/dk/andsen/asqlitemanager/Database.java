@@ -45,7 +45,7 @@ import dk.andsen.utils.Utils;
  */
 public class Database {
 	public boolean isDatabase = false;
-	private static SQLiteDatabase _db = null;
+	public static SQLiteDatabase _db = null;
 	private String _dbPath;
 	private Context _cont;
 	private String nl = "\n"; 
@@ -1104,12 +1104,14 @@ public class Database {
 	 * @param sql the SQL statement to execute
 	 * @param cont the content on which to show exception
 	 */
-	public void executeStatement(String sql, Context cont) {
+	public boolean executeStatement(String sql, Context cont) {
+		boolean res = true;
 		Utils.logD("Executing statement:" + sql, logging);
 		testDB();
 		try {
 			_db.execSQL(sql);
 		} catch (SQLException e) {
+			res = false;
 			//TODO tis msg is sometime shown on the wrong screen
 			// _db has DBViewer's content so when called from table viewer
 			// add content to arg
@@ -1117,6 +1119,7 @@ public class Database {
 			Utils.logE(e.getMessage(), logging);
 			Utils.printStackTrace(e, logging);
 		}
+		return res;
 	}
 
 	/**

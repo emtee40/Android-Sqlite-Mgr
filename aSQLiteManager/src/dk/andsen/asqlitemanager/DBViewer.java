@@ -525,20 +525,16 @@ public class DBViewer extends Activity implements OnClickListener {
 			Utils.showMessage(getText(R.string.DatabaseInfo).toString(), versionStr, _cont);
 			break;
 		case MENU_CREATETABLE:
-			if (_testNewWizard) {
-				Intent i = new Intent(this, CreateTableWizard.class);
-				try {
-					_update = true;
-					startActivity(i);
-				} catch (Exception e) {
-					Utils.logE("Error in CreateTableWizard", _logging);
-					e.printStackTrace();
-					Utils.showException("Plase report this error with descriptions of how to generate it", _cont);
-				}
-			} else {
-				createTableWizard();
+			Intent i = new Intent(this, CreateTableWizard.class);
+			try {
+				_update = true;
+				startActivity(i);
+			} catch (Exception e) {
+				Utils.logE("Error in CreateTableWizard", _logging);
+				e.printStackTrace();
+				Utils.showException("Plase report this error with descriptions of how to generate it", _cont);
 			}
-			
+			_update = true;
 			break;
 		}
 		return false;

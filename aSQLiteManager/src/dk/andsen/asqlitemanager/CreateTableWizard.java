@@ -8,6 +8,7 @@ import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.SQLException;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -86,8 +87,8 @@ public class CreateTableWizard extends Activity implements OnClickListener {
 				Utils.showMessage(getText(R.string.Error).toString(),
 						getText(R.string.MustEnterTableNameAndOneField).toString(), _cont);
 			} else {
-				buildAndExecuteSQL();
-				finish();
+				if (buildAndExecuteSQL())
+					finish();
 			}
 		} else if (v.getId() == newTabCancel.getId()) {
 			Utils.logD("CreateTableWizard Cancel", _logging);
@@ -98,7 +99,7 @@ public class CreateTableWizard extends Activity implements OnClickListener {
 	/**
 	 * Build the sql needed to create the table and execute it
 	 */
-	private void buildAndExecuteSQL() {
+	private boolean buildAndExecuteSQL() {
 		Utils.logD("Building CREATE TABLE SQL", _logging);
 		String sql = "CREATE TABLE [" + newTabTabName.getText().toString() + "] (";
 		for (int i = 0; i < _fieldDefs.size(); i++) {
@@ -108,7 +109,7 @@ public class CreateTableWizard extends Activity implements OnClickListener {
 				sql += ", ";
 		}
 		sql += ")";
-		DBViewer.database.executeStatement(sql, _cont);
+		return DBViewer.database.executeStatement(sql, _cont);
 	}
 
 	/**

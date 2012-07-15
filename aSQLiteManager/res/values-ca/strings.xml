@@ -49,11 +49,11 @@
     <string name="AutoIndex">SQLite no guarda les definicions dels índex automàtics</string>
     <string name="Message">Missatge</string>
     <string name="Error">Error</string>
-    <string name="NoFileName">Com a mínim cal un nom de fitxer</string>
+    <string name="NoFileName">Cal com a mínim un nom de fitxer</string>
     <string name="DBQueryType">Tipus de consulta</string>
     <string name="OnClickedMess">Heu clicat sobre aquesta base de dades SQLite:</string>
     <string name="OnClickedOpen">Obre la base de dades amb\naSQLiteManager</string>
-    <string name="RecentSQL">SQL recents</string>
+    <string name="RecentSQL">fitxers SQL recents</string>
     <string name="Transaction">Transacció</string>
     <string name="BeginTransaction">Comença la transacció</string>
     <string name="Commit">Confirma</string>
@@ -96,12 +96,12 @@
     <string name="DatabaseInfo">Informació de la base de dades.</string>
     <string name="DatabaseExists">ja existeix!</string>
 		<string name="RateMsg">
-			You have now used aSQLiteManager a more than a week i at least 10 times.
-			\nIf you like using it, please support it by a good rating.
-			\nYou can also donate a small amount of money (des de the home
-			page). It will be used to improve the program.
-			\nThanks for your support!</string>
-		<string name="Rate">Valora</string>
+			Heu fet servir aSQLiteManager durant més d\'una setmana i al menys 10 cops.
+			\nSi us agradat, si us plau recolceu-ho amb una bona valoració.
+			\nTambé podeu fer una petita donació de diners (des de la pàgina
+			inicial). Es farà servir per millorar el programa.
+			\nGràcies pel vostre recolçament!</string>
+		<string name="Rate">Valora-ho</string>
 		<string name="Later">Ho faré el proper cop</string>
 		<string name="NoThanks">Ja ho he fet</string>
 		<string name="EditDeleteRow">Edita o suprimeix aquesta fila #</string>
@@ -115,19 +115,19 @@
 		<string name="Last">Darrera</string>
 		<string name="Filter">Filtra</string>
 		<string name="EnterWhere">Entreu la clàusula where (no where)</string>
-		<string name="StrangeErr">Si podeu reproduir aquest error please tell me
-		    by mail how to provoke it ;-)
-		    \nYou can also also use aLogViewer to extract extra informations
-		    form the system log to help me find out what és wrong.</string>
+		<string name="StrangeErr">Si podeu reproduir aquest error si us plau indiqueu-me
+		    per correu com provocar-ho ;-)
+		    \nTambé podeu usar aLogViewer per extreure més informació
+		    del registre del sistema per ajudarme a trobar el problema.</string>
 		<string name="NotAnArror">No és un error</string>
 		<string name="Normal">Normal</string>
 		<string name="Root">Root</string>
-    <string name="RootNeeded">Cal privilegis de root</string>
+    <string name="RootNeeded">Calen privilegis de root</string>
     <string name="RootWarning">No hi ha privilegis de root</string>
     <string name="EnterRoot">Entreu al catàleg de root, sigueu prudents:</string>
     <string name="LeavingRoot">Sortiu del catàleg de root:</string>
     <string name="RootEdit1">Voleu obrir una còpia del fitxer del sistema</string>
-    <string name="RootEdit2">\?</string>
+    <string name="RootEdit2">system file?</string>
     <string name="Warning">Avís</string>
     <string name="CommitChanges">Voleu confirmar els canvis?</string>
     <string name="CommitChangesTo">Confirma els canvis a:</string>
@@ -135,14 +135,14 @@
     <string name="FilterHint">Entreu el filtre</string>
     <string name="Clear">Neteja</string>
     <string name="EnterFilter">Entreu el filtre</string>
-    <string name="SuShell">Ubicació del su executable</string>
-    <string name="SuShellText">The su executable can be located a different places inside o outside of your path</string>
+    <string name="SuShell">Ubicació del executablesu </string>
+    <string name="SuShellText">L\'executable su es pot trobar a diferents llocs dintre o fora de la vostre ruta path</string>
     <string name="PauseTitle">Pausa en msec</string>
-    <string name="PauseText">Time to wait after starting to copy la base de dades before opening it</string>
-    <string name="RootNotFound">Root shell binary not found in standard ubicació
-        (o el mòbil not rooted). You can define root shell ubicació a configuration.</string>
+    <string name="PauseText">Després de començar a copiar la base de dades s\'espera aquest temps abans d\'obrir-la</string>
+    <string name="RootNotFound">No s\'ha trobat el binari del shell Root a la ubicació habitual
+        (o bé el mòbil no és root). Podeu indicar un altre ubicació del shell a configuració.</string>
     <string name="RootFilePickerTxt">Usa el selector de fitxers root</string>
-    <string name="RootFilePickerMsg">Use aShell root file picker to access system la base de dades del sistema en mòbil amb privilegis de root</string>
+    <string name="RootFilePickerMsg">Usa el selector de fitxers aShell per accedir a les bases de dades del sistema en mòbils amb privilegis de root</string>
     <string name="BasicConfiguration">Configuració bàsica</string>
     <string name="SuperUserPreferences">Preferències de l\'usuari super - Experimental</string>
     <string name="DebugPreferences">Preferències de depuració</string>
@@ -150,15 +150,15 @@
     <string name="LoggingText">Activa el registre per registrar la depuració</string>
     <string name="RootUseWarning">L\'edició de bases de dades del sistema és experimental i potencialment
         perillós - podrieu destruir les dades.
-        \n\nDo not alter system la base de dades del sistema unless you know what you are doing!
-        \n\nTake care!\n</string>
+        \n\nNo canvieu les bases de dades del sistema si no esteu segur del que feu!
+        \n\nAneu amb compte!\n</string>
     <string name="ShowRootWarning">No em tornis a avisar</string>
     <string name="CreateTable">Nova Taula</string>
     <string name="AddField">Afegeix un Camp</string>
     <string name="CreateField">Nou camp</string>
     <string name="MustEnterFieldName">Heu de posar un nom al camp!</string>
     <string name="MustEnterTableNameAndOneField">Heu de posar un nom a la taula i a al menys un camp!</string>
-    <string name="SQLPreferences">SQLPreferences</string>
+    <string name="SQLPreferences">Preferències de SQL</string>
     <string name="CannotDeleteAutoIndex">No és pot suprimir un índex automàtic</string>
     <string name="DeleteIndex">Suprimeix l\'índex</string>
     <string name="DeleteView">Suprimeix la vista</string>
@@ -166,7 +166,7 @@
     <string name="CannotDeleteSysTable">No és pot suprimir una taula del sistema</string>
     <string name="DropItem">Voleu suprimir l\'element?</string>
     <string name="IndexDefCopied">S\'ha copiat la definició de l\'índex al porta papers</string>
-    <string name="DescAutoIncError">DESC i AutoInc must not both be checked although the manual says otherwise</string>
+    <string name="DescAutoIncError">No es pot marcar DESC i AutoInc a l\'hora encara que ho digui el manual</string>
 
     <!-- Translated to French to here -->
         
@@ -207,50 +207,49 @@
     <string name="FKDefError">Cal indicar tan la clau forània taula com el camp""</string>
     <string name="Tip">Consell!</string>
     <string name="ShowTipAgain">Voleu tornar a veure aquest consell?</string>
-		<string name="Tip1">Des de this main screen podeu:
-			\n\nOpen an existing la base de dades situada a la la tarja SD
-			\nCreate una nova base de dades on the la tarja SD
-			\nOpen one of your recently used base de dades
-			\nShow brief informations about aSQLiteManager
-			\n\nYou can also configure aSQLiteManager, mostra a llista of implemented
-			functions i reset the configuration by hitting the Menu button.
-			\n\nAs aSQLIteManager és a SQLite front end it és only possible to do with
-			the bases de dades what SQLite allows. This rules out nearly all canvis to 
-			taula structure.</string>
+		<string name="Tip1">Des de aquesta pantalla principal podeu:
+			\n\nObrir una base de dades situada a la la tarja SD
+			\nCrear una nova base de dades on the la tarja SD
+			\nObrir una de les vostres bases de dades obertes recentment
+			\nMostrar una breu informació sobre aSQLiteManager
+			\n\nTambé podeu configurar aSQLiteManager, mostrar una llista de funcions
+			previstes i reiniciar la configuració amb el botó del Menú.
+			\n\nCom que aSQLIteManager és una interfície de SQLite només permet fer amb
+			les bases de dades allò que SQLite permet. Aquesta regla val per gairebé tots els canvis a 
+			l\'estructura de la taula.</string>
 		<string name="Tip2">A la pantalla de consulta podeu:
-			\n\nExecute any valid SQLite SQL statements.
-			\n\nUsing the Menu button you have access to a simple SQL builder, This can
-			help with building select, create, drop, suprimeix i insert commands.
-			\n\n Consulta results can be exported to text files (located a the same catalog
-			as the base de dades).
-			\n\nYou can start transactions, desfer i confirmar canvis de les dades.
-			\n\nTo copy the content of a les dades cell to the clip board just tap at the
-			cell.</string>
+			\n\nExecutar qualsevulla sentència SQLite SQL vàlida.
+			\n\nUsant botó del Menú accediu a un senzill editor de SQL. Que us
+			ajuda a construir sentències select, create, drop, delete i insert.
+			\n\n Els resultats de les consultes es poden exportar a fitxers de text (situats al mateix  catàleg
+			que la base de dades).
+			\n\nIniciar transaccions, desfer i confirmar canvis de les dades.
+			\n\nPer copiar el contingut de un camp al porta papers tan sols hem de clicar sobre el
+			camp.</string>
 		<string name="Tip3">A la pantalla de la base de dades podeu:
-			\n\nSee totes les taules, vistes i indexs.
-			\n\nDelete taules, vistes i indexs by "long tapping" the item you want to
-			suprimeix. It és not possible to suprimeix SQLietes auto generated indexes.
-			\n\nFrom the Menu button you have access to:
-			\nExporta i restaura les base de dades
-			\nOpen files containing SQL commands (can be executed line by line whole
-			script)
-			\nInfo about current de la base de dades actual i
-			\nA New Taula wizard that can guide through the creation of a new taula
+			\n\nVeure totes les taules, vistes i indexs.
+			\n\nSuprimir taules, vistes i indexs fent "clic llarg" sobre l\'objecte que voleu
+			suprimir. No és possible suprimir els índexs de SQLite auto generats.
+			\n\nDes del botó del Menú teniu accés a:
+			\nExportar i restaurar les base de dades
+			\nObrir fitxers amb ordres SQL (que es  poden executar línea línea o de cop)
+			\nInfo sobre de la base de dades actual i
+			\nUn assistent Nova Taula que us guia per crear una nova taula
 			</string>
-		<string name="Tip4">Des de taula viewer podeu:
-			\n\nSee the structure of the selected taula
-			\nSee its les dades i page through the les dades (set the page size a configuration
-			on main screen)
-			\nAdd new records (by using the "New" button o by tapping New cell a the
-			title fila)
-			\nEdit a fila by tapping Edita a the first cell of the fila
-			\nTo suprimeix a record tap Edita i i use the Suprimeix button
-			\n\nFrom the Menu podeu:
-			\n\nJump to the first / last page
-			\nAdd a simple filter to les dades
-			\nDump la taula to a SQL script (located a the same catalog as the base de dades)
-			\nSee the SQL needed to create la taula. This can be copied to the clip board
-			by tapping the cell
+		<string name="Tip4">Des del visualitzador de taules podeu:
+			\n\nVeure l\'estructura de la taula triada
+			\nVeure les seves dades i fullejar les dades (indiqueu la mida de la pàgina configuració
+			de la pantalla principal)
+			\nAfegir nous registres (amb el botó "Nou" o triant Nova cel·la al títol de
+			la fila)
+			\nEditar una fila clicant Edita al primer camp de la fila
+			\nPer suprimir un registre cliqueu Edita i useu el botó Suprimeix
+			\n\nDes del Menu podeu:
+			\n\nSaltar a la primera / darrera pàgina
+			\nAfegir un filtre simple a les dades
+			\nVolcar la taula a una seqüencia SQL (situada al mateix catàleg que la base de dades)
+			\nVeure the SQL de creació de la taula. El podeu copiar al porta papers
+			clicant a la cel·la
 		</string>
 		    		    		    
     <!-- Place new text above here -->
@@ -267,60 +266,55 @@
     <string name="HelpText">
       Visiteu la pagina web de aSQLiteMager:
       \nhttp://aaa.andsen.dk/aSQLiteManager.html
-      \nTo get a complete llista of the functionality supported by aSQLiteManager. 
-      \n\nYou can also send comments bug reports i feature requests to me at:
+      \nOn trobareu una llista completa de les functionalitats de aSQLiteManager. 
+      \n\nTambé podeu enviar-me comentaris informes d\'error i suggerències a:
       \nandroid41cv@gmail.com
       \n\n
-      \nA create bases de dades tool to easily create taules 
-      \nEasy deletion of taules, vistes i indexes
-      \nForeign key constraint checking can be turned on
-      \nEditing la clau forània fields using selection llista
-      \nOpen bases de dades des de aSQLiteManager o des de file managers
-      \nLlista taules, vistes i indexes
-      \nDatabase info
-      \nMostra les dades de taules i vistes
-      \nFields a la taula viewer are colored based on the type of the camp. As SQLite doesn\'t has camp type validation the camp type can differ de camp type given with the create taula statement
-      \nData editing i deleting form taula browser des de Edita label at each fila
-      \nData entry add record de label on title at les dades browser
-      \nExecute any SQL including \'Drop\' / \'Create\' statements
-      \nSupport for BLOB fields (except during editing)
-      \nSupport Begin la transacció, Commit i Rollback
-      \nCopy any cell to the clip board by pressing it
-      \nSupport taula names i camp names with spaces
-      \nStore all executed statements a the opened base de dades a a taula called aSQLiteManager (by default turned off)
-      \nSelect SQL history de query form
-      \nExporta la base de dades to SQL script i restaura bases de dades des de script
-      \nDump taula des de taula vista to file named Database.Table.sql - can be loaded by execute file as script
-      \nExporta of query results to ASCII file
-      \nExecute SQL scripts, full script o single lines
-      \nRemember recently opened bases de dades for quick access to often used bases de dades
-      \nUse aShell (Beta) to edita bases de dades del sistema on rooted devices
+      \nUna eina de bases de dades per crear fàcilment taules 
+      \nSuprimir fàcilment taules, vistes i indexs
+      \nActivar restriccions de claus forànies
+      \nEditar els camps de la clau forània amb una llista de selecció
+      \nObrir bases de dades des de aSQLiteManager o des de gestors de fitxers
+      \nLlistar taules, vistes i indexes
+      \nPropietats de la base de dades
+      \nMostrar les dades de taules i vistes
+      \nAl visualitzador de taules els camps es mostren en colors segons el tipus de camp. Com que SQLite no inclou validació de tipus de camp, el tipus de camp pot variar del tipus de camp indicat per la seqüència de creació de la  taula
+      \nEdició i supressió de dades des del visualitzador de taules amb l\'etieuta Edita de cada fila
+      \nL\'entrada de dades afegeix l\'etiqueta del registre al títol del visualitzador de dades
+      \nExecutar qualsevol sentència SQL inclús \'Drop\' / \'Create\'
+      \nPermet camps BLOB (excepte l\'edició)
+      \nPermet Inicia la transacció, Commit i Rollback
+      \nCopiar qualsevol cel·la al porta papers prement-la
+      \nPermet noms de taules i de camps amb espais
+      \nDesa totes les sentències executades de la base de dades oberta a una taula anomebada aSQLiteManager (desactivat per omissió)
+      \nTrieu l\'històric de SQL des del formulari de consultes
+      \nExporta la base de dades a un guió SQL i restaura bases de dades des d\'una seqüencia
+      \nVolcar una taula des del visualitzador de taules a un fitxer anomenat Dadesbase.Table.sql - que es pot carregar executant el fitxer com a seqüencia
+      \nExporta els resultats de la consulta a un fitxer ASCII
+      \nExecutar guions SQL, tot el guió o una sola línia
+      \nRecordar les bases de dades recentment per accedir de forma ràpida a les més freqüents
+      \nUsa aShell (Beta) un editor de bases de dades del sistema per a dispositius root.
       \n\nMartin
     </string>
 
     <!-- Here write what is new in this version -->
     <string name="WelcomeMsg">aSQLiteManager és un gestor de SQLite
-  	  de codi obert / front end for Android devices.
-      \n\nNew a this version (3.2):
-			\n\n•	Select where to create a new database using a directory picker – thanks to Malte Heizelmann
-			\n•	You get tips about what is possible in the different parts of the program
-			\n•	Foreign key selection lists now show a string representation of the records not just the FK fields. The field that the foreign key refers to MUST be the primary key in the referenced table
-			\n•	More checking in create table wizard
-			\n•	Hopefully back on the French version of Google Play (I had placed an unfinished French translation in a wrong place)
-			\n•	French translation – thanks to Jean-Luc Rostini + Nicolas Gourdon
-			\n•	Italian translation – thanks to Giuseppe Tumino https://play.google.com/store/apps/developer?id=Giuseppe+Tumino
-			\n•	Catalan translation – thanks to Paco Rivière
-			\n•	Brazilian translation – thanks to Leandro Lopes
-			\n•	Spanish translation – thanks to Gonzalo Rodriguez
-			\n•	Several bug fixes – thanks for reporting!
+  	  de codi obert / per a dispositius Android.
+      \n\nNou a aquesta versió (3.1):
+			\n\nObtingueu definicions de la taula ara és al menú d\'opcions i sustituït per un botó "Nou" registre per entrar les dades més fàcilment
+			\n\nAneu directament a la vostra vista preferida vista al visualitzador de taules (Camps o Dades)
+			\n\nTipus de lletra configurable a les llistes de dades
+			\n\nFàcil edició de bases de dades situades a la carpeta "Dropbox"
+			\n\nMillor gestió de la base de dades
+			\n\nCorrecció d\'errors
        
-      \n\nFor a description of all features check:
+      \n\nPodeu trobar la descripció de totes les característiques a:
       \naaa.andsen.dk/aSQLiteManager.html
-      \n\nComments, bug reports i feature requests are welcome.
-      just drop me a mail at:
+      \n\nEstaré encantat de rebre comentaris, informes d\'error i suggerències.
+      envieu un correu a:
       \nandroid41cv@gmail.com
-      \n\nAnd thanks to those of you who report bugs instead of complaining ;-) 
-      \n\nHope you enjoy the app!
+      \n\nI gràcies al que informeu dels errors en lloc de queixar-vos ;-) 
+      \n\nÀnims i que fruiu de l\'apliació!
       \n\nMartin
     </string>
     

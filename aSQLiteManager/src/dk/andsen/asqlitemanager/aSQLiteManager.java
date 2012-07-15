@@ -45,9 +45,9 @@ public class aSQLiteManager extends Activity implements OnClickListener {
 	private static final int MENU_OPT = 1;
 	private static final int MENU_HLP = 2;
 	private static final int MENU_RESET = 3;
-	final String WelcomeId = "ShowWelcome3.2";
+	final String WelcomeId = "ShowWelcome3.3";
 	// change this to delete preferences
-	final String vers = "3.2";
+	final String vers = "3.3";
 	private Context _cont;
 	private String _recentFiles;
 	private boolean testRoot = false;

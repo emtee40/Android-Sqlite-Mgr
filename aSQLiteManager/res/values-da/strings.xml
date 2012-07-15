@@ -200,7 +200,6 @@
     <string name="SelectFromList">Vælg fra liste</string>
     <string name="SelectValue">Vælg værdi</string>
     <string name="FKDefError">Både fremmednøgle tabel og felt skal udfyldes</string>
-        
     <string name="Tip">Tip!</string>
     <string name="ShowTipAgain">Vis dette tip igen?</string>
 		<string name="Tip1">Her fra kan du:
@@ -286,18 +285,16 @@
         		    
   	<string name="WelcomeMsg">aSQLiteManager er en gratis open source
       SQLite manager / front end til Android enheder.
-      \n\nNyt i denne version (3.2):
-			\n\n•	Select where to create a new database using a directory picker – thanks to Malte Heizelmann
-			\n•	You get tips about what is possible in the different parts of the program
-			\n•	Foreign key selection lists now show a string representation of the records not just the FK fields. The field that the foreign key refers to MUST be the primary key in the referenced table
-			\n•	More checking in create table wizard
-			\n•	Hopefully back on the French version of Google Play (I had placed an unfinished French translation in a wrong place)
-			\n•	French translation – thanks to Jean-Luc Rostini + Nicolas Gourdon
-			\n•	Italian translation – thanks to Giuseppe Tumino https://play.google.com/store/apps/developer?id=Giuseppe+Tumino
-			\n•	Catalan translation – thanks to Paco Rivière
-			\n•	Brazilian translation – thanks to Leandro Lopes
-			\n•	Spanish translation – thanks to Gonzalo Rodriguez
-			\n•	Several bug fixes – thanks for reporting!
+      \n\nNew in this version (3.3):
+      \n\n•	A new CREATE TABLE wizard where entered fields can be edited / deleted
+			\n•	Data entry / editor tool allow insert, update and delete on views
+				with instead of insert, update and delete triggers 
+			\n•	Sort data in table viewer by clicking on title of column
+			\n\nBug fixes – thanks for reporting!:
+			\n•	Welcome and Tip screens now works with with with change in orientation
+			\n•	Table definitions shows triggers regardless of case
+			\n•	Data entry / editor tool now handle strings with quotation marks
+			\n•	Paging and filter are no longer reset during rotation of device
       \n\nDu kan redigere system databaser med aShell (beta) på rooted telefoner
       med aSQLiteManager. Du finder aShell her:
       \nhttp://market.android.com/search?q=pub:Andsen
