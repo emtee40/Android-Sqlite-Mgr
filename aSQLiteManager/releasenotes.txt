@@ -1,12 +1,14 @@
 Download binaries here: http://market.android.com/details?pub=Andsen
 
-10-06-2012 now more than 40,000 total user installs
-
 Next version (3.3):
 	A new CREATE TABLE wizard where entered fields can be edited / deleted
 	Data entry / editor tool allow insert, update and delete on views
 		with instead of insert, update and delete triggers 
 	Sort data in table viewer by clicking on title of column
+	Font size in directory and table lists follow the font size of data grids
+	Now check if database exists before trying to open recently opened databases
+		and removes deleted databases from the list
+
 	Bug fixes:
 		Welcome and Tip screens now works with with with change in orientation
 		Table definitions shows triggers regardless of case

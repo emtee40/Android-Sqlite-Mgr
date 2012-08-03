@@ -247,7 +247,8 @@
 			"clip board" ved at tappe cellen
 		</string>
     <string name="DeleteField">Slet feltet</string>
-		    
+    <string name="NoSuchDatabase">Databasen findes ikke</string>
+    		    
     <!-- From here text changes in every version -->
         
     <string name="HelpText">
@@ -290,6 +291,9 @@
 			\n•	Data entry / editor tool allow insert, update and delete on views
 				with instead of insert, update and delete triggers 
 			\n•	Sort data in table viewer by clicking on title of column
+			\n•	Font size in directory and table lists follow the font size of data grids
+			\n•	Now check if database exists before trying to open recently opened databases
+				and removes deleted databases from the list
 			\n\nBug fixes – thanks for reporting!:
 			\n•	Welcome and Tip screens now works with with with change in orientation
 			\n•	Table definitions shows triggers regardless of case

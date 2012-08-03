@@ -238,7 +238,6 @@ public class aSQLiteManager extends Activity implements OnClickListener {
 						"/mnt/sdcard/Android/data/com.dropbox.android/files/scratch",
 						"[Dropbox]");
 				String[] resently = recentTest.split(";");
-				Utils.logD(_recentFiles, _logging);
 				AlertDialog dial = new AlertDialog.Builder(this)
 						.setTitle(getString(R.string.Recently))
 						.setSingleChoiceItems(resently, 0, new ResentFileOnClickHandler())
@@ -295,19 +294,34 @@ public class aSQLiteManager extends Activity implements OnClickListener {
 					MODE_PRIVATE);
 			String[] files = settings.getString("Recently", null).split(";");
 			String database = files[which];
+			Utils.logD("Resent database " + database, _logging);
 			// Utils.toastMsg(_cont, database);
 			dialog.dismiss();
-			Intent i = new Intent(_cont, DBViewer.class);
-			i.putExtra("db", database);
-			try {
-				startActivity(i);
-			} catch (Exception e) {
-				Utils.logE("Error in DBViewer", _logging);
-				e.printStackTrace();
-				Utils.showException(
-						"Plase report this error with descriptions of how to generate it",
-						_cont);
-			}
+			//Test if database exists!
+			 File f = new File(database);
+			 if (f.exists()) {
+					Intent i = new Intent(_cont, DBViewer.class);
+					i.putExtra("db", database);
+					try {
+						startActivity(i);
+					} catch (Exception e) {
+						Utils.logE("Error in DBViewer", _logging);
+						e.printStackTrace();
+						Utils.showException(
+								"Plase report this error with descriptions of how to generate it",
+								_cont);
+					}
+			 } else {
+				 Utils.logD("Resently database no longer found", _logging);
+				 String recent = settings.getString("Recently", null);
+				 recent = recent.replace(";" + database + ";", ";"); //TODO what about ";"
+				 Editor ed = settings.edit();
+				 Utils.logD("New recent: " + recent, _logging);
+				 ed.putString("Recently", recent);
+				 ed.commit();
+				 Utils.showMessage(getText(R.string.Error).toString(),
+						 getText(R.string.NoSuchDatabase).toString(), _cont);
+			 }
 		}
 	}
 

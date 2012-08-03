@@ -9,12 +9,14 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import dk.andsen.asqlitemanager.Prefs;
 import dk.andsen.asqlitemanager.R;
 
 public class MyArrayAdapter extends ArrayAdapter<String> {
 	private final Activity context;
 	private final List<String> names;
 	private final String[] filetypes;
+	private final float fontSize;
 
 	/**
 	 * Build a list of files, directories based on the list of filenames.
@@ -29,6 +31,8 @@ public class MyArrayAdapter extends ArrayAdapter<String> {
 		this.context = context;
 		this.names = names;
 		this.filetypes = filtetypes;
+		fontSize = Prefs.getFontSize(context);
+		
 	}
 
 	// static to save the reference to the outer class and to avoid access to
@@ -59,6 +63,7 @@ public class MyArrayAdapter extends ArrayAdapter<String> {
 			holder = (ViewHolder) rowView.getTag();
 		}
 		holder.textView.setText(names.get(position));
+		holder.textView.setTextSize(fontSize);
 		// Change the icon according to type of file - folder, sqlite or other 
 		String s = names.get(position);
 		if (s.endsWith("/"))  {

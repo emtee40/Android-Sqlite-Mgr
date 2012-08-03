@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--β-->
-    <string name="VersionNo">3.3β</string>
+    <string name="VersionNo">3.3</string>
     <string name="Version">Version</string>
     <string name="hello">aSQLiteManager</string>
     <string name="app_name">aSQLiteManager</string>
@@ -265,6 +265,8 @@
     <!-- Translated to Spanish to here -->
 
     <string name="DeleteField">Delete field</string>
+    <string name="NoSuchDatabase">No such database</string>
+
     <!-- Translated to Danish to here -->
     
     <!-- From here text changes in every version -->
@@ -314,6 +316,9 @@
 			\n•	Data entry / editor tool allow insert, update and delete on views
 				with instead of insert, update and delete triggers 
 			\n•	Sort data in table viewer by clicking on title of column
+			\n•	Font size in directory and table lists follow the font size of data grids
+			\n•	Now check if database exists before trying to open recently opened databases
+				and removes deleted databases from the list
 			\n\nBug fixes – thanks for reporting!:
 			\n•	Welcome and Tip screens now works with with with change in orientation
 			\n•	Table definitions shows triggers regardless of case

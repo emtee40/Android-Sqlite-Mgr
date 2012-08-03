@@ -11,14 +11,12 @@ package dk.andsen.asqlitemanager;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.AlertDialog.Builder;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -32,20 +30,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
-import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
-import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.TextView;
 import dk.andsen.types.Types;
+import dk.andsen.utils.MyDBArrayAdapter;
 import dk.andsen.utils.NewFilePicker;
 import dk.andsen.utils.Recently;
 import dk.andsen.utils.Utils;
@@ -77,8 +70,6 @@ public class DBViewer extends Activity implements OnClickListener {
 	private boolean _logging = false;
 	private boolean newFeatures = true;
 	private boolean _showTip = false;
-	private boolean _inWizard = false;
-	private boolean _testNewWizard = true; //TODO only while testing!!!
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -149,11 +140,9 @@ public class DBViewer extends Activity implements OnClickListener {
 				Utils.logD("showHint true", _logging);
 				showTip(getText(R.string.Tip3), 3);
 			}
-		} else
+		} else {
 			showTip(getText(R.string.Tip3), 3);
-		if(savedInstanceState != null) {
-      restoreWizard(savedInstanceState);
-    }
+		}
 	}
 	
 	/**
@@ -234,17 +223,7 @@ public class DBViewer extends Activity implements OnClickListener {
   protected void onSaveInstanceState(Bundle saveState) {
       super.onSaveInstanceState(saveState);
       Utils.logD("onSaveInstanceState", _logging);
-      saveState.putBoolean("inWizard", _inWizard );
-      if (_inWizard) {
-        //TODO save current wizard status
-      	
-      }
       saveState.putBoolean("showTip", _showTip );
-  }
-	
-	private void restoreWizard(Bundle savedInstanceState) {
-    Utils.logD("restoreWizard", _logging);
-
   }
 	
 	/**
@@ -254,8 +233,6 @@ public class DBViewer extends Activity implements OnClickListener {
   //TODO change type to private static final int DISPMODE_INDEX = 0 ...
 	// and change to case
 	private void buildList(final String type) {  
-		ArrayList<HashMap<String, String>> mylist = new ArrayList<HashMap<String, String>>();
-		HashMap<String, String> map;
 		if (type.equals("Clear"))
 			toList = new String [] {};
 		else if (type.equals("Index"))
@@ -265,15 +242,13 @@ public class DBViewer extends Activity implements OnClickListener {
 		else 
 			toList = database.getTables();
 		int recs = toList.length;
+		List<String> ls = new ArrayList<String>();
 		for (int i = 0; i < recs; i++) {
-			map = new HashMap<String, String>();
-			map.put("name", toList[i]);
-			mylist.add(map);
+			ls.add(toList[i]);
 		}
-		SimpleAdapter mSchedule = new SimpleAdapter(this, mylist, R.layout.row,
-				new String[] {"name"}, new int[] {R.id.rowtext});
+		MyDBArrayAdapter mlist = new MyDBArrayAdapter(this, ls);
 		if (list != null) {
-			list.setAdapter(mSchedule);  //2.5 null pointer exception here. Don't know why
+			list.setAdapter(mlist); 
 			list.setOnItemClickListener(new OnItemClickListener() {
 				public void onItemClick(AdapterView<?> parent, View v, int position,
 						long id) {
@@ -540,270 +515,268 @@ public class DBViewer extends Activity implements OnClickListener {
 		return false;
 	}
 	
-	/**
-	 * Open a create table wizard where the user can define the table
-	 * by adding fields
-	 * 
-	 * TODO It should be possible to regret a single field before creating the table
-	 */
-	private void createTableWizard() {
-		_inWizard = true;
-		Button newTabNewField;
-		Button newTabCancel;
-		Button newTabOk;
-		final EditText newTabTabName;
-		// fldList contains the list of fields
-		final List<String> fldList = new ArrayList<String>();
-		// fkList contains the list of foreign keys
-		final List<String> fkList = new ArrayList<String>();
-		final LinearLayout newTabSV;
-		final Dialog createTab = new Dialog(_cont);
-		createTab.setContentView(R.layout.create_table);
-		createTab.setTitle(getText(R.string.CreateTable));
-		newTabNewField = (Button) createTab.findViewById(R.id.newTabAddField);
-		newTabCancel = (Button) createTab.findViewById(R.id.newTabCancel);
-		newTabOk = (Button) createTab.findViewById(R.id.newTabOK);
-		newTabSV = (LinearLayout) createTab.findViewById(R.id.newTabSV);
-		newTabTabName = (EditText) createTab.findViewById(R.id.newTabTabName);
-		createTab.setTitle(getText(R.string.CreateTable));
-		newTabNewField.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				newField();
-			}
-			private void newField() {
-				Button newFieldCancel;
-				Button newFieldOk;
-				final EditText fName;
-				final EditText fDef;
-				final CheckBox fNotNull;
-				final CheckBox fPK;
-				final CheckBox fUnique;
-				final CheckBox fAutoInc;
-				final CheckBox fDesc;
-				final EditText fFKTab;
-				final EditText fFKFie;
-				final Spinner fSPType;
-				final Dialog createField = new Dialog(_cont);
-				// data types to be selectable from create field
-				final String[] type = { 
-						"INTEGER",
-						"REAL",
-						"TEXT",
-						"BLOB",
-						"DATE",
-						"TIMESTAMP",
-						"TIME",
-						"INTEGER (strict)",
-						"REAL (strict)",
-						"TEXT (strict)"
-						};
-				ArrayAdapter<String> adapterType = new ArrayAdapter<String>(_cont,
-						android.R.layout.simple_spinner_item, type);
-				createField.setContentView(R.layout.create_field);
-				createField.setTitle(getText(R.string.CreateField));
-				newFieldCancel = (Button) createField.findViewById(R.id.newFieldCancel);
-				newFieldOk = (Button) createField.findViewById(R.id.newFieldOK);
-				fName = (EditText) createField.findViewById(R.id.newFldName);
-				fNotNull = (CheckBox) createField.findViewById(R.id.newFldNull);
-				fPK = (CheckBox) createField.findViewById(R.id.newFldPK);
-				fUnique = (CheckBox) createField.findViewById(R.id.newFldUnique);
-				fAutoInc = (CheckBox) createField.findViewById(R.id.newFldAutoInc);
-				fDesc = (CheckBox) createField.findViewById(R.id.newFldDesc);
-				fDef = (EditText) createField.findViewById(R.id.newFldDef);
-				fFKTab = (EditText) createField.findViewById(R.id.newFldFKTab);
-				fFKFie = (EditText) createField.findViewById(R.id.newFldFKFie);
-				fSPType = (Spinner) createField.findViewById(R.id.newFldSpType);
-				adapterType.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-				fSPType.setAdapter(adapterType);
-				newFieldCancel.setOnClickListener(new OnClickListener() {
-					public void onClick(View v) {
-						createField.dismiss();
-					}
-				});
-				fPK.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-					public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-						Utils.logD("Turning autoinc on / off", _logging);
-						if (isChecked) {
-							//Only turn AutoInc if field is INTEGER
-							int iType = fSPType.getSelectedItemPosition();
-							String stype = type[iType];
-							if (stype.startsWith("INTEGER"))
-								fAutoInc.setEnabled(true);
-							fDesc.setEnabled(true);
-						} else {
-							fAutoInc.setEnabled(false);
-							fDesc.setEnabled(false);
-						}
-					}
-				});
-				// OK clicked on new field
-				newFieldOk.setOnClickListener(new OnClickListener() {
-					public void onClick(View v) {
-						int iType = fSPType.getSelectedItemPosition();
-						String stype = type[iType];
-						Utils.logD("Field type = " + stype, _logging);
-						//Check for name and type not null, FK field and table both set or both unset
-						boolean fkCheck = true;
-						if ((fFKFie.getText().toString().trim().equals("") && !fFKTab.getText().toString().trim().equals(""))
-								|| (!fFKFie.getText().toString().trim().equals("") && fFKTab.getText().toString().trim().equals(""))) {
-							fkCheck = false;
-						}
-						if (!fName.getEditableText().toString().trim().equals("")  && (fkCheck) 
-								&& (!(fAutoInc.isChecked() && fDesc.isChecked()))) {
-							boolean forceType = false;
-							// Build the sql for the field
-							String fld = "[";
-							String fk = "";
-							fld += fName.getEditableText().toString();
-							// shod it use forced types?
-							if (stype.endsWith("(strict)")) {
-								forceType = true;
-								fld += "] " + stype.substring(0, stype.indexOf(" "));
-							} else {
-								fld += "] " + stype;
-							}
-							if (fPK.isChecked()) {
-								fld += " PRIMARY KEY";
-								// Sort descending?
-								if (fDesc.isChecked()) {
-									fld += " DESC";
-								} else {
-									fld += " ASC";
-								}
-								// Add order here ASC / DESC
-								if (fAutoInc.isChecked()) {
-									fld += " AUTOINCREMENT";
-								}
-							}
-							if (fNotNull.isChecked()) 
-								fld += " NOT NULL";
-							if (fUnique.isChecked()) 
-								fld += " UNIQUE";
-							// Handle forced type for INTEGER, REAL and TEXT fields
-							if (forceType) {
-								if (stype.startsWith("INTEGER")) {
-									fld += " check(typeof(" + fName.getEditableText().toString() +") = 'integer')";
-								} else if (stype.startsWith("REAL")) {
-									fld += " check(typeof(" + fName.getEditableText().toString() +") = 'real' " +
-											"or typeof(" + fName.getEditableText().toString() +") = 'integer')";
-								} else if (stype.startsWith("TEXT")) {
-									fld += " typeof(" + fName.getEditableText().toString() +") = 'text')";
-								} else {
-									//Ups
-								}
-							}
-							if (!fDef.getEditableText().toString().equals("")) {
-								fld += " DEFAULT " + fDef.getEditableText().toString();
-							}
-							if (!fFKFie.getEditableText().toString().trim().equals("") &&
-									!fFKTab.getEditableText().toString().trim().equals("")) {
-								//Foreign key constraints
-								fk += " FOREIGN KEY(["
-									+ fName.getEditableText().toString() + "]) REFERENCES ["
-									+ fFKTab.getEditableText().toString() + "]([" 
-									+ fFKFie.getEditableText().toString() + "])";
-								Utils.logD("FK " + fk , _logging);
-							}
-							// Create a LiniearLayout with the new field definition
-							LinearLayout ll = new LinearLayout(_cont);
-							ll.setOrientation(LinearLayout.HORIZONTAL);
-							TextView tw = new TextView(_cont);
-							tw.setText(fld);
-							ll.addView(tw);
-							ll.setPadding(5, 5, 5, 5);
-							// Add it to the LinearLayout
-							newTabSV.addView(ll);
-							// also save it in the field List
-							fldList.add(fld);
-							// If a foreign key is defined save that too
-							if (!fk.trim().equals("")) {
-								LinearLayout llfk = new LinearLayout(_cont);
-								llfk.setOrientation(LinearLayout.HORIZONTAL);
-								TextView twfk = new TextView(_cont);
-								twfk.setText(fk);
-								llfk.addView(twfk);
-								llfk.setPadding(5, 5, 5, 5);
-								newTabSV.addView(llfk);
-							}
-							// And to the foreign key List
-							if (!fk.trim().equals(""))
-								fkList.add(fk);
-							createField.dismiss();
-						} else {
-							String msg = "";
-							if (fName.getEditableText().toString().trim().equals("")) {
-								Utils.logD("No field name", _logging);
-								msg = getText(R.string.MustEnterFieldName).toString();
-							}
-							if ((fAutoInc.isChecked() && fDesc.isChecked())) {
-								Utils.logD("DESC & AutoInc", _logging);
-								getText(R.string.DescAutoIncError).toString();
-								msg += "\n" + getText(R.string.DescAutoIncError).toString();
-							}
-							if (!fkCheck) {
-								Utils.logD("FK check fail", _logging);
-								getText(R.string.FKDefError).toString();
-								msg += "\n" + getText(R.string.FKDefError).toString();
-							}
-							Utils.showMessage(getText(R.string.Error).toString(),
-									msg, _cont);
-						}
-					}
-				});
-				createField.show();
-			}
-		});
-		newTabCancel.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				_inWizard = false;
-				createTab.dismiss();
-			}
-		});
-		newTabOk.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				// build create table SQL if enough informations
-				//TODO ad more checking here e.g. if foreign keys are specified both table and 
-				// field must be specified
-				if (!(newTabTabName.getEditableText().toString().equals(""))
-						&& (fldList.size() > 0)) {
-					String sql = "create table ["
-						+ newTabTabName.getEditableText().toString()
-						+ "] (";
-					Iterator<String> it = fldList.iterator();
-					while (it.hasNext()) {
-						sql += it.next();
-						if (it.hasNext())
-							 sql += ", ";
-					}
-					if (fkList.size() > 0) {
-						sql += " ,";
-						it = fkList.iterator();
-						while (it.hasNext()) {
-							sql += it.next();
-							if (it.hasNext())
-								 sql += ", ";
-							else
-								sql += ")";
-						}
-					} else
-						sql += ")";
-					//Utils.showMessage("SQL", sql, _cont);
-					//Execute sql
-					Utils.logD("Executing " + sql, _logging);
-					database.executeStatement(sql, _cont);
-					_inWizard = false;
-					createTab.dismiss();
-					//Refresh list of tables
-					buildList("Tables");   
-				} else {
-					// not enough inf.
-					Utils.showMessage(getText(R.string.Error).toString(),
-							getText(R.string.MustEnterTableNameAndOneField).toString(), _cont);
-				}
-			}
-		}); 
-		createTab.show();
-	}
+//	/**
+//	 * Open a create table wizard where the user can define the table
+//	 * by adding fields
+//	 * 
+//	 */
+//	private void createTableWizard() {
+//		_inWizard = true;
+//		Button newTabNewField;
+//		Button newTabCancel;
+//		Button newTabOk;
+//		final EditText newTabTabName;
+//		// fldList contains the list of fields
+//		final List<String> fldList = new ArrayList<String>();
+//		// fkList contains the list of foreign keys
+//		final List<String> fkList = new ArrayList<String>();
+//		final LinearLayout newTabSV;
+//		final Dialog createTab = new Dialog(_cont);
+//		createTab.setContentView(R.layout.create_table);
+//		createTab.setTitle(getText(R.string.CreateTable));
+//		newTabNewField = (Button) createTab.findViewById(R.id.newTabAddField);
+//		newTabCancel = (Button) createTab.findViewById(R.id.newTabCancel);
+//		newTabOk = (Button) createTab.findViewById(R.id.newTabOK);
+//		newTabSV = (LinearLayout) createTab.findViewById(R.id.newTabSV);
+//		newTabTabName = (EditText) createTab.findViewById(R.id.newTabTabName);
+//		createTab.setTitle(getText(R.string.CreateTable));
+//		newTabNewField.setOnClickListener(new OnClickListener() {
+//			public void onClick(View v) {
+//				newField();
+//			}
+//			private void newField() {
+//				Button newFieldCancel;
+//				Button newFieldOk;
+//				final EditText fName;
+//				final EditText fDef;
+//				final CheckBox fNotNull;
+//				final CheckBox fPK;
+//				final CheckBox fUnique;
+//				final CheckBox fAutoInc;
+//				final CheckBox fDesc;
+//				final EditText fFKTab;
+//				final EditText fFKFie;
+//				final Spinner fSPType;
+//				final Dialog createField = new Dialog(_cont);
+//				// data types to be selectable from create field
+//				final String[] type = { 
+//						"INTEGER",
+//						"REAL",
+//						"TEXT",
+//						"BLOB",
+//						"DATE",
+//						"TIMESTAMP",
+//						"TIME",
+//						"INTEGER (strict)",
+//						"REAL (strict)",
+//						"TEXT (strict)"
+//						};
+//				ArrayAdapter<String> adapterType = new ArrayAdapter<String>(_cont,
+//						android.R.layout.simple_spinner_item, type);
+//				createField.setContentView(R.layout.create_field);
+//				createField.setTitle(getText(R.string.CreateField));
+//				newFieldCancel = (Button) createField.findViewById(R.id.newFieldCancel);
+//				newFieldOk = (Button) createField.findViewById(R.id.newFieldOK);
+//				fName = (EditText) createField.findViewById(R.id.newFldName);
+//				fNotNull = (CheckBox) createField.findViewById(R.id.newFldNull);
+//				fPK = (CheckBox) createField.findViewById(R.id.newFldPK);
+//				fUnique = (CheckBox) createField.findViewById(R.id.newFldUnique);
+//				fAutoInc = (CheckBox) createField.findViewById(R.id.newFldAutoInc);
+//				fDesc = (CheckBox) createField.findViewById(R.id.newFldDesc);
+//				fDef = (EditText) createField.findViewById(R.id.newFldDef);
+//				fFKTab = (EditText) createField.findViewById(R.id.newFldFKTab);
+//				fFKFie = (EditText) createField.findViewById(R.id.newFldFKFie);
+//				fSPType = (Spinner) createField.findViewById(R.id.newFldSpType);
+//				adapterType.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//				fSPType.setAdapter(adapterType);
+//				newFieldCancel.setOnClickListener(new OnClickListener() {
+//					public void onClick(View v) {
+//						createField.dismiss();
+//					}
+//				});
+//				fPK.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+//					public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//						Utils.logD("Turning autoinc on / off", _logging);
+//						if (isChecked) {
+//							//Only turn AutoInc if field is INTEGER
+//							int iType = fSPType.getSelectedItemPosition();
+//							String stype = type[iType];
+//							if (stype.startsWith("INTEGER"))
+//								fAutoInc.setEnabled(true);
+//							fDesc.setEnabled(true);
+//						} else {
+//							fAutoInc.setEnabled(false);
+//							fDesc.setEnabled(false);
+//						}
+//					}
+//				});
+//				// OK clicked on new field
+//				newFieldOk.setOnClickListener(new OnClickListener() {
+//					public void onClick(View v) {
+//						int iType = fSPType.getSelectedItemPosition();
+//						String stype = type[iType];
+//						Utils.logD("Field type = " + stype, _logging);
+//						//Check for name and type not null, FK field and table both set or both unset
+//						boolean fkCheck = true;
+//						if ((fFKFie.getText().toString().trim().equals("") && !fFKTab.getText().toString().trim().equals(""))
+//								|| (!fFKFie.getText().toString().trim().equals("") && fFKTab.getText().toString().trim().equals(""))) {
+//							fkCheck = false;
+//						}
+//						if (!fName.getEditableText().toString().trim().equals("")  && (fkCheck) 
+//								&& (!(fAutoInc.isChecked() && fDesc.isChecked()))) {
+//							boolean forceType = false;
+//							// Build the sql for the field
+//							String fld = "[";
+//							String fk = "";
+//							fld += fName.getEditableText().toString();
+//							// shod it use forced types?
+//							if (stype.endsWith("(strict)")) {
+//								forceType = true;
+//								fld += "] " + stype.substring(0, stype.indexOf(" "));
+//							} else {
+//								fld += "] " + stype;
+//							}
+//							if (fPK.isChecked()) {
+//								fld += " PRIMARY KEY";
+//								// Sort descending?
+//								if (fDesc.isChecked()) {
+//									fld += " DESC";
+//								} else {
+//									fld += " ASC";
+//								}
+//								// Add order here ASC / DESC
+//								if (fAutoInc.isChecked()) {
+//									fld += " AUTOINCREMENT";
+//								}
+//							}
+//							if (fNotNull.isChecked()) 
+//								fld += " NOT NULL";
+//							if (fUnique.isChecked()) 
+//								fld += " UNIQUE";
+//							// Handle forced type for INTEGER, REAL and TEXT fields
+//							if (forceType) {
+//								if (stype.startsWith("INTEGER")) {
+//									fld += " check(typeof(" + fName.getEditableText().toString() +") = 'integer')";
+//								} else if (stype.startsWith("REAL")) {
+//									fld += " check(typeof(" + fName.getEditableText().toString() +") = 'real' " +
+//											"or typeof(" + fName.getEditableText().toString() +") = 'integer')";
+//								} else if (stype.startsWith("TEXT")) {
+//									fld += " typeof(" + fName.getEditableText().toString() +") = 'text')";
+//								} else {
+//									//Ups
+//								}
+//							}
+//							if (!fDef.getEditableText().toString().equals("")) {
+//								fld += " DEFAULT " + fDef.getEditableText().toString();
+//							}
+//							if (!fFKFie.getEditableText().toString().trim().equals("") &&
+//									!fFKTab.getEditableText().toString().trim().equals("")) {
+//								//Foreign key constraints
+//								fk += " FOREIGN KEY(["
+//									+ fName.getEditableText().toString() + "]) REFERENCES ["
+//									+ fFKTab.getEditableText().toString() + "]([" 
+//									+ fFKFie.getEditableText().toString() + "])";
+//								Utils.logD("FK " + fk , _logging);
+//							}
+//							// Create a LiniearLayout with the new field definition
+//							LinearLayout ll = new LinearLayout(_cont);
+//							ll.setOrientation(LinearLayout.HORIZONTAL);
+//							TextView tw = new TextView(_cont);
+//							tw.setText(fld);
+//							ll.addView(tw);
+//							ll.setPadding(5, 5, 5, 5);
+//							// Add it to the LinearLayout
+//							newTabSV.addView(ll);
+//							// also save it in the field List
+//							fldList.add(fld);
+//							// If a foreign key is defined save that too
+//							if (!fk.trim().equals("")) {
+//								LinearLayout llfk = new LinearLayout(_cont);
+//								llfk.setOrientation(LinearLayout.HORIZONTAL);
+//								TextView twfk = new TextView(_cont);
+//								twfk.setText(fk);
+//								llfk.addView(twfk);
+//								llfk.setPadding(5, 5, 5, 5);
+//								newTabSV.addView(llfk);
+//							}
+//							// And to the foreign key List
+//							if (!fk.trim().equals(""))
+//								fkList.add(fk);
+//							createField.dismiss();
+//						} else {
+//							String msg = "";
+//							if (fName.getEditableText().toString().trim().equals("")) {
+//								Utils.logD("No field name", _logging);
+//								msg = getText(R.string.MustEnterFieldName).toString();
+//							}
+//							if ((fAutoInc.isChecked() && fDesc.isChecked())) {
+//								Utils.logD("DESC & AutoInc", _logging);
+//								getText(R.string.DescAutoIncError).toString();
+//								msg += "\n" + getText(R.string.DescAutoIncError).toString();
+//							}
+//							if (!fkCheck) {
+//								Utils.logD("FK check fail", _logging);
+//								getText(R.string.FKDefError).toString();
+//								msg += "\n" + getText(R.string.FKDefError).toString();
+//							}
+//							Utils.showMessage(getText(R.string.Error).toString(),
+//									msg, _cont);
+//						}
+//					}
+//				});
+//				createField.show();
+//			}
+//		});
+//		newTabCancel.setOnClickListener(new OnClickListener() {
+//			public void onClick(View v) {
+//				_inWizard = false;
+//				createTab.dismiss();
+//			}
+//		});
+//		newTabOk.setOnClickListener(new OnClickListener() {
+//			public void onClick(View v) {
+//				// build create table SQL if enough informations
+//				// field must be specified
+//				if (!(newTabTabName.getEditableText().toString().equals(""))
+//						&& (fldList.size() > 0)) {
+//					String sql = "create table ["
+//						+ newTabTabName.getEditableText().toString()
+//						+ "] (";
+//					Iterator<String> it = fldList.iterator();
+//					while (it.hasNext()) {
+//						sql += it.next();
+//						if (it.hasNext())
+//							 sql += ", ";
+//					}
+//					if (fkList.size() > 0) {
+//						sql += " ,";
+//						it = fkList.iterator();
+//						while (it.hasNext()) {
+//							sql += it.next();
+//							if (it.hasNext())
+//								 sql += ", ";
+//							else
+//								sql += ")";
+//						}
+//					} else
+//						sql += ")";
+//					//Utils.showMessage("SQL", sql, _cont);
+//					//Execute sql
+//					Utils.logD("Executing " + sql, _logging);
+//					database.executeStatement(sql, _cont);
+//					_inWizard = false;
+//					createTab.dismiss();
+//					//Refresh list of tables
+//					buildList("Tables");   
+//				} else {
+//					// not enough inf.
+//					Utils.showMessage(getText(R.string.Error).toString(),
+//							getText(R.string.MustEnterTableNameAndOneField).toString(), _cont);
+//				}
+//			}
+//		}); 
+//		createTab.show();
+//	}
 
 	protected Dialog onCreateDialog(int id) 
 	{
