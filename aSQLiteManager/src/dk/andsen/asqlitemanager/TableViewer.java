@@ -131,7 +131,7 @@ public class TableViewer extends Activity implements OnClickListener {
 			sourceType = extras.getInt("type");
 			Utils.logD("Opening database", _logging);
 			_table = extras.getString("Table");
-			_db = DBViewer.database;
+			_db = aSQLiteManager.database;
 			Utils.logD("Database open", _logging);
 			if (sourceType == Types.TABLE) {
 				tvDB.setText(getString(R.string.DBTable) + " " + _table);
@@ -202,7 +202,7 @@ public class TableViewer extends Activity implements OnClickListener {
 	@Override
 	protected void onRestart() {
 		Utils.logD("TableViewer onRestart", _logging);
-		_db = DBViewer.database;
+		_db = aSQLiteManager.database;
 		//_db = new Database(_dbPath, _cont);
 		super.onRestart();
 	}
@@ -231,6 +231,7 @@ public class TableViewer extends Activity implements OnClickListener {
 				Utils.showException(e.getLocalizedMessage(), _cont);
 				e.printStackTrace();
 			}
+			updateButtons(false);
 		} else if (key == R.id.Data) {
 			/*
 			 * If not a query include rowid in data if no single field
@@ -238,6 +239,7 @@ public class TableViewer extends Activity implements OnClickListener {
 			 */
 			_fieldMode = false;
 			//offset = 0;
+			updateButtons(true);
 			checkForUpdateableView();
 			fillDataTableWithArgs();
 		} else if (key == R.id.NewRec) {
@@ -283,6 +285,7 @@ public class TableViewer extends Activity implements OnClickListener {
 			final RecordEditorBuilder re;
 			TableField[] rec = _db.getEmptyRecord(_table);
 			final Dialog dial = new Dialog(_cont);
+			dial.setCancelable(false);
 			dial.setContentView(R.layout.line_editor);
 			dial.setTitle(getText(R.string.InsertNewRow));
 			LinearLayout ll = (LinearLayout)dial.findViewById(R.id.LineEditor);
@@ -318,7 +321,7 @@ public class TableViewer extends Activity implements OnClickListener {
 			final Button btnCancel = new Button(_cont);
 			btnCancel.setText(getText(R.string.Cancel));
 			btnCancel.setLayoutParams(new LinearLayout.LayoutParams(
-					LinearLayout.LayoutParams.FILL_PARENT,
+					LinearLayout.LayoutParams.MATCH_PARENT,
 					LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
 			btnCancel.setOnClickListener(new OnClickListener() {
 				public void onClick(View v) {
@@ -330,7 +333,7 @@ public class TableViewer extends Activity implements OnClickListener {
 			LinearLayout llButtons = new LinearLayout(_cont);
 			llButtons.setOrientation(LinearLayout.HORIZONTAL);
 			llButtons.setLayoutParams(new LinearLayout.LayoutParams(
-					LinearLayout.LayoutParams.FILL_PARENT,
+					LinearLayout.LayoutParams.MATCH_PARENT,
 					LinearLayout.LayoutParams.WRAP_CONTENT));
 			llButtons.addView(btnOK);
 			llButtons.addView(btnCancel);
@@ -393,11 +396,14 @@ public class TableViewer extends Activity implements OnClickListener {
 			// as described here:
 			// http://android-er.blogspot.com/2010/06/using-convertview-in-getview-to-make.html
 			// or in android41cv dk.andsen.utils.MyArrayAdapter
+			int maxWidth = Prefs.getMaxWidth(_cont);
 			for(int j = 0; j < colSize; j++){
 				// add a first cell if it is a table or updateable view 
 				//for tables
 				if (j==0 && (aTable || (_canInsertInView || _canUpdateView || _canDeleteView))) {
 					TextView c = new TextView(this);
+					if (maxWidth > 0)
+						c.setMaxWidth(maxWidth);
 					c.setTextSize(_fontSize);
 					int id;
 					// change to long
@@ -441,6 +447,7 @@ public class TableViewer extends Activity implements OnClickListener {
 								final Dialog dial = new Dialog(_cont);
 								dial.setContentView(R.layout.line_editor);
 								dial.setTitle(getText(R.string.EditDeleteRow) + " " + rowid);
+								dial.setCancelable(false);
 								LinearLayout ll = (LinearLayout)dial.findViewById(R.id.LineEditor);
 								re = new RecordEditorBuilder(rec, _cont, _db);
 								re.setFieldNameWidth(200);
@@ -535,6 +542,8 @@ public class TableViewer extends Activity implements OnClickListener {
 					TextView c = new TextView(this);
 					//c.setText(data[i][j]);
 					c.setTextSize(_fontSize);
+					if (maxWidth > 0)
+						c.setMaxWidth(maxWidth);
 					c.setText(data[i].getFields()[j].getFieldData());
 					c.setBackgroundColor(getBackgroundColor(data[i].getFields()[j].getFieldType(), (i%2 == 1)));
 					c.setPadding(3, 3, 3, 3);
@@ -1000,7 +1009,7 @@ public class TableViewer extends Activity implements OnClickListener {
 	 */
 	private void checkForUpdateableView() {
 		Utils.logD("_table = " + _table, _logging);
-		ViewUpdateable upd = _db.isViewUpdatable(_table);
+		ViewUpdateable upd = _db.isViewUpdatable(_table); //TODO 3.3 NullPointerException here
 		_canInsertInView = upd.isInsertable();
 		_canUpdateView = upd.isUpdateable();
 		_canDeleteView = upd.isDeleteable();

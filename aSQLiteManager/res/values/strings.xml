@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--β-->
-    <string name="VersionNo">3.3</string>
+    <string name="VersionNo">3.3.1</string>
     <string name="Version">Version</string>
     <string name="hello">aSQLiteManager</string>
     <string name="app_name">aSQLiteManager</string>
@@ -254,7 +254,6 @@
 			by tapping the cell
 		</string>
 		    		    		    
-    <!-- Place new text above here -->
     <string name="Translation">Translate aSQLiteManager to your language and get your name here</string>
         
     <!-- Translated to German to here -->
@@ -266,9 +265,12 @@
 
     <string name="DeleteField">Delete field</string>
     <string name="NoSuchDatabase">No such database</string>
+    <string name="MaxWidth">Max width of fields</string>
+    <string name="MaxWidthText">Maximum width of fields in grid view</string>
 
     <!-- Translated to Danish to here -->
     
+    <!-- Place new text above here -->
     <!-- From here text changes in every version -->
     
     <!-- List of functionality for help screen -->
@@ -311,7 +313,19 @@
     <!-- Here write what is new in this version -->
     <string name="WelcomeMsg">aSQLiteManager is a free open source
   	  SQLite manager / front end for Android devices.
-      \n\nNew in this version (3.3):
+      \n\nNew in version 3.3.1:
+  	  \n\nI am sory to say it but introduced a bug in version 3.3. When I made it
+  	  	possible to insert text with quotation marks the app no longer could handle
+  	  	field names with spaces and field names like "on". This is solved in this
+  	  	release. There have also been time for a few extrra features / enhancements,
+  	  	and a few other bug fixes.
+  	  \n\n•	In record editor table name are moved above the edit field
+			\n•	In record editor the back button are now ignored to prevent discard of data by
+				accident 
+			\n•	Maximal width of fields in data grid can now be configured to wrap long text
+				to several lines. If max width is set to 0 (default) long fields will not
+				be wrapped
+      \n\nNew in this version 3.3:
       \n\n•	A new CREATE TABLE wizard where entered fields can be edited / deleted
 			\n•	Data entry / editor tool allow insert, update and delete on views
 				with instead of insert, update and delete triggers 

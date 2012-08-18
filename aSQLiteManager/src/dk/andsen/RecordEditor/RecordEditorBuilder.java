@@ -62,13 +62,13 @@ public class RecordEditorBuilder {
 		_cont = cont;
 		_fields = fields;
 		sv = new ScrollView(cont);
-		sv.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.FILL_PARENT,
+		sv.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
 				ViewGroup.LayoutParams.WRAP_CONTENT));
 		sv.setPadding(5, 5, 5, 5);
 		LinearLayout lmain = new LinearLayout(cont);
 		lmain.setOrientation(LinearLayout.VERTICAL);
 		lmain.setLayoutParams(new LinearLayout.LayoutParams(
-				LinearLayout.LayoutParams.FILL_PARENT,
+				LinearLayout.LayoutParams.MATCH_PARENT,
 				LinearLayout.LayoutParams.WRAP_CONTENT));
 		// Add a linearLayout to hold the label and field to edit
 		for (int i = 0; i < fields.length; i++) {
@@ -107,21 +107,25 @@ public class RecordEditorBuilder {
 		LinearLayout ll = new LinearLayout(_cont);
 		ll.setOrientation(LinearLayout.VERTICAL);
 		ll.setLayoutParams(new LinearLayout.LayoutParams(
-				LinearLayout.LayoutParams.FILL_PARENT,
+				LinearLayout.LayoutParams.MATCH_PARENT,
 				LinearLayout.LayoutParams.WRAP_CONTENT));
 		ll.setId(llId);
 		
 		// create the label and data field pair in a Linear Layout
-		ll.setOrientation(LinearLayout.HORIZONTAL);
+		ll.setOrientation(LinearLayout.VERTICAL);
 		ll.setLayoutParams(new LinearLayout.LayoutParams(
-				LinearLayout.LayoutParams.FILL_PARENT,
+				LinearLayout.LayoutParams.MATCH_PARENT,
 				LinearLayout.LayoutParams.WRAP_CONTENT));
+//		ll.setOrientation(LinearLayout.HORIZONTAL);
+//		ll.setLayoutParams(new LinearLayout.LayoutParams(
+//				LinearLayout.LayoutParams.FILL_PARENT,
+//				LinearLayout.LayoutParams.WRAP_CONTENT));
 		// Id added to be able to find the line in the layout
 		ll.setId(llId);
 		// Add the label using display name if present else field name
 		TextView tv = new TextView(_cont);
 		tv.setLayoutParams((new ViewGroup.LayoutParams(
-				ViewGroup.LayoutParams.WRAP_CONTENT,
+				ViewGroup.LayoutParams.MATCH_PARENT,
 				ViewGroup.LayoutParams.WRAP_CONTENT)));
 		if (field.getDisplayName() == null)
 			tv.setText(field.getName());
@@ -145,7 +149,7 @@ public class RecordEditorBuilder {
 			//dp.set
 			//dp.setTag(fields[i].getValue());
 			EditText etd = new EditText(_cont);
-			etd.setLayoutParams((new LayoutParams(LayoutParams.WRAP_CONTENT,
+			etd.setLayoutParams((new LayoutParams(LayoutParams.MATCH_PARENT,
 					LayoutParams.WRAP_CONTENT)));
 			etd.setText(field.getValue());
 			etd.setId(id);
@@ -155,7 +159,7 @@ public class RecordEditorBuilder {
 			break;
 		case (TableField.TYPE_DATETIME):
 			EditText etdt = new EditText(_cont);
-			etdt.setLayoutParams((new LayoutParams(LayoutParams.WRAP_CONTENT,
+			etdt.setLayoutParams((new LayoutParams(LayoutParams.MATCH_PARENT,
 					LayoutParams.WRAP_CONTENT)));
 			etdt.setText(field.getValue());
 			etdt.setInputType(InputType.TYPE_CLASS_DATETIME
@@ -165,7 +169,7 @@ public class RecordEditorBuilder {
 			break;
 		case (TableField.TYPE_FLOAT):
 			EditText etf = new EditText(_cont);
-			etf.setLayoutParams((new LayoutParams(LayoutParams.WRAP_CONTENT,
+			etf.setLayoutParams((new LayoutParams(LayoutParams.MATCH_PARENT,
 					LayoutParams.WRAP_CONTENT)));
 			etf.setText(field.getValue());
 			etf.setInputType(InputType.TYPE_CLASS_NUMBER
@@ -176,7 +180,7 @@ public class RecordEditorBuilder {
 			break;
 		case (TableField.TYPE_INTEGER):
 			EditText eti = new EditText(_cont);
-			eti.setLayoutParams((new LayoutParams(LayoutParams.WRAP_CONTENT,
+			eti.setLayoutParams((new LayoutParams(LayoutParams.MATCH_PARENT,
 				LayoutParams.WRAP_CONTENT)));
 			eti.setText(field.getValue());
 			eti.setInputType(InputType.TYPE_CLASS_NUMBER
@@ -187,7 +191,7 @@ public class RecordEditorBuilder {
 		case (TableField.TYPE_TIME):
 			//TODO change to time picker
 			EditText ett = new EditText(_cont);
-			ett.setLayoutParams((new LayoutParams(LayoutParams.WRAP_CONTENT,
+			ett.setLayoutParams((new LayoutParams(LayoutParams.MATCH_PARENT,
 					LayoutParams.WRAP_CONTENT)));
 			ett.setText(field.getValue());
 			ett.setInputType(InputType.TYPE_CLASS_DATETIME
@@ -197,7 +201,7 @@ public class RecordEditorBuilder {
 			break;
 		case (TableField.TYPE_BOOLEAN):
 			CheckBox etb = new CheckBox(_cont);
-			etb.setLayoutParams((new LayoutParams(LayoutParams.FILL_PARENT,
+			etb.setLayoutParams((new LayoutParams(LayoutParams.MATCH_PARENT,
 					LayoutParams.WRAP_CONTENT)));
 			etb.setChecked((field.getValue() == null) ? false : int2boolean(field.getValue()));
 			etb.setId(id);
@@ -205,7 +209,7 @@ public class RecordEditorBuilder {
 			break;
 		case (TableField.TYPE_PHONENO):
 			EditText etp = new EditText(_cont);
-			etp.setLayoutParams((new LayoutParams(LayoutParams.WRAP_CONTENT,
+			etp.setLayoutParams((new LayoutParams(LayoutParams.MATCH_PARENT,
 					LayoutParams.WRAP_CONTENT)));
 			etp.setText(field.getValue());
 			etp.setHint(field.getHint());
@@ -215,7 +219,7 @@ public class RecordEditorBuilder {
 			break;
 		default: // treat the rest as Strings
 			EditText ets = new EditText(_cont);
-			ets.setLayoutParams((new LayoutParams(LayoutParams.WRAP_CONTENT,
+			ets.setLayoutParams((new LayoutParams(LayoutParams.MATCH_PARENT,
 					LayoutParams.WRAP_CONTENT)));
 			ets.setText(field.getValue());
 			ets.setHint(field.getHint());
@@ -237,10 +241,16 @@ public class RecordEditorBuilder {
 	private LinearLayout buildFKList(TableField field,int llId, int id) {
 		Utils.logD("Creating fk edit list", logging);
 		LinearLayout ll = new LinearLayout(_cont);
-		ll.setOrientation(LinearLayout.HORIZONTAL);
+		
+		ll.setOrientation(LinearLayout.VERTICAL);
 		ll.setLayoutParams(new LinearLayout.LayoutParams(
-				LinearLayout.LayoutParams.FILL_PARENT,
+				LinearLayout.LayoutParams.MATCH_PARENT,
 				LinearLayout.LayoutParams.WRAP_CONTENT));
+		
+//		ll.setOrientation(LinearLayout.HORIZONTAL);
+//		ll.setLayoutParams(new LinearLayout.LayoutParams(
+//				LinearLayout.LayoutParams.FILL_PARENT,
+//				LinearLayout.LayoutParams.WRAP_CONTENT));
 		ll.setId(llId);
 		//TODO only one of the following lines is needed. First original second experimental FK selections lists
 		final String[] fk = _db.getFKList(field.getForeignKey());
@@ -252,7 +262,7 @@ public class RecordEditorBuilder {
 		    android.R.layout.simple_spinner_dropdown_item, fkh.getText());  //TODO FC Null pointer fk == null?
 		TextView tv = new TextView(_cont);
 		tv.setLayoutParams((new ViewGroup.LayoutParams(
-				ViewGroup.LayoutParams.WRAP_CONTENT,
+				ViewGroup.LayoutParams.MATCH_PARENT,
 				ViewGroup.LayoutParams.WRAP_CONTENT)));
 		if (field.getDisplayName() == null)
 			tv.setText(field.getName());
@@ -263,7 +273,7 @@ public class RecordEditorBuilder {
 		ll.addView(tv);
 		//TODO set current value of field as selected!!!
 		final EditText ets = new EditText(_cont);
-		ets.setLayoutParams((new LayoutParams(LayoutParams.WRAP_CONTENT,
+		ets.setLayoutParams((new LayoutParams(LayoutParams.MATCH_PARENT,
 				LayoutParams.WRAP_CONTENT)));
 		ets.setText(field.getValue());
 		ets.setHint(field.getHint());

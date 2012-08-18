@@ -1,6 +1,18 @@
 Working / thinking on:
 
+Promo Graphic:
+180w x 120h
+24 bit PNG or JPEG (no alpha)
+No border in art
+
+Feature Graphic:
+1024 x 500
+24 bit PNG or JPEG (no alpha)
+Will be downsized to mini or micro
+
 ToDo / unsorted list of ideas for coming development:
+	A filter builder
+	A "edit next record" from record editor
 	Scripts editor?
 		Use of external editor to edit scripts
 	Progress indicator during queries
@@ -19,6 +31,9 @@ ToDo / unsorted list of ideas for coming development:
 	Save / Load multiple Queries in / from a file
 
 Done:
+	In record editor move table name above edit field
+	In record editor ignore back button or ask if data should be discarded
+	In data grid make add a max width to the fields
 	Delete field in Create table wizard
 	Sort data in table viewer by clicking on title
 	When creating new database: select path with file browser!

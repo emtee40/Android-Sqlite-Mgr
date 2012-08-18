@@ -1,6 +1,18 @@
 Download binaries here: http://market.android.com/details?pub=Andsen
 
-Next version (3.3):
+Version 3.3.1
+	Making the record editor handle apostrophes unfortunately had the consequence
+		that the editor no longer handled field names with spaces and and field
+		names like "on" this now works again
+	In record editor table name are moved above the edit field
+	In record editor the back button are now ignored to prevent discard of data by
+		accident 
+	Maximal width of fields in data grid can now be configured to wrap long text
+		to several lines. If max width is set to 0 (default) long fields will not
+		be wrapped
+	Hopefully solved the "database closed" bug
+
+Version 3.3:
 	A new CREATE TABLE wizard where entered fields can be edited / deleted
 	Data entry / editor tool allow insert, update and delete on views
 		with instead of insert, update and delete triggers 
@@ -15,7 +27,7 @@ Next version (3.3):
 		Data entry / editor tool now handle strings with quotation marks
 		Paging and filter are no longer reset during rotation of device
 
-Version (3.2):
+Version 3.2:
 	Select where to create a new database using a directory picker
 	You get tips about what is possible in the different parts of the program
 	Foreign key selection lists now show a string representation of the records
@@ -34,14 +46,14 @@ Version (3.2):
 		show table info with no valid database open, test for valid or empty FK
 			definition)
 	
-Version (3.1):
+Version 3.1:
 	Go directly to favorite view in table viewer (Fields, SQL or Data)
 	Configurable font size in data lists
 	Easy editing of databases in "Dropbox"
 	Bug fixes: Has solved an annoying null pointer bug - it did appear if
 		users was trying to manipulate something that was not a database  
 
-Version (3.0):
+Version 3.0:
 	A tool to create new databases with PK, ASC / DESC, AUTOINCREMENT,
 	  not null, unique, default values, foreign keys and check for field type.
 	Easy deletion of tables, views and indexes from lists in database viewer by

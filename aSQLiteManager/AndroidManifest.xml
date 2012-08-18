@@ -3,7 +3,7 @@
 	package="dk.andsen.asqlitemanager"
 	android:installLocation="auto"
 	android:versionCode="13"
-	android:versionName="3.3">
+	android:versionName="3.3.1">
 	<application android:icon="@drawable/sqlite_icon"
       android:label="@string/app_name"
 			android:configChanges="orientation|keyboardHidden"

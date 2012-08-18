@@ -114,9 +114,9 @@ public class QueryViewer extends Activity implements OnClickListener{
 			_dbPath = extras.getString("db");
 			Utils.logD("Opening database", logging);
 
-			_db = DBViewer.database;
-			//_db = new Database(_dbPath, _cont);
-			if (!_db.isDatabase) {
+			_db = aSQLiteManager.database;
+			//_db = new Database(_dbPath, _cont); 
+			if (!_db.isDatabase) { //TODO 3.3 NullPointerException here
 				Utils.logD("Not a database!", logging);
 				Utils.showException(_dbPath + " is not a database!", _cont);
 				finish();
@@ -137,7 +137,7 @@ public class QueryViewer extends Activity implements OnClickListener{
 	@Override
 	protected void onRestart() {
 		Utils.logD("QueryViewer onRestart", logging);
-		_db = DBViewer.database;
+		_db = aSQLiteManager.database;
 		super.onRestart();
 	}
 	

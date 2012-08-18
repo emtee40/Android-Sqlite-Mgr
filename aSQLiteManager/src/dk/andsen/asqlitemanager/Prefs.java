@@ -47,6 +47,8 @@ public class Prefs extends PreferenceActivity {
    private static final String OPT_SULOCATION_DEF = null;
    private static final String OPT_TESTROOT = "TestRoot";
    private static final boolean OPT_TESTROOT_DEF = false;
+   private static final String OPT_MAX_WIDTH = "MaxWidth";
+   private static final String OPT_MAX_WIDTH_DEF = "0";
 
    @Override
    protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +89,11 @@ public class Prefs extends PreferenceActivity {
 	public static int getNoOfFiles(Context context) {
     return new Integer(PreferenceManager.getDefaultSharedPreferences(context)
       	.getString(OPT_FILENO, OPT_FILENO_DEF)).intValue();
+	}
+	
+	public static int getMaxWidth(Context context) {
+    return new Integer(PreferenceManager.getDefaultSharedPreferences(context)
+      	.getString(OPT_MAX_WIDTH, OPT_MAX_WIDTH_DEF)).intValue();
 	}
 	
   public static boolean getFKList(Context context) {

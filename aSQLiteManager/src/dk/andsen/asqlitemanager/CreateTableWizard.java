@@ -8,7 +8,6 @@ import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.SQLException;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -109,7 +108,7 @@ public class CreateTableWizard extends Activity implements OnClickListener {
 				sql += ", ";
 		}
 		sql += ")";
-		return DBViewer.database.executeStatement(sql, _cont);
+		return aSQLiteManager.database.executeStatement(sql, _cont);
 	}
 
 	/**
@@ -244,7 +243,7 @@ public class CreateTableWizard extends Activity implements OnClickListener {
 		tw.setText(fieldDescr);
 		tw.setHint("" + (_fieldDefs.size() - 1));
 		tw.setLayoutParams(new LinearLayout.LayoutParams(
-				LinearLayout.LayoutParams.FILL_PARENT,
+				LinearLayout.LayoutParams.MATCH_PARENT,
 				LinearLayout.LayoutParams.WRAP_CONTENT));
 		tw.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {

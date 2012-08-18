@@ -46,7 +46,7 @@ import dk.andsen.utils.Utils;
 @SuppressWarnings("deprecation")
 public class DBViewer extends Activity implements OnClickListener {
 	private String _dbPath;
-	public static Database database = null;
+	private Database database = null;
 //	private String[] tables;
 //	private String[] views;
 	private String[] indexes;
@@ -98,6 +98,7 @@ public class DBViewer extends Activity implements OnClickListener {
 			if ((new File(_dbPath).canRead())) {
 				// it is a readable file no root access needed
 				database = new Database(_dbPath, _cont);
+				aSQLiteManager.database = database;
 				//_SQLiteDb = SQLiteDatabase.openDatabase(_dbPath, null, SQLiteDatabase.OPEN_READWRITE);
 				if (!database.isDatabase) {
 					Utils.logD("User has opened something that is not a database!", _logging);

@@ -254,7 +254,20 @@
 		<!-- Here write what is new in this version -->
 		<string name="WelcomeMsg">aSQLiteManager ist ein freier Open Source SQLite Manager / Frontend für Android-Geräte
 			SQLite Manager / Frontend für Android-Geräte.
-			\n\nNeu in dieser Version (3.3):
+      \n\nNeu in dieser Version 3.3.1:
+  	  \n\nI am sory to say it but introduced a bug in version 3.3. When I made it
+  	  	possible to insert text with quotation marks the app no longer could handle
+  	  	field names with spaces and field names like "on". This is solved in this
+  	  	release. There have also been time for a few extrra features / enhancements,
+  	  	and a few other bug fixes.
+  	  \n\n•	In record editor table name are moved above the edit field
+			\n•	In record editor the back button are now ignored to prevent discard of data by
+				accident 
+			\n•	Maximal width of fields in data grid can now be configured to wrap long text
+				to several lines. If max width is set to 0 (default) long fields will not
+				be wrapped
+			
+			\n\nNeu in dieser Version 3.3:
 
       \n\n•	A new CREATE TABLE wizard where entered fields can be edited / deleted
 			\n•	Data entry / editor tool allow insert, update and delete on views

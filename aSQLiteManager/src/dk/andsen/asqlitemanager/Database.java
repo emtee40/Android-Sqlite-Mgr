@@ -291,7 +291,7 @@ public class Database {
 	public String[] getFieldsNames(String table) {
 		testDB();
 		String sql = "pragma table_info([" + table + "])";
-		Cursor res = _db.rawQuery(sql, null);
+		Cursor res = _db.rawQuery(sql, null); //TODO 3.3 NullPointerException here
 		int cols = res.getCount();
 		String[] fields = new String[cols];
 		int i = 0;
@@ -1426,7 +1426,7 @@ public class Database {
 				String val = fld.getValue();
 				if (val.trim().equals(""))
 					val = null;
-				values.put(fld.getName(), val);
+				values.put("[" + fld.getName() + "]", val);
 			}
 			String[] args = {"" + rowId};
 			_db.update(tableName, values, "rowId = ?", args);
@@ -1517,7 +1517,7 @@ public class Database {
 			for (TableField fld: fields) {
 				String val = fld.getValue();
 				if (!val.trim().equals(""))
-					values.put(fld.getName(), val);
+					values.put("[" + fld.getName() + "]", val);
 			}
 			_db.insertOrThrow(tableName, null, values);
 		} catch (Exception e) {
