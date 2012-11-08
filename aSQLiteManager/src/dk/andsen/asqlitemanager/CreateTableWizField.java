@@ -17,6 +17,7 @@ import dk.andsen.utils.Utils;
 
 public class CreateTableWizField extends Activity implements OnClickListener {
 
+	private static final int FieldOK = R.id.tabWizFieldOK;
 	private EditText fName;
 	private EditText fDef;
 	private CheckBox fNotNull;
@@ -54,7 +55,6 @@ public class CreateTableWizField extends Activity implements OnClickListener {
 		_cont = this;
 		_logging = Prefs.getLogging(_cont);
 		Utils.logD("onCreate", _logging);
-		_logging  = Prefs.getLogging(this);
 		setContentView(R.layout.tablewizfield);
 		setUpUI();
 		Bundle extras = getIntent().getExtras();
@@ -147,8 +147,7 @@ public class CreateTableWizField extends Activity implements OnClickListener {
 
 	public void onClick(View v) {
 		int id = v.getId();
-		switch (id) {
-			case R.id.tabWizFieldOK:
+		if (id == R.id.tabWizFieldOK) {
 			String msg = "";
 			if (fName.getEditableText().toString().trim().equals("")) {
 				Utils.logD("No field name", _logging);
@@ -192,10 +191,58 @@ public class CreateTableWizField extends Activity implements OnClickListener {
 	      setResult(1,in);
 	      finish();
 			}
-			break;
-		case R.id.tabWizFieldCancel:
+		} else if (id == R.id.tabWizFieldCancel) {
 			finish();
-			break;
 		}
+//		switch (id) {
+//			case R.id.tabWizFieldOK: 
+//			String msg = "";
+//			if (fName.getEditableText().toString().trim().equals("")) {
+//				Utils.logD("No field name", _logging);
+//				msg = getText(R.string.MustEnterFieldName).toString();
+//			}
+//			if ((fAutoInc.isChecked() && fDesc.isChecked())) {
+//				Utils.logD("DESC & AutoInc", _logging);
+//				getText(R.string.DescAutoIncError).toString();
+//				if (msg.length() > 0)
+//					msg += "\n";
+//				msg += getText(R.string.DescAutoIncError).toString();
+//			}
+//			if (fFKTab.getText().toString().trim().equals("") != 
+//					fFKField.getText().toString().trim().equals("")) {
+//				Utils.logD("FK check fail", _logging);
+//				getText(R.string.FKDefError).toString();
+//				if (msg.length() > 0)
+//					msg += "\n";
+//				msg += getText(R.string.FKDefError).toString();
+//			}
+//			if (msg.length() > 0) {
+//				Utils.showMessage(getText(R.string.Error).toString(),
+//						msg, _cont);
+//			} else {
+//				// save all field data and return to create table wizard
+//				Intent in = new Intent();
+//				String[] field = new String[10];
+//				field[0] = fName.getText().toString();
+//				field[1] = fSPType.getSelectedItem().toString();
+//				field[2] = "" + fNotNull.isChecked();
+//				field[3] = "" + fUnique.isChecked();
+//				field[4] = "" + fPK.isChecked();
+//				field[5] = "" + fDesc.isChecked();
+//				field[6] = "" + fAutoInc.isChecked();
+//				field[7] = fDef.getText().toString();
+//				field[8] = fFKTab.getText().toString();
+//				field[9] = fFKField.getText().toString(); 
+//				in.putExtra("Field", field);
+//				if (_editing)
+//					in.putExtra("EditField", _edFieldNo);
+//	      setResult(1,in);
+//	      finish();
+//			}
+//			break;
+//		case R.id.tabWizFieldCancel:
+//			finish();
+//			break;
+//		}
 	}
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--β-->
-    <string name="VersionNo">3.3.1</string>
+    <string name="VersionNo">3.4 β</string>
     <string name="Version">Version</string>
     <string name="hello">aSQLiteManager</string>
     <string name="app_name">aSQLiteManager</string>
@@ -317,7 +317,7 @@
   	  \n\nI am sory to say it but introduced a bug in version 3.3. When I made it
   	  	possible to insert text with quotation marks the app no longer could handle
   	  	field names with spaces and field names like "on". This is solved in this
-  	  	release. There have also been time for a few extrra features / enhancements,
+  	  	release. There have also been time for a few extra features / enhancements,
   	  	and a few other bug fixes.
   	  \n\n•	In record editor table name are moved above the edit field
 			\n•	In record editor the back button are now ignored to prevent discard of data by

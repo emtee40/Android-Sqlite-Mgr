@@ -46,7 +46,7 @@ import dk.andsen.utils.Utils;
 @SuppressWarnings("deprecation")
 public class DBViewer extends Activity implements OnClickListener {
 	private String _dbPath;
-	private Database database = null;
+	//private Database database = null;
 //	private String[] tables;
 //	private String[] views;
 	private String[] indexes;
@@ -97,10 +97,11 @@ public class DBViewer extends Activity implements OnClickListener {
 			Utils.logD("Opening database " + _dbPath, _logging);
 			if ((new File(_dbPath).canRead())) {
 				// it is a readable file no root access needed
-				database = new Database(_dbPath, _cont);
-				aSQLiteManager.database = database;
+				//TODO use database from sSQLiteManager!!
+				//database = new Database(_dbPath, _cont);
+				aSQLiteManager.database = new Database(_dbPath, _cont);
 				//_SQLiteDb = SQLiteDatabase.openDatabase(_dbPath, null, SQLiteDatabase.OPEN_READWRITE);
-				if (!database.isDatabase) {
+				if (!aSQLiteManager.database.isDatabase) {
 					Utils.logD("User has opened something that is not a database!", _logging);
 					Utils.showMessage(getText(R.string.Error).toString(),
 							_dbPath + " " + getText(R.string.IsNotADatabase).toString(), _cont);
@@ -108,10 +109,10 @@ public class DBViewer extends Activity implements OnClickListener {
 					// it is a database and it is opened
 					// Test if database is working and not corrupt
 					try {
-						database.getTables();
+						aSQLiteManager.database.getTables();
 						// Store recently opened files
 						if (Prefs.getEnableFK(_cont)) {
-							database.FKOn();
+							aSQLiteManager.database.FKOn();
 						}
 						int noOfFiles = Prefs.getNoOfFiles(_cont);
 						SharedPreferences settings = getSharedPreferences("aSQLiteManager", MODE_PRIVATE);
@@ -120,7 +121,7 @@ public class DBViewer extends Activity implements OnClickListener {
 						Editor edt = settings.edit();
 						edt.putString("Recently", files);
 						edt.commit();
-						indexes = database.getIndex();
+						indexes = aSQLiteManager.database.getIndex();
 						list = (ListView) findViewById(R.id.LVList);
 						buildList("Tables");
 					} catch (Exception e) {
@@ -201,8 +202,8 @@ public class DBViewer extends Activity implements OnClickListener {
 	@Override
 	protected void onDestroy() {
 		Utils.logD("DBViewer onDestroy", _logging);
-		if (database != null)
-			database.close();
+		if (aSQLiteManager.database != null)
+			aSQLiteManager.database.close();
 		super.onDestroy();
 	}
 
@@ -215,8 +216,8 @@ public class DBViewer extends Activity implements OnClickListener {
 	@Override
 	protected void onRestart() {
 		Utils.logD("DBViewer onRestart", _logging);
-		if (database == null)
-			database = new Database(_dbPath, _cont);
+		if (aSQLiteManager.database == null)
+			aSQLiteManager.database = new Database(_dbPath, _cont);
 		super.onRestart();
 	}
 
@@ -237,11 +238,11 @@ public class DBViewer extends Activity implements OnClickListener {
 		if (type.equals("Clear"))
 			toList = new String [] {};
 		else if (type.equals("Index"))
-			toList = database.getIndex();
+			toList = aSQLiteManager.database.getIndex();
 		else if (type.equals("Views")) 
-			toList = database.getViews();
+			toList = aSQLiteManager.database.getViews();
 		else 
-			toList = database.getTables();
+			toList = aSQLiteManager.database.getTables();
 		int recs = toList.length;
 		List<String> ls = new ArrayList<String>();
 		for (int i = 0; i < recs; i++) {
@@ -322,7 +323,7 @@ public class DBViewer extends Activity implements OnClickListener {
 					new DialogInterface.OnClickListener(){
 				public void onClick(DialogInterface dialog, int which) {
 					// Delete it
-					database.executeStatement(sql, _cont);
+					aSQLiteManager.database.executeStatement(sql, _cont);
 					buildList(type);
 				}});
 			yesNoDialog.show();
@@ -383,7 +384,7 @@ public class DBViewer extends Activity implements OnClickListener {
 			if (indexes[position].startsWith("sqlite_autoindex_"))  //2.5 null pointer ex. here
 				indexDef = (String) this.getText(R.string.AutoIndex);
 			else
-				indexDef = database.getIndexDef(indexes[position]);
+				indexDef = aSQLiteManager.database.getIndexDef(indexes[position]);
 			ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 			clipboard.setText(indexDef);
 			Utils.showMessage(this.getString(R.string.Message), indexDef, _cont);
@@ -421,7 +422,7 @@ public class DBViewer extends Activity implements OnClickListener {
 	 * @see android.view.View.OnClickListener#onClick(android.view.View)
 	 */
 	public void onClick(View v) {
-		if (!database.isDatabase) {
+		if (!aSQLiteManager.database.isDatabase) {
 			Utils.logD("User trying to do things with something that is not a database!", _logging);
 			Utils.showMessage(getText(R.string.Error).toString(),
 					_dbPath + " " + getText(R.string.IsNotADatabase).toString(), _cont);
@@ -460,7 +461,7 @@ public class DBViewer extends Activity implements OnClickListener {
 			_update = false;
 //			tables = _db.getTables();
 //			views = _db.getViews();
-			indexes = database.getIndex();
+			indexes = aSQLiteManager.database.getIndex();
 			buildList("Tables");
 		}
 	}
@@ -477,7 +478,7 @@ public class DBViewer extends Activity implements OnClickListener {
 	}
 	
 	public boolean onOptionsItemSelected(MenuItem item) {
-		if (!database.isDatabase) {
+		if (!aSQLiteManager.database.isDatabase) {
 			Utils.logD("User trying to do things with something that is not a database!", _logging);
 			Utils.showMessage(getText(R.string.Error).toString(),
 					_dbPath + " " + getText(R.string.IsNotADatabase).toString(), _cont);
@@ -497,7 +498,7 @@ public class DBViewer extends Activity implements OnClickListener {
 			showDialog(MENU_SQL);
 			break;
 		case MENU_INFO:
-			String versionStr = database.getVersionInfo();
+			String versionStr = aSQLiteManager.database.getVersionInfo();
 			Utils.showMessage(getText(R.string.DatabaseInfo).toString(), versionStr, _cont);
 			break;
 		case MENU_CREATETABLE:
@@ -825,11 +826,11 @@ public class DBViewer extends Activity implements OnClickListener {
 				// Find the menu from which the OK button was clicked
 				switch (_dialogClicked) {
 				case MENU_EXPORT:
-					database.exportDatabase();
+					aSQLiteManager.database.exportDatabase();
 					Utils.toastMsg(_cont, getString(R.string.DataBaseExported));
 					break;
 				case MENU_RESTORE:
-					database.restoreDatabase();
+					aSQLiteManager.database.restoreDatabase();
 					Utils.toastMsg(_cont, getString(R.string.DataBaseRestored));
 					break;
 				case MENU_SQL:

@@ -23,6 +23,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.ClipboardManager;
@@ -48,6 +49,10 @@ import dk.andsen.types.Record;
 import dk.andsen.types.Types;
 import dk.andsen.types.ViewUpdateable;
 import dk.andsen.utils.Utils;
+/**
+ * @author mh
+ *
+ */
 @SuppressWarnings("deprecation")
 public class TableViewer extends Activity implements OnClickListener {
 	private Database _db = null;
@@ -71,7 +76,6 @@ public class TableViewer extends Activity implements OnClickListener {
 	private static final int MENU_TABLE_DEF = 4;
 	
 	private boolean _logging;
-	private boolean viewIsUpdateable = false;
 	private int _fontSize;
 	protected String _order = "";
 	private boolean _increasing = false;
@@ -82,6 +86,7 @@ public class TableViewer extends Activity implements OnClickListener {
 	Record[] _data;
 	private boolean _fieldMode = false;
 	private boolean _showTip = false;
+	private int _maxWidth;
 	
 	/*
 	 * What is needed to allow editing form  table viewer 
@@ -289,7 +294,7 @@ public class TableViewer extends Activity implements OnClickListener {
 			dial.setContentView(R.layout.line_editor);
 			dial.setTitle(getText(R.string.InsertNewRow));
 			LinearLayout ll = (LinearLayout)dial.findViewById(R.id.LineEditor);
-			re = new RecordEditorBuilder(rec, _cont, _db);
+			re = new RecordEditorBuilder(rec, false, _cont, _db);
 			re.setFieldNameWidth(200);
 			re.setTreatEmptyFieldsAsNull(true);
 			final ScrollView sv = re.getScrollView();
@@ -365,188 +370,47 @@ public class TableViewer extends Activity implements OnClickListener {
 		}
 	}
 	
+
 	/**
-	 * Fill the view with data from records
-	 * @param table
-	 * @param data
-	 * @param aTable
+	 * @param table The layout to add the rows to
+	 * @param aTable true if it is a table and false if it is a view
+	 * Append rows to the table grid
 	 */
-	private void appendRows(TableLayout table, final Record[] data, final boolean aTable) {
-		if (data == null)
+	private void newAppendRows(TableLayout table, final boolean aTable) {
+		if (_data == null)
 			return;
-		int rowSize = data.length;
-		Utils.logD("data.length " + data.length, _logging);
-		if (data.length == 0)
+		int rowSize = _data.length;
+		if (_data.length == 0)
 			return;
-		int colSize = data[0].getFields().length; 
-			//(data.length>0)?data[0].length:0;
+		int colSize = _data[0].getFields().length;
+		Utils.logD("Columns: " + colSize, _logging);
+		//Go through all the rows of data
 		for(int i = 0; i < rowSize; i++){
 			final int rowNo = i;
 			TableRow row = new TableRow(this);
-			row.setOnClickListener(new OnClickListener() {
-				public void onClick(View v) {
-					// Use for this??
-					Utils.logD("OnClick: " + v.getId(), _logging);
-				}
-			});
+			//Make every second row dark gray
 			if (i%2 == 1)
 				row.setBackgroundColor(Color.DKGRAY);
-			// TODO change rows to ConvertView?
-			// Adding all columns as TextView's should be changed to a ConvertView
-			// as described here:
-			// http://android-er.blogspot.com/2010/06/using-convertview-in-getview-to-make.html
-			// or in android41cv dk.andsen.utils.MyArrayAdapter
-			int maxWidth = Prefs.getMaxWidth(_cont);
+			_maxWidth = Prefs.getMaxWidth(_cont);
+			//Go through all the columns
 			for(int j = 0; j < colSize; j++){
-				// add a first cell if it is a table or updateable view 
-				//for tables
+				// if it is the first cell (and updateable) add a cell with "Edit" 
 				if (j==0 && (aTable || (_canInsertInView || _canUpdateView || _canDeleteView))) {
-					TextView c = new TextView(this);
-					if (maxWidth > 0)
-						c.setMaxWidth(maxWidth);
-					c.setTextSize(_fontSize);
-					int id;
-					// change to long
-					id = i;
-					//use i as id and store id as 
-					//c.setHint(new Long(data[i][j]).toString());
-					//Utils.logD("id '" + data[i].getFields()[j].getFieldData() + "'", logging);
-					if (data[i].getFields()[j].getFieldData() != "") {
-						c.setHint(new Long(data[i].getFields()[j].getFieldData()).toString());
-						c.setId(id);
-					}
-					c.setPadding(3, 3, 3, 3);
-					// TODO More efficient to make one OnClickListener and assign this to all records edit field?
-					if(aTable || _canUpdateView || _canDeleteView) {
-						c.setText(getText(R.string.Edit));
-						c.setOnClickListener(new OnClickListener() {
-							//Edit or delete the selected record
-							public void onClick(View v) {
-								final RecordEditorBuilder re;
-								TextView a = (TextView)v;
-								final Long rowid;
-								if (a.getHint() != null) {
-									 rowid = new Long(a.getHint().toString());
-								} else
-									rowid = (long)rowNo;
-								Utils.logD("Ready to edit rowid " +v.getId() + " in table " + _table, _logging);
-								TableField[] rec;
-								if (aTable)
-									rec = _db.getRecord(_table, rowid);
-								else {
-									int fields = 0;
-									rec = _db.getEmptyRecord(_table);
-									fields = rec.length;
-									Record dat = _data[rowid.intValue()];
-									for (int i = 0; i < fields; i++) {
-										rec[i].setValue(dat.getFields()[i+1].getFieldData());
-									}
-									//TODO OK to UI must be handled as a special case during update
-									
-								}
-								final Dialog dial = new Dialog(_cont);
-								dial.setContentView(R.layout.line_editor);
-								dial.setTitle(getText(R.string.EditDeleteRow) + " " + rowid);
-								dial.setCancelable(false);
-								LinearLayout ll = (LinearLayout)dial.findViewById(R.id.LineEditor);
-								re = new RecordEditorBuilder(rec, _cont, _db);
-								re.setFieldNameWidth(200);
-								re.setTreatEmptyFieldsAsNull(true);
-								final ScrollView sv = re.getScrollView();
-								final Button btnOK = new Button(_cont);
-								btnOK.setText(getText(R.string.OK));
-								btnOK.setLayoutParams(new LinearLayout.LayoutParams(
-										LinearLayout.LayoutParams.FILL_PARENT,
-										LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
-								btnOK.setOnClickListener(new OnClickListener() {
-									public void onClick(View v) {
-										Utils.logD("Edit record", _logging);
-										if (v == btnOK) {
-											String msg = re.checkInput(sv); 
-											if (msg == null) {
-												//Utils.logD("Record edited; " + rowid);
-												TableField[] res = re.getEditedData(sv);
-												if (_table.equals("sqlite_master")) {
-													Utils.showMessage(getString(R.string.Error), getString(R.string.ROSystemTable), _cont);
-												} else {
-													if (aTable) {
-														_db.updateRecord(_table, rowid, res, _cont);
-													} else  {
-														Record oldData = _data[rowid.intValue()];
-														_db.updateViewRecord(_table, oldData, res, _cont);
-													}
-													_updateTable = true;
-												}
-												dial.dismiss();
-											}
-											else
-												Utils.showException(msg, sv.getContext());
-										} 
-									}
-								});
-								final Button btnCancel = new Button(_cont);
-								btnCancel.setText(getText(R.string.Cancel));
-								btnCancel.setLayoutParams(new LinearLayout.LayoutParams(
-										LinearLayout.LayoutParams.FILL_PARENT,
-										LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
-								btnCancel.setOnClickListener(new OnClickListener() {
-									public void onClick(View v) {
-										Utils.logD("Cancel edit", _logging);
-										if (v == btnCancel) {
-											dial.dismiss();
-										}
-									}
-								});
-								final Button btnDelete = new Button(_cont);
-								btnDelete.setText(getText(R.string.Delete));
-								btnDelete.setLayoutParams(new LinearLayout.LayoutParams(
-										LinearLayout.LayoutParams.FILL_PARENT,
-										LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
-								if (aTable || _canDeleteView)
-									btnDelete.setEnabled(true);
-								else
-									btnDelete.setEnabled(false);
-								btnDelete.setOnClickListener(new OnClickListener() {
-									public void onClick(View v) {
-										Utils.logD("Delete record", _logging);
-										if (v == btnDelete) {
-											if (aTable) {
-												_db.deleteRecord(_table, rowid, _cont);
-											} else {
-												Record oldData = _data[rowid.intValue()];
-												_db.deleteViewRecord(_table, oldData, _cont);
-											}
-											_updateTable = true;
-											dial.dismiss();
-										}
-									}
-								});
-								LinearLayout llButtons = new LinearLayout(_cont);
-								llButtons.setOrientation(LinearLayout.HORIZONTAL);
-								llButtons.setLayoutParams(new LinearLayout.LayoutParams(
-										LinearLayout.LayoutParams.FILL_PARENT,
-										LinearLayout.LayoutParams.WRAP_CONTENT));
-								llButtons.addView(btnOK);
-								llButtons.addView(btnCancel);
-								llButtons.addView(btnDelete);
-								ll.addView(llButtons);
-								ll.addView(sv);
-								dial.show();
-							}
-						});
-					} else {
-						//c.setText(" ");
-					}
+					TextView c = addEditField(rowNo, aTable);
 					row.addView(c);
-				} else {
+				}
+				if (!aTable || j > 0) {
 					TextView c = new TextView(this);
-					//c.setText(data[i][j]);
 					c.setTextSize(_fontSize);
-					if (maxWidth > 0)
-						c.setMaxWidth(maxWidth);
-					c.setText(data[i].getFields()[j].getFieldData());
-					c.setBackgroundColor(getBackgroundColor(data[i].getFields()[j].getFieldType(), (i%2 == 1)));
+					if (_maxWidth > 0)
+						c.setMaxWidth(_maxWidth);
+					if (aTable)
+						c.setText(_data[i].getFields()[j].getFieldData());
+					else
+						c.setText(_data[i].getFields()[j].getFieldData());
+					c.setBackgroundColor(getBackgroundColor(_data[i].getFields()[j].getFieldType(), (i%2 == 1)));
 					c.setPadding(3, 3, 3, 3);
+					// Adding a onClickListener to copy cell value to clip board
 					c.setOnClickListener(new OnClickListener() {
 						public void onClick(View v) {
 							String text = (String)((TextView)v).getText();
@@ -561,7 +425,156 @@ public class TableViewer extends Activity implements OnClickListener {
 			table.addView(row, new TableLayout.LayoutParams());
 		}
 	}
-
+	
+	private TextView addEditField(final int rowNo, final boolean aTable){
+		Utils.logD("addEditField rowNo,  aTable: " + rowNo + ", " + aTable, _logging);
+		TextView c = new TextView(this);
+		if (_maxWidth > 0)
+			c.setMaxWidth(_maxWidth);
+		c.setTextSize(_fontSize);
+		int id;
+		// change to long?
+		id = rowNo;
+		//If it is a table use rowid as id (always in first position) if now a
+		// a view use rowNo
+		if (aTable) {
+			if (_data[rowNo].getFields()[0].getFieldData() != "") {
+				c.setHint(new Long(_data[rowNo].getFields()[0].getFieldData()).toString());
+				c.setId(id);
+			}
+		} else {
+			c.setHint(new Long(rowNo).toString());
+			c.setId(id);
+		}
+		c.setPadding(3, 3, 3, 3);
+		// TODO More efficient to make one OnClickListener and assign this to all records edit field?
+		if(aTable || (_canUpdateView || _canDeleteView)) {  //_canInsertInView || 
+			c.setText(getText(R.string.Edit));
+			c.setOnClickListener(new OnClickListener() {
+				//Edit or delete the selected record
+				public void onClick(View v) {
+					final RecordEditorBuilder re;
+					TextView a = (TextView)v;
+					final Long rowid;
+					if (a.getHint() != null) {
+						if (aTable) {
+							 rowid = new Long(a.getHint().toString());
+						} else {
+							 rowid = new Long(a.getHint().toString());
+						}
+						//Utils.logD("rowId in hint", _logging);
+					} else
+						rowid = (long)rowNo - 1;
+					Utils.logD("Ready to edit rowid " + rowid + " in table " + _table, _logging);
+					TableField[] rec;
+					if (aTable)
+						rec = _db.getRecord(_table, rowid);
+					else {
+						int fields = 0;
+						rec = _db.getEmptyRecord(_table);
+						fields = rec.length;
+						Record dat = _data[rowid.intValue()];
+						for (int i = 0; i < fields; i++) {
+							rec[i].setValue(dat.getFields()[i].getFieldData());
+						}
+						//TODO OK to UI must be handled as a special case during update
+					}
+					final Dialog dial = new Dialog(_cont);
+					dial.setContentView(R.layout.line_editor);
+					dial.setTitle(getText(R.string.EditDeleteRow) + " " + rowid);
+					dial.setCancelable(false);
+					LinearLayout ll = (LinearLayout)dial.findViewById(R.id.LineEditor);
+					re = new RecordEditorBuilder(rec, true, _cont, _db);
+					re.setFieldNameWidth(200);
+					re.setTreatEmptyFieldsAsNull(true);
+					final ScrollView sv = re.getScrollView();
+					final Button btnOK = new Button(_cont);
+					btnOK.setText(getText(R.string.OK));
+					btnOK.setLayoutParams(new LinearLayout.LayoutParams(
+							LinearLayout.LayoutParams.MATCH_PARENT,
+							LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
+					btnOK.setOnClickListener(new OnClickListener() {
+						public void onClick(View v) {
+							Utils.logD("Edit record"	, _logging);
+							if (v == btnOK) {
+								String msg = re.checkInput(sv); 
+								if (msg == null) {
+									//Utils.logD("Record edited; " + rowid, _logging);
+									TableField[] res = re.getEditedData(sv);
+									if (_table.equals("sqlite_master")) {
+										Utils.showMessage(getString(R.string.Error), getString(R.string.ROSystemTable), _cont);
+									} else {
+										if (aTable) {
+											_db.updateRecord(_table, rowid, res, _cont);
+										} else  {
+											Record oldData = _data[rowid.intValue()];
+											_db.updateViewRecord(_table, oldData, res, _cont);
+										}
+										_updateTable = true;
+									}
+									dial.dismiss();
+								}
+								else
+									Utils.showException(msg, sv.getContext());
+							} 
+						}
+					});
+					final Button btnCancel = new Button(_cont);
+					btnCancel.setText(getText(R.string.Cancel));
+					btnCancel.setLayoutParams(new LinearLayout.LayoutParams(
+							LinearLayout.LayoutParams.MATCH_PARENT,
+							LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
+					btnCancel.setOnClickListener(new OnClickListener() {
+						public void onClick(View v) {
+							Utils.logD("Cancel edit", _logging);
+							if (v == btnCancel) {
+								dial.dismiss();
+							}
+						}
+					});
+					final Button btnDelete = new Button(_cont);
+					btnDelete.setText(getText(R.string.Delete));
+					btnDelete.setLayoutParams(new LinearLayout.LayoutParams(
+							LinearLayout.LayoutParams.MATCH_PARENT,
+							LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
+					if (aTable || _canDeleteView)
+						btnDelete.setEnabled(true);
+					else
+						btnDelete.setEnabled(false);
+					btnDelete.setOnClickListener(new OnClickListener() {
+						public void onClick(View v) {
+							Utils.logD("Delete record", _logging);
+							if (v == btnDelete) {
+								if (aTable) {
+									_db.deleteRecord(_table, rowid, _cont);
+								} else {
+									Record oldData = _data[rowid.intValue()];
+									_db.deleteViewRecord(_table, oldData, _cont);
+								}
+								_updateTable = true;
+								dial.dismiss();
+							}
+						}
+					});
+					LinearLayout llButtons = new LinearLayout(_cont);
+					llButtons.setOrientation(LinearLayout.HORIZONTAL);
+					llButtons.setLayoutParams(new LinearLayout.LayoutParams(
+							LinearLayout.LayoutParams.MATCH_PARENT,
+							LinearLayout.LayoutParams.WRAP_CONTENT));
+					llButtons.addView(btnOK);
+					llButtons.addView(btnCancel);
+					llButtons.addView(btnDelete);
+					ll.addView(llButtons);
+					ll.addView(sv);
+					dial.show();
+				}
+			});
+		} else {
+			c.setText(getText(R.string.Edit));
+			c.setPaintFlags(c.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+		}
+		return c;
+	}
 	
 	
 	private int getBackgroundColor(FieldType fieldType, boolean light) {
@@ -640,7 +653,7 @@ public class TableViewer extends Activity implements OnClickListener {
 							dial.setContentView(R.layout.line_editor);
 							dial.setTitle(getText(R.string.EditRow) + " " + rowid);
 							LinearLayout ll = (LinearLayout)dial.findViewById(R.id.LineEditor);
-							re = new RecordEditorBuilder(rec, _cont, _db);
+							re = new RecordEditorBuilder(rec, true, _cont, _db);
 							re.setFieldNameWidth(200);
 							re.setTreatEmptyFieldsAsNull(true);
 							final ScrollView sv = re.getScrollView();
@@ -740,7 +753,7 @@ public class TableViewer extends Activity implements OnClickListener {
 						dial.setContentView(R.layout.line_editor);
 						dial.setTitle(getText(R.string.InsertNewRow));
 						LinearLayout ll = (LinearLayout)dial.findViewById(R.id.LineEditor);
-						re = new RecordEditorBuilder(rec, _cont, _db);
+						re = new RecordEditorBuilder(rec, false, _cont, _db);
 						re.setFieldNameWidth(200);
 						re.setTreatEmptyFieldsAsNull(true);
 						final ScrollView sv = re.getScrollView();
@@ -967,13 +980,15 @@ public class TableViewer extends Activity implements OnClickListener {
 		dial.show();
 	}
 
+	/**
+	 * 
+	 */
 	private void fillDataTableWithArgs() {
 		boolean isUnUpdateableView = false;
 		if (sourceType == Types.VIEW) {
-			if (viewIsUpdateable)
-				isUnUpdateableView = false;
-			else
 				isUnUpdateableView = true;
+		} else if (sourceType == Types.TABLE) {
+			isUnUpdateableView = false;
 		}
 		String order = "";
 		if (!_order.equals("")) {
@@ -983,9 +998,10 @@ public class TableViewer extends Activity implements OnClickListener {
 			else
 				order += "] DESC ";
 		}
-		Record[] data = _db.getTableDataWithWhere(_table, _where, order, offset, limit, isUnUpdateableView);
+		//Record[] data = _db.getTableDataWithWhere(_table, _where, order, offset, limit, isUnUpdateableView);
+		_data = _db.getTableDataWithWhere(_table, _where, order, offset, limit, isUnUpdateableView);
 		setTitles(_aTable, _db.getFieldsNames(_table), !isUnUpdateableView);
-		appendRows(_aTable, data, !isUnUpdateableView);
+		newAppendRows(_aTable, !isUnUpdateableView);
 		Utils.logD("where = " + _where, _logging);
 	}
 
@@ -1009,10 +1025,13 @@ public class TableViewer extends Activity implements OnClickListener {
 	 */
 	private void checkForUpdateableView() {
 		Utils.logD("_table = " + _table, _logging);
-		ViewUpdateable upd = _db.isViewUpdatable(_table); //TODO 3.3 NullPointerException here
+		ViewUpdateable upd = _db.isViewUpdatable(_table);
 		_canInsertInView = upd.isInsertable();
+		Utils.logD("Insertable: " + _canInsertInView, _logging);
 		_canUpdateView = upd.isUpdateable();
+		Utils.logD("Updateable: " + _canUpdateView, _logging);
 		_canDeleteView = upd.isDeleteable();
+		Utils.logD("Deleteable: " + _canDeleteView, _logging);
 	}
 
 }

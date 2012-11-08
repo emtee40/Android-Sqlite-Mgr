@@ -96,7 +96,7 @@ public class SQLViewer extends Activity implements OnClickListener, Runnable {
 		      } else if(line.endsWith(";")) {
 		        // If line ends with ; we have a statement ready to execute
 		      	line = line.substring(0, line.length() - 1);
-		      	Utils.logD("SQL: " + line, logging);
+		      	//Utils.logD("SQL: " + line, logging);
 						map = new HashMap<String, String>();
 						map.put("Sql", line);
 						mylist.add(map);

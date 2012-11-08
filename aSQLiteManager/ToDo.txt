@@ -11,26 +11,38 @@ Feature Graphic:
 Will be downsized to mini or micro
 
 ToDo / unsorted list of ideas for coming development:
-	A filter builder
-	A "edit next record" from record editor
-	Scripts editor?
-		Use of external editor to edit scripts
-	Progress indicator during queries
-	Real integration with DropBox
-		https://www.dropbox.com/developers/reference/sdk
-	Encryption of databases
-		https://guardianproject.info/code/sqlcipher/
-	Build in root access to system databases (from aShell and experimental)
-	Searching
-	Select where to save export / dump
-	Select file to restore / load
-	Create view wizards
-	Alter table wizard (simple as SQLite only support rename and add field)
-	Compress SQL wines.name -> t1.name in resulting SQL not on lists
-	"Tab" view / show active tab
-	Save / Load multiple Queries in / from a file
+	Functions:
+		Viewing and editing using forms and a kind of form generator / editor
+		Progress with info during restore of databases based on comments in the file
+			user thread to run script
+		Remember last directory when opening databases and SQL files
+		Progress indicator during queries (run in thread)
+		Create view wizards
+		A filter builder
+		Scripts editor?
+			or use of external editor to edit scripts
+		Real integration with DropBox
+			https://www.dropbox.com/developers/reference/sdk
+		Encryption of databases
+			https://guardianproject.info/code/sqlcipher/
+		Build in root access to system databases (from aShell and experimental)
+		Searching
+		Alter table wizard (simple as SQLite only support rename and add field)
+	UI:
+		Select where to save export / dump
+		Select file to restore / load
+		A "edit next record" from record editor
+		Compress SQL wines.name -> t1.name in resulting SQL not on lists
+		"Tab" view / show active tab
 
 Done:
+	Default values also works from the record editor when the field is NOT NULL
+	Better handling of views with with instead of insert, update and delete
+		triggers
+	Special table names now works with the record editor during updates and insert
+	Trigger and index definitions now exported when table dumped and database
+		exported
+	Now also wrapping of long texts in queries
 	In record editor move table name above edit field
 	In record editor ignore back button or ask if data should be discarded
 	In data grid make add a max width to the fields

@@ -45,8 +45,8 @@ public class aSQLiteManager extends Activity implements OnClickListener {
 	private static final int MENU_OPT = 1;
 	private static final int MENU_HLP = 2;
 	private static final int MENU_RESET = 3;
-	final String WelcomeId = "ShowWelcome3.3.1";
-	final String vers = "3.3.1";
+	final String WelcomeId = "ShowWelcome3.4";
+	final String vers = "3.4";
 	private Context _cont;
 	private String _recentFiles;
 	private boolean testRoot = false;
@@ -365,6 +365,17 @@ public class aSQLiteManager extends Activity implements OnClickListener {
 	 * Create a new empty database
 	 */
 	private void newDatabase() {
+		final String pathToNewDB;
+		pathToNewDB = Environment.getExternalStorageDirectory()
+				.getAbsolutePath() + "/";
+
+//		final SharedPreferences settings = getSharedPreferences("aSQLiteManager",
+//				MODE_PRIVATE);
+//		pathToNewDB = settings.getString("RecentNewDBPath", pathToNewDB);
+//		Utils.logD("Loaded pathToNewDB: " + pathToNewDB, _logging);
+		//TODO path must be available!
+		//Utils.
+		
 		newDatabaseDialog = new Dialog(this);
 		newDatabaseDialog.setContentView(R.layout.new_database);
 		newDatabaseDialog.setTitle(getText(R.string.NewDBSDCard));
@@ -376,23 +387,22 @@ public class aSQLiteManager extends Activity implements OnClickListener {
 		edNewDB.setHint(getText(R.string.NewDBPath));
 		final TextView newFolder = (TextView) newDatabaseDialog
 				.findViewById(R.id.newFolder);
-		newFolder.setText(Environment.getExternalStorageDirectory()
-				.getAbsolutePath() + "/");
+		newFolder.setText(pathToNewDB);
 		final Button newFolderSelectButton = (Button) newDatabaseDialog
 				.findViewById(R.id.newFolderSelectButton);
 		newFolderSelectButton.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				Intent i = new Intent(_cont, NewFilePicker.class);
+				i.putExtra("STRATPATH", pathToNewDB);
 				i.putExtra("MODE", FilePickerMode.SELECTFOLDER.name());
 				try {
 					startActivityForResult(i, 2);
 				} catch (Exception e) {
 					Utils.logE("Error in file picker (root " + testRoot + ")", _logging);
 					e.printStackTrace();
-					Utils
-							.showException(
-									"Plase report this error with descriptions of how to generate it",
-									_cont);
+					Utils.showException(
+							"Plase report this error with descriptions of how to generate it",
+							_cont);
 				}
 			}
 		});

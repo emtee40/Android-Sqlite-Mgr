@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
@@ -52,6 +53,7 @@ public class NewFilePicker extends ListActivity {
 	private boolean _SQLtype = false;
 	private String _dbPath = null;
 	private String _newDBPath = null;
+	private String _startPath = null;
 	private boolean logging = false;
 	// _rootMode controls whether filePicker is in roor or normal mode
 	// private boolean _rootMode = false;
@@ -72,6 +74,7 @@ public class NewFilePicker extends ListActivity {
 			// TODO need to pass path to database from caller to SQLViewer
 			_SQLtype = extras.getBoolean("SQLtype");
 			_dbPath = extras.getString("dbPath");
+			_startPath = extras.getString("STRATPATH");
 			strMode = extras.getString("MODE");
 			// _rootMode = extras.getBoolean("RootMode");
 		}
@@ -81,6 +84,10 @@ public class NewFilePicker extends ListActivity {
 				break;
 			}
 		}
+		//TODO load Recent*Path and test if it is still existing if it is not
+		// start in sdCrads root
+		
+		
 		if (mode == null) {
 			mode = FilePickerMode.SELECTFILE;
 			Utils.logD("Filepicker select file mode", logging);
@@ -88,9 +95,20 @@ public class NewFilePicker extends ListActivity {
 			if (mode == FilePickerMode.SELECTFOLDER) {
 				btn.setVisibility(View.VISIBLE);
 				Utils.logD("Filepicker in test mode", logging);
+//				final SharedPreferences settings = getSharedPreferences("aSQLiteManager",
+//						MODE_PRIVATE);
+//				_newDBPath = settings.getString("RecentNewDBPath", _newDBPath);
+//				Utils.logD("Loaded path: " + _newDBPath, logging);
+				
 				btn.setOnClickListener(new OnClickListener() {
 					public void onClick(View v) {
 						Intent in = new Intent();
+						final SharedPreferences settings = getSharedPreferences("aSQLiteManager",
+								MODE_PRIVATE);
+						Editor ed = settings.edit();
+						Utils.logD("Storing RecentNewDBPath " + _newDBPath, logging);
+						ed.putString("RecentNewDBPath", _newDBPath);
+						ed.commit();
 						in.putExtra("RESULT", _newDBPath);
 			      setResult(1,in);//Here I am Setting the Requestcode 1, you can put according to your requirement
 			      finish();
@@ -102,6 +120,9 @@ public class NewFilePicker extends ListActivity {
 		File path = null;
 		String state = Environment.getExternalStorageState();
 		if (Environment.MEDIA_MOUNTED.equals(state)) {
+			//TODO read last directory from preferences based on type of FilePicker
+			// open database / open sql / new database
+			
 			mExternalStorageAvailable = mExternalStorageWriteable = true;
 			path = Environment.getExternalStorageDirectory();
 			File programDirectory = new File(path.getAbsolutePath());
@@ -180,8 +201,16 @@ public class NewFilePicker extends ListActivity {
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		// TODO Must be devided into a root and normal mode part
+		Utils.logD("Clicked on " + v.getId(), logging);
 		if (item.get(position) == getString(R.string.FilePickerChooseThisFolder)) {
 			Intent in = new Intent();
+			//TODO save path for reuse
+			final SharedPreferences settings = getSharedPreferences("aSQLiteManager",
+					MODE_PRIVATE);
+			Editor ed = settings.edit();
+			Utils.logD("Storing RecentNewDBPath " + new File(path.get(position)).getAbsolutePath(), logging);
+			ed.putString("RecentNewDBPath", new File(path.get(position)).getAbsolutePath());
+			ed.commit();
 			in.putExtra("RESULT", new File(path.get(position)).getAbsolutePath());
       setResult(1,in);//Here I am Setting the Requestcode 1, you can put according to your requirement
       finish();
@@ -191,6 +220,7 @@ public class NewFilePicker extends ListActivity {
 			if (file.canRead()) {
 				getDir(path.get(position));
 			} else {
+				// A file i clicked
 				new AlertDialog.Builder(this)
 						.setIcon(R.drawable.sqlite_icon)
 						.setTitle(getText(R.string.SystemFolder))
@@ -246,9 +276,22 @@ public class NewFilePicker extends ListActivity {
 						}
 						// Open database or SQL
 						if (_SQLtype) {
+							final SharedPreferences settings = getSharedPreferences("aSQLiteManager",
+									MODE_PRIVATE);
+							Editor ed = settings.edit();
+							Utils.logD("Storing RecentOpenSQLPath " + file.getAbsolutePath(), logging);
+							ed.putString("RecentOpenSQLPath", file.getAbsolutePath());
+							ed.commit();
 							openSQL(file);
 						} else {
 							// TODO also a root mode needed here
+							//TODO save path for reuse
+							final SharedPreferences settings = getSharedPreferences("aSQLiteManager",
+									MODE_PRIVATE);
+							Editor ed = settings.edit();
+							Utils.logD("Storing RecentOpenDBPath " + file.getAbsolutePath(), logging);
+							ed.putString("RecentOpenDBPath", file.getAbsolutePath());
+							ed.commit();
 							openDatabase(file);
 						}
 						dial.dismiss();
@@ -284,6 +327,13 @@ public class NewFilePicker extends ListActivity {
 
 	private void openSQL(File file) {
 		Utils.logD("SQL file", logging);
+		final SharedPreferences settings = getSharedPreferences("aSQLiteManager",
+				MODE_PRIVATE);
+		Editor ed = settings.edit();
+		Utils.logD("Storing RecentOpenSQLPath " + _newDBPath, logging);
+		ed.putString("RecentNewOpenSQLPath", _newDBPath);
+		ed.commit();
+		
 		Intent iSqlViewer = new Intent(context, SQLViewer.class);
 		iSqlViewer.putExtra("script", "" + file.getAbsolutePath());
 		iSqlViewer.putExtra("db", _dbPath);
@@ -296,6 +346,13 @@ public class NewFilePicker extends ListActivity {
 		 * If in root mode copy database to sdcard/aSQLiteManager and open it there
 		 * after close of database ask the user it it should replace the original
 		 */
+		final SharedPreferences settings = getSharedPreferences("aSQLiteManager",
+				MODE_PRIVATE);
+		Editor ed = settings.edit();
+		Utils.logD("Storing RecentOpenSQLPath " + _newDBPath, logging);
+		ed.putString("RecentNewOpenSQLPath", _newDBPath);
+		ed.commit();
+
 		Utils.logD("Other file " + file, logging);
 		Intent iDBViewer = new Intent(context, DBViewer.class);
 		iDBViewer.putExtra("db", "" + file.getAbsolutePath());

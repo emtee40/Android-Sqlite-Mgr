@@ -892,12 +892,12 @@ public class Database {
 		Utils.logD(progressTitle.toString(), logging);
 		Utils.logD(progressTable.toString(), logging);
 		pd.show();
-		new Thread(myThread).start();
+		new Thread(myExportThread).start();
 		Utils.logD("Exportet to; " + backupFile.getAbsolutePath(), logging);
 		return true;
 	}
 
-	private Runnable myThread = new Runnable(){
+	private Runnable myExportThread = new Runnable(){
 		public void run() {
 			testDB();
 			String backupName = _dbPath + ".sql";
@@ -922,7 +922,7 @@ public class Database {
 	      exportTableDefinitions(out);
 	      // export data
 				progressTitleText = "exporting table data";
-				myProgress = 35;
+				myProgress = 25;
 				myHandle.sendMessage(myHandle.obtainMessage());
 	      exportData(out);
 	      // export index definitions
@@ -935,9 +935,13 @@ public class Database {
 				myProgress = 75;
 				myHandle.sendMessage(myHandle.obtainMessage());
 	      exportViews(out);
-	      // export constraints -- how and i which order?
+	      //TODO export constraints -- how and i which order?
 
-	      // export triggers, procedures, ...
+	      //TODO export triggers, procedures, ...
+				progressTitleText = "exporting view triggers";
+				myProgress = 90;
+				myHandle.sendMessage(myHandle.obtainMessage());
+	      exportTriggers(out);
 	      
 	      //Close the output stream
 				myProgress = 100;
@@ -1040,6 +1044,27 @@ public class Database {
 			res.close();
 		} catch (IOException e) {
 			Utils.logE("exportViews", logging);
+			Utils.printStackTrace(e, logging);
+		}
+	}
+
+	/**
+	 * Export all trigger definitions from current database
+	 * @param out
+	 */
+	private void exportTriggers(BufferedWriter out) {
+		String sql = "select name, sql from sqlite_master where type = 'trigger'"; 
+		Cursor res = _db.rawQuery(sql, null);
+		try {
+			while(res.moveToNext()) {
+				out.write("--\n");
+				out.write("-- Exporting trigger definitions for " + res.getString(0) + nl);
+				out.write("--\n");
+				out.write(res.getString(1) + ";" + nl);
+			}
+			res.close();
+		} catch (IOException e) {
+			Utils.logE("exportTrigger", logging);
 			Utils.printStackTrace(e, logging);
 		}
 	}
@@ -1389,6 +1414,7 @@ public class Database {
 			tf.setUpdateable(true);
 			tf.setValue(null);
 			tf.setNotNull(fd[i].isNotNull());
+			tf.setDefaultValue(fd[i].getDefaultValue());
 			tfs[i] = tf;
 		}
 		//Get the FK's
@@ -1429,7 +1455,7 @@ public class Database {
 				values.put("[" + fld.getName() + "]", val);
 			}
 			String[] args = {"" + rowId};
-			_db.update(tableName, values, "rowId = ?", args);
+			_db.update("[" + tableName + "]", values, "rowId = ?", args);
 		} catch (Exception e) {
 			Utils.showMessage("Error", e.getLocalizedMessage(), cont);
 			Utils.logE(e.getMessage(), logging);
@@ -1441,23 +1467,24 @@ public class Database {
 	 * This is used to update views
 	 * @param tableName
 	 * @param oldData
-	 * @param res
+	 * @param newData
 	 * @param cont
 	 */
-	public void updateViewRecord(String tableName, Record oldData, TableField[] res,
+	public void updateViewRecord(String tableName, Record oldData, TableField[] newData,
 			Context cont) {
     ContentValues values = new ContentValues();
 		try {
-			for (TableField fld: res) {
+			for (TableField fld: newData) {
 				String val = fld.getValue();
 				if (val.trim().equals(""))
 					val = null;
 				values.put(fld.getName(), val);
+				//Utils.logD("UpdateView field, new value " +fld.getName() +", " + fld.getValue(), logging);
 			}
 			//TODO build where with old data
 			String where = "";
 			boolean first = true;
-			String[] args = new String[oldData.getFields().length-1];
+			String[] args = new String[oldData.getFields().length];
 			String[] fieldNames = getFieldsNames(tableName);
 			for (String fld: fieldNames) {
 				if (!first)
@@ -1465,11 +1492,9 @@ public class Database {
 				first = false;
 				where += fld + " = ? ";
 			}
-			for (int i = 0; i < oldData.getFields().length - 1; i++) {
-				args[i] = oldData.getFields()[i+1].getFieldData();
-				Utils.logD("arg " + i + ":" + args[i], logging);
+			for (int i = 0; i < oldData.getFields().length; i++) {
+				args[i] = oldData.getFields()[i].getFieldData();
 			}
-			Utils.logD("where: " + where, logging);
 			_db.update(tableName, values, where, args);
 		} catch (Exception e) {
 			if (e != null) {
@@ -1519,7 +1544,7 @@ public class Database {
 				if (!val.trim().equals(""))
 					values.put("[" + fld.getName() + "]", val);
 			}
-			_db.insertOrThrow(tableName, null, values);
+			_db.insertOrThrow("[" + tableName + "]", null, values);
 		} catch (Exception e) {
 			Utils.showMessage("Error", e.getLocalizedMessage(), cont);
 			Utils.logE(e.getMessage(), logging);
@@ -1678,6 +1703,7 @@ public class Database {
 		String sql = "select name, sql from sqlite_master where type = 'table' and name = '" + tableName +"'"; 
 		Cursor res = _db.rawQuery(sql, null);
 		try {
+			//Exporting crate table SQL 
 			while(res.moveToNext()) {
 				String table = res.getString(0);
 				if(!(table.equals("sqlite_master") || table.equals("sqlite_sequence") || 
@@ -1686,6 +1712,24 @@ public class Database {
 					out.write("-- Exporting table definitions for " + table + nl);
 					out.write("--\n");
 					out.write(res.getString(1) + ";" + nl);
+				}
+			}
+			//Exporting crate index SQL 
+			sql = "select name, sql from sqlite_master where type = 'index' and name = '" + tableName +"'"; 
+			res = _db.rawQuery(sql, null);
+			while(res.moveToNext()) {
+				String table = res.getString(0);
+				if(!(table.equals("sqlite_master") || table.equals("sqlite_sequence") || 
+						table.equals("android_metadata"))) {
+				}
+			}
+			//Exporting crate trigger SQL 
+			sql = "select name, sql from sqlite_master where type = 'trigger' and name = '" + tableName +"'"; 
+			res = _db.rawQuery(sql, null);
+			while(res.moveToNext()) {
+				String table = res.getString(0);
+				if(!(table.equals("sqlite_master") || table.equals("sqlite_sequence") || 
+						table.equals("android_metadata"))) {
 				}
 			}
 			res.close();
@@ -1765,26 +1809,30 @@ public class Database {
 		}
 	}
 	
-	public void deleteViewRecord(String tableName, Record oldData, Context cont) {
+	/**
+	 * Try to delete a record from a view this only works if there is a
+	 * InStedOfDelete trigger on the view if not a SQL exception
+	 * @param viewName Name of the view to delete from
+	 * @param oldData A Record holding selected record
+	 * @param cont The context on which to display messages
+	 */
+	public void deleteViewRecord(String viewName, Record oldData, Context cont) {
 		String where = "";
 		boolean first = true;
-		String[] args = new String[oldData.getFields().length-1];
-		String[] fieldNames = getFieldsNames(tableName);
+		String[] args = new String[oldData.getFields().length];
+		String[] fieldNames = getFieldsNames(viewName);
 		for (String fld: fieldNames) {
 			if (!first)
 				where += " and ";
 			first = false;
 			where += fld + " = ? ";
 		}
-		for (int i = 0; i < oldData.getFields().length - 1; i++) {
-			args[i] = oldData.getFields()[i+1].getFieldData();
-			Utils.logD("arg " + i + ":" + args[i], logging);
+		Utils.logD("Fields: " + oldData.getFields().length, logging);
+		for (int i = 0; i < oldData.getFields().length; i++) {
+			args[i] = oldData.getFields()[i].getFieldData();
 		}
-		Utils.logD("where: " + where, logging);
-		_db.delete(tableName, where, args);
+		_db.delete(viewName, where, args);
 	}
-
-
 	
 	public int getNoOfRecords(String tableName, String where) {
 		int recs = 0;

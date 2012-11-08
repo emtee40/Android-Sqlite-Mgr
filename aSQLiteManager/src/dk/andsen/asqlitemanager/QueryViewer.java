@@ -86,7 +86,8 @@ public class QueryViewer extends Activity implements OnClickListener{
 	private String _tableDialogString;
 	private boolean logging;
 	private boolean _showTip = false;
-	
+	private int _maxWidth;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -285,6 +286,7 @@ public class QueryViewer extends Activity implements OnClickListener{
 	private void appendRows(TableLayout table, String[][] data) {
 		if (data == null)
 			return;
+		_maxWidth = Prefs.getMaxWidth(_cont);
 		int rowSize=data.length;
 		int colSize=(data.length>0)?data[0].length:0;
 		for(int i=0; i<rowSize; i++){
@@ -301,6 +303,8 @@ public class QueryViewer extends Activity implements OnClickListener{
 				TextView c = new TextView(this);
 				c.setText(data[i][j]);
 				c.setPadding(3, 3, 3, 3);
+				if (_maxWidth > 0)
+					c.setMaxWidth(_maxWidth);
 				c.setOnClickListener(new OnClickListener() {
 					public void onClick(View v) {
 				      // button 1 was clicked!

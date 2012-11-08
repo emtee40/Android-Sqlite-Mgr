@@ -50,17 +50,19 @@ public class RecordEditorBuilder {
 	Database _db;
 	private boolean useSelectLists = false;
 	private boolean logging = false;
+	private boolean _editing;
 	/**
 	 * 
 	 * @param fields
 	 * @param cont
 	 */
-	public RecordEditorBuilder(TableField[] fields, Context cont, Database db) {
+	public RecordEditorBuilder(TableField[] fields, boolean edit, Context cont, Database db) {
 		logging = Prefs.getLogging(cont);
 		useSelectLists = Prefs.getFKList(cont);
 		_db = db;
 		_cont = cont;
 		_fields = fields;
+		_editing = edit;
 		sv = new ScrollView(cont);
 		sv.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
 				ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -74,7 +76,7 @@ public class RecordEditorBuilder {
 		for (int i = 0; i < fields.length; i++) {
 			LinearLayout ll;
 			if (fields[i].isUpdateable()) {
-				Utils.logD("Updatable: " + fields[i].getName(),logging);
+				//Utils.logD("Updatable: " + fields[i].getName(),logging);
 				ll = new LinearLayout(cont);
 				int fieldType = fields[i].getType();
 				boolean useList = true;
@@ -87,13 +89,13 @@ public class RecordEditorBuilder {
 				}
 				if (fields[i].getForeignKey() != null && useSelectLists && useList) {
 					// Editing using selection list
-					Utils.logD("Uses list of FK for " + fields[i].getName() + " " + 
-							fields[i].getForeignKey(), logging);
+//					Utils.logD("Uses list of FK for " + fields[i].getName() + " " + 
+//							fields[i].getForeignKey(), logging);
 					//TODO should set lists to current value of field - add null to list
 					ll = buildFKList(fields[i], lineIdBase +i, idBase + i);
 				} else {
 					// Normal input field based on type of field 
-					Utils.logD("Normal edit for " + fields[i].getName(), logging);
+//					Utils.logD("Normal edit for " + fields[i].getName(), logging);
 					ll = buildEditField(fields[i], lineIdBase + i, idBase + i);
 				}
 				lmain.addView(ll);
@@ -289,9 +291,9 @@ public class RecordEditorBuilder {
 			  .setTitle(_cont.getText(R.string.SelectValue))
 			  .setAdapter(adapter, new DialogInterface.OnClickListener() {
 			    public void onClick(DialogInterface dialog, int which) {
-			    	Utils.logD("Item pressed:" + which, logging);
+			    	//Utils.logD("Item pressed:" + which, logging);
 			    	String val = fkh.getIds()[which];
-			    	Utils.logD("Value selected:" + val, logging);
+			    	//Utils.logD("Value selected:" + val, logging);
 			    	btn.setText(val);
 			    	ets.setText(val);
 			    	dialog.dismiss();
@@ -335,17 +337,25 @@ public class RecordEditorBuilder {
 		String errorMsg = null;
 		TableField[] fields = getEditedData(sv);
 		for (int i = 0; i < _fields.length; i++) {
-			// check for empty / null not null fields
-			if (fields[i].getNotNull() != null && fields[i].getNotNull())
-				if ((fields[i].getValue() == null) ||
-						(fields[i].getValue().equals("") && treatEmptyFieldsAsNull)) {
-					if (errorMsg != null)
-						errorMsg += "\n" + _fields[i].getDisplayName() + " "
-							+ _cont.getText(R.string.MustNotBeEmpty);
-					else
-						errorMsg = _fields[i].getDisplayName() + " "
-							+ _cont.getText(R.string.MustNotBeEmpty);
+			// is the field defined - it should be
+			if (fields[i].getNotNull() != null) {
+				// check for empty / null not null fields without a default value
+				//Utils.logD("Default value = '" + fields[i].getDefaultValue() + "'", logging);
+				//Utils.logD("Editing: " + _editing, logging);
+				//Empty NOT NULL fields are accepted during new record not when updating
+				if ((fields[i].getNotNull() && fields[i].getDefaultValue() == null) ||
+						(fields[i].getNotNull() && _editing)) {
+					if ((fields[i].getValue() == null)
+							|| (fields[i].getValue().equals("") && treatEmptyFieldsAsNull)) {
+						if (errorMsg != null)
+							errorMsg += "\n" + _fields[i].getDisplayName() + " "
+									+ _cont.getText(R.string.MustNotBeEmpty);
+						else
+							errorMsg = _fields[i].getDisplayName() + " "
+									+ _cont.getText(R.string.MustNotBeEmpty);
+					}
 				}
+			}
 			// TODO should also check input data types(?) and constraints
 
 		}

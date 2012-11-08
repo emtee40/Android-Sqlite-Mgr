@@ -1,5 +1,14 @@
 Download binaries here: http://market.android.com/details?pub=Andsen
 
+Version 3.4:
+	Now default values also works from the record editor when the field is NOT NULL
+	Better handling of views with with instead of insert, update and delete
+		triggers
+	Special table names now works with the record editor during updates and insert
+	Trigger and index definitions now exported when table dumped and database
+		exported
+	Now also wrapping of long texts in queries
+
 Version 3.3.1
 	Making the record editor handle apostrophes unfortunately had the consequence
 		that the editor no longer handled field names with spaces and and field
@@ -15,7 +24,7 @@ Version 3.3.1
 Version 3.3:
 	A new CREATE TABLE wizard where entered fields can be edited / deleted
 	Data entry / editor tool allow insert, update and delete on views
-		with instead of insert, update and delete triggers 
+		with instead of insert, update and delete triggers
 	Sort data in table viewer by clicking on title of column
 	Font size in directory and table lists follow the font size of data grids
 	Now check if database exists before trying to open recently opened databases
