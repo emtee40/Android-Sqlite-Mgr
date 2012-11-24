@@ -298,35 +298,22 @@
     <!-- Here write what is new in this version -->
     <string name="WelcomeMsg">aSQLiteManager è un software libero open source
   	  SQLite manager / front end per dispositivi Android.
-      \n\nNovità in questa versione 3.3.1:
-  	  \n\nI am sory to say it but introduced a bug in version 3.3. When I made it
-  	  	possible to insert text with quotation marks the app no longer could handle
-  	  	field names with spaces and field names like "on". This is solved in this
-  	  	release. There have also been time for a few extrra features / enhancements,
-  	  	and a few other bug fixes.
-  	  \n\n•	In record editor table name are moved above the edit field
-			\n•	In record editor the back button are now ignored to prevent discard of data by
-				accident 
-			\n•	Maximal width of fields in data grid can now be configured to wrap long text
-				to several lines. If max width is set to 0 (default) long fields will not
-				be wrapped
-  	  
-      \n\nNovità in questa versione 3.3:
+      \n\nNovità in questa versione 3.4:
       
-      \n\n•	A new CREATE TABLE wizard where entered fields can be edited / deleted
-			\n•	Data entry / editor tool allow insert, update and delete on views
-				with instead of insert, update and delete triggers 
-			\n•	Sort data in table viewer by clicking on title of column
-			\n•	Font size in directory and table lists follow the font size of data grids
-			\n•	Now check if database exists before trying to open recently opened databases
-				and removes deleted databases from the list
-			\n\nBug fixes – thanks for reporting!:
-			\n•	Welcome and Tip screens now works with with with change in orientation
-			\n•	Table definitions shows triggers regardless of case
-			\n•	Data entry / editor tool now handle strings with quotation marks
-			\n•	Paging and filter are no longer reset during rotation of device
-			\n\nYou can edit system database on rooted devices with aSQLiteManager using
-			aShell(beta). You find aShell here:
+      		\n\n•	Now default values also works from the record editor when the field is NOT NULL
+			\n•	Better handling of views with with instead of insert, update and delete
+				triggers
+			\n•	Trigger and index definitions now exported when table dumped and database
+				exported
+			\n•	Now also wrapping of long texts in queries
+			\n•	Remember path to last new database, last opened database and last opened SQL file
+		\n\nBug fixes – thanks for reporting! And please report bug by both report feature
+			and email:
+			\n•	Special table names now works with the record editor during updates and insert
+			\n•	A few minor problem solved
+
+		\n\nYou can edit system database on rooted devices with aSQLiteManager using
+		aShell(beta). You find aShell here:
       \nhttp://market.android.com/search?q=pub:Andsen
       \n\nPlease report problems with aShell. I have only access to a few
       rooted phones so testing is difficult. When aShell works properly the

@@ -325,6 +325,7 @@
 			and email:
 			\n•	Special table names now works with the record editor during updates and insert
 			\n•	A few minor problem solved
+
 		\n\nYou can edit system database on rooted devices with aSQLiteManager using
 			aShell(beta). You find aShell here:
       \nhttp://market.android.com/search?q=pub:Andsen
