@@ -1,0 +1,101 @@
+
+Project structure:
+
+src
+	dk.andsen.asqlitemnager
+		AppRater.java				Show rate app dialog if used enough and and not turned off
+		aSQLiteManager.java			Main screen
+		CreateTableWizard.java		Create table wizard
+		CreateTableWizField.java	Create field wizard
+		Database.java				All database functionality
+		DBViewer.java				Database viewer
+		FilterBuilder.java
+		Help.java
+		MyCursorAdapter.java
+		OpenOnClick.java
+		OpenOnClick2.java
+		Prefs.java					Set preferences screen
+		QueryViewer.java			Query viewer
+		SQLViewer.java				
+		TableViewer.java 			Table viewer
+	dk.andsen.RecordEditor
+		RecordEditorBuilder.java	Create UI to edit a record
+	dk.andsen.RecordEditor.types
+		TableField.java				Class to hold a field
+	dk.andsen.types
+		AField.java
+		Field.java
+		FieldDescr.java
+		FileHolder.java
+		ForeignKeyHolder.java
+		QueryResult.java
+		Record.java
+		ShellOutputHolder.java
+		Types.java
+		ViewUpdateable.java
+	dk.andsen.utils
+		AShellCommandInterface.java
+		AShellInterface.java
+		FileComparator.java
+		FilePicker.java
+		FilePickerMode.java
+		MyArrayAdapter.java
+		MyDBArrayAdapter.java
+		MyRootArrayAdapter.java
+		NewFilePicker.java
+		Recently.java
+		RootFilePicker.java
+		Utils.java					Different utilities
+res
+	drawable
+	drawable-hdpi
+	drawable-ldpi
+	drawable-mdpi
+	layout
+	layout-land
+	values
+	values-ca
+	values-da
+	values-de
+	values-es
+	values-fr
+	values-it
+	values-pt
+	values-pt-rBR
+	xml
+
+
+Preferences:
+
+Preferences stored in dk.andsen.asqlitemanager_preferences.xml 
+
+boolean	Logging				default false	Logging turned on
+boolean	FKList				default false	Use FK list when editing fields with fk
+boolean	MainVertical		default false	Always keep main screen vertical
+boolean	EnableForeignKeys	default false	Turn on foreign keys
+boolean	SaveSQL				default false	Save executed SQL in aSQLiteManager tale
+string	PageSize 			default 20		Size of pages in data lists
+string	MaxWidth			default 0		Max width of data fields
+string	FontSize			default 10		Font size to use in data lists
+string	DefaultView			default 1		Default view in table viewer 1 = tables, 2 = data
+string	RecentFiles			default 5		Number of recent databases to store
+
+Preferences stored in aSQLiteManager.xml 
+
+long	launch_count		Number of times the app has been used
+string	3.4					The version number
+boolean	ShowWelcome3.4		Show welcome for this version
+long	date_firstlaunch	Date of first launch
+string	Recently			Semicolon separated list of file paths (/mnt/sdcard/mh.sqlite;)
+boolean	FPJustOpen			default false
+
+string	RecentNewDBPath		Last path where a new database is created 
+string	RecentOpenDBPath	Last path where an existing database is opened --->>>> har filnavnet med!!!
+string	RecentOpenSQLPath	Last path where a SQL file are opened 
+
+Preferences stored in dk.andsen.asqlitemanager_tips.xml 
+
+boolean	TipNo1	default true	Show tip no. 1
+boolean	TipNo2	default true	Show tip no. 2
+boolean	TipNo3	default true	Show tip no. 3
+boolean	TipNo4	default true	Show tip no. 4

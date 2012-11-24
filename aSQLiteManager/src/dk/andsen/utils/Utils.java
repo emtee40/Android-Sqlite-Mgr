@@ -6,22 +6,14 @@
  */
 package dk.andsen.utils;
 
-import dk.andsen.asqlitemanager.Prefs;
-import dk.andsen.asqlitemanager.R;
+import java.io.File;
+
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.Environment;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.TextView;
 import android.widget.Toast;
 
 /**
@@ -231,4 +223,18 @@ public class Utils {
 		return str;
 	}
 
+	/**
+	 * Check a path if it is a valid existing directory
+	 * @param path a path to test
+	 * @return true if pat is a valid directory else false
+	 */
+	public static boolean isPathAValidDirectory(String path) {
+		if (path == null)
+			return false;
+		File file = new File(path);
+		if (!file.isDirectory())
+		   return false;
+		else
+			return true;
+	}
 }

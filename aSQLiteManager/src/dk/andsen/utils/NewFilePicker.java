@@ -36,10 +36,6 @@ import dk.andsen.asqlitemanager.Prefs;
 import dk.andsen.asqlitemanager.R;
 import dk.andsen.asqlitemanager.SQLViewer;
 
-/**
- * @author andsen
- * 
- */
 public class NewFilePicker extends ListActivity {
 
 	private List<String> item = null;
@@ -53,11 +49,15 @@ public class NewFilePicker extends ListActivity {
 	private boolean _SQLtype = false;
 	private String _dbPath = null;
 	private String _newDBPath = null;
-	private String _startPath = null;
+	//private String _startPath = null;
 	private boolean logging = false;
 	// _rootMode controls whether filePicker is in roor or normal mode
 	// private boolean _rootMode = false;
-	private FilePickerMode mode = null;
+	private String strMode = null;
+	private int _lookingFor;
+	final static int DB_FILE = 0;
+	final static int SQL_FILE = 1;
+	final static int DB_FODLER = 2;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -65,40 +65,63 @@ public class NewFilePicker extends ListActivity {
 		super.onCreate(savedInstanceState);
 		context = this.getBaseContext();
 		logging = Prefs.getLogging(context);
-		Bundle extras = getIntent().getExtras();
-		String strMode = FilePickerMode.SELECTFILE.name();
+		Utils.logD("In NewFilePicker", logging);
 		setContentView(R.layout.filepicker);
 		Button btn = (Button)findViewById(R.id.SelectFolder);
 		btn.setVisibility(View.GONE);
-		if (extras != null) {
-			// TODO need to pass path to database from caller to SQLViewer
-			_SQLtype = extras.getBoolean("SQLtype");
-			_dbPath = extras.getString("dbPath");
-			_startPath = extras.getString("STRATPATH");
-			strMode = extras.getString("MODE");
-			// _rootMode = extras.getBoolean("RootMode");
+
+		// test for sdCard present and writable
+		String _sdState = Environment.getExternalStorageState();
+		Utils.logD("BrandNewFilePicker onCreate " + _sdState, logging);
+		if (Environment.MEDIA_MOUNTED.equals(_sdState)) {
+			mExternalStorageAvailable = true;
+			mExternalStorageWriteable = true;
 		}
-		for (FilePickerMode testMode : FilePickerMode.values()) {
-			if (strMode != null && strMode.equalsIgnoreCase(testMode.name())) {  //TODO strMode must not be null
-				mode = testMode;
-				break;
-			}
-		}
-		//TODO load Recent*Path and test if it is still existing if it is not
-		// start in sdCrads root
-		
-		
-		if (mode == null) {
-			mode = FilePickerMode.SELECTFILE;
-			Utils.logD("Filepicker select file mode", logging);
+		if (!mExternalStorageWriteable) {
+			// No SDCard
+			new AlertDialog.Builder(this)
+					.setIcon(R.drawable.sqlite_icon)
+					.setTitle(getText(R.string.NoSDCard))
+					.setPositiveButton(R.string.OK,
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog, int which) {
+								}
+							}).show();
 		} else {
-			if (mode == FilePickerMode.SELECTFOLDER) {
+			// find out which mode file picker is in
+			// default is select file
+			//String strMode = null;
+			Bundle extras = getIntent().getExtras();
+			// Load extra parameters
+			if (extras != null) {
+				Utils.logD("Reading extras", logging);
+				_SQLtype = extras.getBoolean("SQLtype");
+				//_dbPath = extras.getString("dbPath");
+//				_startPath = extras.getString("STARTPATH");
+				strMode = extras.getString("MODE");
+				//String strMode = FilePickerMode.SELECTFILE.name();
+//				if (tempMode != null && !tempMode.equals("")) {
+//					strMode = tempMode;
+//				}
+			}
+			Utils.logD("Mode " + strMode, logging);
+			//TODO load Recent*Path and test if it is still existing if it is not
+			// By default start in sdCrads root
+			if (strMode == null) {
+				strMode = FilePickerMode.SELECTFILE.name();
+				Utils.logD("Filepicker select file mode", logging);
+				if (_SQLtype) {
+					_lookingFor = SQL_FILE;
+					Utils.logD("Looking for a SQL file", logging);
+				} else {
+					_lookingFor = DB_FILE;
+					Utils.logD("Looking for a database", logging);
+				}
+			} else {
+				Utils.logD("Looking for a diectory", logging);
+				_lookingFor = DB_FODLER;
 				btn.setVisibility(View.VISIBLE);
 				Utils.logD("Filepicker in test mode", logging);
-//				final SharedPreferences settings = getSharedPreferences("aSQLiteManager",
-//						MODE_PRIVATE);
-//				_newDBPath = settings.getString("RecentNewDBPath", _newDBPath);
-//				Utils.logD("Loaded path: " + _newDBPath, logging);
 				
 				btn.setOnClickListener(new OnClickListener() {
 					public void onClick(View v) {
@@ -115,30 +138,51 @@ public class NewFilePicker extends ListActivity {
 					}
 				});
 			}
-		}
-		myPath = (TextView) findViewById(R.id.path);
-		File path = null;
-		String state = Environment.getExternalStorageState();
-		if (Environment.MEDIA_MOUNTED.equals(state)) {
-			//TODO read last directory from preferences based on type of FilePicker
-			// open database / open sql / new database
-			
-			mExternalStorageAvailable = mExternalStorageWriteable = true;
-			path = Environment.getExternalStorageDirectory();
-			File programDirectory = new File(path.getAbsolutePath());
-			// have the object build the directory structure, if needed.
-			// programDirectory.mkdirs();
-			getDir(programDirectory.getAbsolutePath());
-		} else {
-			// No SDCard
-			new AlertDialog.Builder(this)
-					.setIcon(R.drawable.sqlite_icon)
-					.setTitle(getText(R.string.NoSDCard))
-					.setPositiveButton(R.string.OK,
-							new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog, int which) {
-								}
-							}).show();
+			myPath = (TextView) findViewById(R.id.path);
+			String state = Environment.getExternalStorageState();
+			if (Environment.MEDIA_MOUNTED.equals(state)) {
+				mExternalStorageAvailable = mExternalStorageWriteable = true;
+				String startPath = Environment.getExternalStorageDirectory().getAbsolutePath();
+				final SharedPreferences settings = getSharedPreferences("aSQLiteManager",
+						MODE_PRIVATE);
+				String recentPath = "";
+				File f;
+				switch (_lookingFor) {
+				case DB_FILE:
+					recentPath = settings.getString("RecentOpenDBPath", null);
+					if (recentPath != null && !recentPath.equals("")) {
+						f = new File(recentPath);
+						if (f.exists())
+							startPath = recentPath;
+					}
+					Utils.logD("StartPath ", logging);
+					break;
+				case SQL_FILE:
+					recentPath = settings.getString("RecentOpenSQLPath", null);
+					if (recentPath != null) {
+						f = new File(recentPath);
+						if (f.exists())
+							startPath = recentPath;
+					}
+					Utils.logD("StartPath ", logging);
+					break;
+				case DB_FODLER:
+					recentPath = settings.getString("RecentNewDBPath", null);
+					if (recentPath != null) {
+						f = new File(recentPath);
+						if (f.exists())
+							startPath = recentPath;
+					}
+					Utils.logD("StartPath " + startPath, logging);
+					break;
+				}
+				Utils.logD("StartPath " + startPath, logging);
+				if (startPath != null) {
+					getDir(startPath);
+				} else {
+					getDir(startPath);
+				}
+			}
 		}
 	}
 
@@ -164,7 +208,7 @@ public class NewFilePicker extends ListActivity {
 				return true;
 			}
 		};
-		if (mode == FilePickerMode.SELECTFOLDER) {
+		if (strMode.equals(FilePickerMode.SELECTFOLDER.name())) {
 			filter = new FileFilter() {
 				public boolean accept(File f) {
 					return f.isDirectory();
@@ -179,9 +223,8 @@ public class NewFilePicker extends ListActivity {
 				item.add("../");
 				path.add(f.getParent());
 			}
-			if (mode == FilePickerMode.SELECTFOLDER) {
-				//item.add(getString(R.string.FilePickerChooseThisFolder));  //TODO change to button
-				//path.add(f.getAbsolutePath());
+			if (strMode.equals(FilePickerMode.SELECTFOLDER.name())) {
+
 			}
 		}
 		Arrays.sort(files, new FileComparator());
@@ -204,7 +247,6 @@ public class NewFilePicker extends ListActivity {
 		Utils.logD("Clicked on " + v.getId(), logging);
 		if (item.get(position) == getString(R.string.FilePickerChooseThisFolder)) {
 			Intent in = new Intent();
-			//TODO save path for reuse
 			final SharedPreferences settings = getSharedPreferences("aSQLiteManager",
 					MODE_PRIVATE);
 			Editor ed = settings.edit();
@@ -220,7 +262,7 @@ public class NewFilePicker extends ListActivity {
 			if (file.canRead()) {
 				getDir(path.get(position));
 			} else {
-				// A file i clicked
+				// A file is clicked
 				new AlertDialog.Builder(this)
 						.setIcon(R.drawable.sqlite_icon)
 						.setTitle(getText(R.string.SystemFolder))
@@ -235,6 +277,7 @@ public class NewFilePicker extends ListActivity {
 			// Open the database
 			final SharedPreferences settings = getSharedPreferences("aSQLiteManager",
 					MODE_PRIVATE);
+			
 			if (!settings.getBoolean("FPJustOpen", false)) {
 				final Dialog dial = new Dialog(this);
 				if (_SQLtype) {
@@ -279,18 +322,18 @@ public class NewFilePicker extends ListActivity {
 							final SharedPreferences settings = getSharedPreferences("aSQLiteManager",
 									MODE_PRIVATE);
 							Editor ed = settings.edit();
-							Utils.logD("Storing RecentOpenSQLPath " + file.getAbsolutePath(), logging);
-							ed.putString("RecentOpenSQLPath", file.getAbsolutePath());
+							int sep = file.getAbsolutePath().lastIndexOf("/");
+							Utils.logD("Storing RecentOpenSQLPath " + file.getAbsolutePath().substring(0, sep), logging);
+							ed.putString("RecentOpenSQLPath", file.getAbsolutePath().substring(0, sep));
 							ed.commit();
 							openSQL(file);
 						} else {
-							// TODO also a root mode needed here
-							//TODO save path for reuse
 							final SharedPreferences settings = getSharedPreferences("aSQLiteManager",
 									MODE_PRIVATE);
 							Editor ed = settings.edit();
-							Utils.logD("Storing RecentOpenDBPath " + file.getAbsolutePath(), logging);
-							ed.putString("RecentOpenDBPath", file.getAbsolutePath());
+							int sep = file.getAbsolutePath().lastIndexOf("/");
+							Utils.logD("Storing RecentOpenDBPath " + file.getAbsolutePath().substring(0, sep), logging);
+							ed.putString("RecentOpenDBPath", file.getAbsolutePath().substring(0, sep)); 
 							ed.commit();
 							openDatabase(file);
 						}
@@ -316,9 +359,19 @@ public class NewFilePicker extends ListActivity {
 				if (_SQLtype) {
 					// only open files ending with .sql
 					if (file.getAbsolutePath().endsWith(".sql")) {
+						Editor ed = settings.edit();
+						int sep = file.getAbsolutePath().lastIndexOf("/");
+						Utils.logD("Storing RecentOpenSQLPath " + file.getAbsolutePath().substring(0, sep), logging);
+						ed.putString("RecentOpenSQLPath", file.getAbsolutePath().substring(0, sep)); 
+						ed.commit();
 						openSQL(file);
 					}
 				} else {
+					Editor ed = settings.edit();
+					int sep = file.getAbsolutePath().lastIndexOf("/");
+					Utils.logD("Storing RecentOpenDBPath " + file.getAbsolutePath().substring(0, sep), logging);
+					ed.putString("RecentOpenDBPath", file.getAbsolutePath().substring(0, sep)); 
+					ed.commit();
 					openDatabase(file);
 				}
 			}
@@ -330,7 +383,7 @@ public class NewFilePicker extends ListActivity {
 		final SharedPreferences settings = getSharedPreferences("aSQLiteManager",
 				MODE_PRIVATE);
 		Editor ed = settings.edit();
-		Utils.logD("Storing RecentOpenSQLPath " + _newDBPath, logging);
+		Utils.logD("Storing RecentNewOpenSQLPath " + _newDBPath, logging);
 		ed.putString("RecentNewOpenSQLPath", _newDBPath);
 		ed.commit();
 		
@@ -349,7 +402,7 @@ public class NewFilePicker extends ListActivity {
 		final SharedPreferences settings = getSharedPreferences("aSQLiteManager",
 				MODE_PRIVATE);
 		Editor ed = settings.edit();
-		Utils.logD("Storing RecentOpenSQLPath " + _newDBPath, logging);
+		Utils.logD("Storing RecentNewOpenSQLPath " + _newDBPath, logging);
 		ed.putString("RecentNewOpenSQLPath", _newDBPath);
 		ed.commit();
 

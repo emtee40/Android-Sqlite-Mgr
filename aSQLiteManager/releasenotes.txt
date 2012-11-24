@@ -8,6 +8,7 @@ Version 3.4:
 	Trigger and index definitions now exported when table dumped and database
 		exported
 	Now also wrapping of long texts in queries
+	Remember path to last new database, last opened database and last opened SQL file
 
 Version 3.3.1
 	Making the record editor handle apostrophes unfortunately had the consequence

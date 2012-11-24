@@ -365,14 +365,22 @@ public class aSQLiteManager extends Activity implements OnClickListener {
 	 * Create a new empty database
 	 */
 	private void newDatabase() {
+		//Get last new database location
+		final SharedPreferences settings = getSharedPreferences("aSQLiteManager",
+				MODE_PRIVATE);
+		String lastPathToNewDB = settings.getString("RecentNewDBPath", null);
+		// check for valid path
+		if (!Utils.isPathAValidDirectory(lastPathToNewDB))
+			lastPathToNewDB = null;
+			
+		Utils.logD("Loaded pathToNewDB: " + lastPathToNewDB, _logging);
 		final String pathToNewDB;
-		pathToNewDB = Environment.getExternalStorageDirectory()
-				.getAbsolutePath() + "/";
+		if (lastPathToNewDB != null && !lastPathToNewDB.equals(""))
+			pathToNewDB = lastPathToNewDB;
+		else 
+			pathToNewDB = Environment.getExternalStorageDirectory()
+					.getAbsolutePath() + "/";
 
-//		final SharedPreferences settings = getSharedPreferences("aSQLiteManager",
-//				MODE_PRIVATE);
-//		pathToNewDB = settings.getString("RecentNewDBPath", pathToNewDB);
-//		Utils.logD("Loaded pathToNewDB: " + pathToNewDB, _logging);
 		//TODO path must be available!
 		//Utils.
 		
