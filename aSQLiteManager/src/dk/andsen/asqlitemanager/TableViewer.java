@@ -53,7 +53,6 @@ import dk.andsen.utils.Utils;
  * @author mh
  *
  */
-@SuppressWarnings("deprecation")
 public class TableViewer extends Activity implements OnClickListener {
 	private Database _db = null;
 	private String _table;

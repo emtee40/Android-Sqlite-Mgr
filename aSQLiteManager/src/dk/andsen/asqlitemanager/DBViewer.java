@@ -43,7 +43,6 @@ import dk.andsen.utils.NewFilePicker;
 import dk.andsen.utils.Recently;
 import dk.andsen.utils.Utils;
 
-@SuppressWarnings("deprecation")
 public class DBViewer extends Activity implements OnClickListener {
 	private String _dbPath;
 	//private Database database = null;
