@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--β-->
-    <string name="VersionNo">3.4</string>
+    <string name="VersionNo">3.4 +</string>
     <string name="Version">Version</string>
     <string name="hello">aSQLiteManager</string>
     <string name="app_name">aSQLiteManager</string>
@@ -267,9 +267,18 @@
     <string name="NoSuchDatabase">No such database</string>
     <string name="MaxWidth">Max width of fields</string>
     <string name="MaxWidthText">Maximum width of fields in grid view</string>
-
-    <!-- Translated to Danish to here -->
+    <string name="AddToFilter">Add to filter</string>
+    <string name="EnterValues">Enter value(s)</string>
+    <string name="SQLEditor">SQL editor</string>
+    <string name="QEMaxLines">Max. lines when in focus</string>
+    <string name="QEMaxLinesText">Max number of lines in editor when editing</string>
+    <string name="QEMinLines">Lines not in focus</string>
+    <string name="QEMinLinesText">Number of lines in editor when not in focus</string>
+    <string name="CSVExport">Export to CSV file</string>
+    <string name="CSVImport">Import from CSV file</string>
     
+    <!-- Translated to Danish to here -->
+
     <!-- Place new text above here -->
     <!-- From here text changes in every version -->
     
@@ -313,19 +322,16 @@
     <!-- Here write what is new in this version -->
     <string name="WelcomeMsg">aSQLiteManager is a free open source
   	  SQLite manager / front end for Android devices.
-      	\n\nNew in version 3.4:
-      		\n\n•	Now default values also works from the record editor when the field is NOT NULL
-			\n•	Better handling of views with with instead of insert, update and delete
-				triggers
-			\n•	Trigger and index definitions now exported when table dumped and database
-				exported
-			\n•	Now also wrapping of long texts in queries
-			\n•	Remember path to last new database, last opened database and last opened SQL file
+      \n\nNew in version 3.5:
+     		\n\n•	SQL Editor in Query viewer now shrinks to a configurable number of
+     		lines when not in focus
+				\n•	New and more advanced (I know - it don\'t say much) filter builder to filter
+				data in the TableViewer
+				\n•	Export of data on CSV format from table viewer
+				\n•	Import of data on CSV formatted file from table viewer
 		\n\nBug fixes – thanks for reporting! And please report bug by both report feature
 			and email:
-			\n•	Special table names now works with the record editor during updates and insert
 			\n•	A few minor problem solved
-
 		\n\nYou can edit system database on rooted devices with aSQLiteManager using
 			aShell(beta). You find aShell here:
       \nhttp://market.android.com/search?q=pub:Andsen
