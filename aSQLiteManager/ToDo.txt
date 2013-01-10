@@ -12,20 +12,25 @@ Will be downsized to mini or micro
 
 ToDo / unsorted list of ideas for coming development:
 	Functions:
+		Spatialite support
+			Spatial queries
+			View spatial objects
+			Save / read WKT
+		Support for editing of BLOBs in record editor (save to sdCard / load from sdCard)
+		CSV import
+		Build in root access to system databases (from aShell and experimental)
 		Viewing and editing using forms and a kind of form generator / editor
 		Progress with info during restore of databases based on comments in the file
 			user thread to run script
-		Remember last directory when opening databases and SQL files
 		Progress indicator during queries (run in thread)
 		Create view wizards
-		A filter builder
 		Scripts editor?
 			or use of external editor to edit scripts
 		Real integration with DropBox
 			https://www.dropbox.com/developers/reference/sdk
+		Real integration with Google Drive
 		Encryption of databases
 			https://guardianproject.info/code/sqlcipher/
-		Build in root access to system databases (from aShell and experimental)
 		Searching
 		Alter table wizard (simple as SQLite only support rename and add field)
 	UI:
@@ -34,8 +39,11 @@ ToDo / unsorted list of ideas for coming development:
 		A "edit next record" from record editor
 		Compress SQL wines.name -> t1.name in resulting SQL not on lists
 		"Tab" view / show active tab
+		Add a tablet layout
 
 Done:
+	A filter builder
+	Remember last directory when opening databases and SQL files
 	Default values also works from the record editor when the field is NOT NULL
 	Better handling of views with with instead of insert, update and delete
 		triggers
