@@ -75,8 +75,9 @@ public class RecordEditorBuilder {
 		// Add a linearLayout to hold the label and field to edit
 		for (int i = 0; i < fields.length; i++) {
 			LinearLayout ll;
+			//TODO is BLOB fields updateable??
 			if (fields[i].isUpdateable()) {
-				//Utils.logD("Updatable: " + fields[i].getName(),logging);
+				//Utils.logD("Updateable: " + fields[i].getName(),logging);
 				ll = new LinearLayout(cont);
 				int fieldType = fields[i].getType();
 				boolean useList = true;
@@ -112,7 +113,6 @@ public class RecordEditorBuilder {
 				LinearLayout.LayoutParams.MATCH_PARENT,
 				LinearLayout.LayoutParams.WRAP_CONTENT));
 		ll.setId(llId);
-		
 		// create the label and data field pair in a Linear Layout
 		ll.setOrientation(LinearLayout.VERTICAL);
 		ll.setLayoutParams(new LinearLayout.LayoutParams(
@@ -143,6 +143,7 @@ public class RecordEditorBuilder {
 		 * database in arguments to do that)
 		 */
 		switch (field.getType()) {
+		//Handle dates
 		case (TableField.TYPE_DATE):
 			// change to button with DatePicker
 			//DatePicker dp = new DatePicker(cont);
@@ -159,6 +160,7 @@ public class RecordEditorBuilder {
 					| InputType.TYPE_DATETIME_VARIATION_DATE);
 			ll.addView(etd);
 			break;
+		//Handle date and time
 		case (TableField.TYPE_DATETIME):
 			EditText etdt = new EditText(_cont);
 			etdt.setLayoutParams((new LayoutParams(LayoutParams.MATCH_PARENT,
@@ -169,6 +171,7 @@ public class RecordEditorBuilder {
 			etdt.setId(id);
 			ll.addView(etdt);
 			break;
+		//Handle floats
 		case (TableField.TYPE_FLOAT):
 			EditText etf = new EditText(_cont);
 			etf.setLayoutParams((new LayoutParams(LayoutParams.MATCH_PARENT,
@@ -180,6 +183,7 @@ public class RecordEditorBuilder {
 			etf.setId(id);
 			ll.addView(etf);
 			break;
+		//Handle integers
 		case (TableField.TYPE_INTEGER):
 			EditText eti = new EditText(_cont);
 			eti.setLayoutParams((new LayoutParams(LayoutParams.MATCH_PARENT,
@@ -190,6 +194,7 @@ public class RecordEditorBuilder {
 			eti.setId(id);
 			ll.addView(eti);
 			break;
+		//Handle times
 		case (TableField.TYPE_TIME):
 			//TODO change to time picker
 			EditText ett = new EditText(_cont);
@@ -201,6 +206,7 @@ public class RecordEditorBuilder {
 			ett.setId(id);
 			ll.addView(ett);
 			break;
+		//Handle booleans
 		case (TableField.TYPE_BOOLEAN):
 			CheckBox etb = new CheckBox(_cont);
 			etb.setLayoutParams((new LayoutParams(LayoutParams.MATCH_PARENT,
@@ -255,9 +261,9 @@ public class RecordEditorBuilder {
 //				LinearLayout.LayoutParams.WRAP_CONTENT));
 		ll.setId(llId);
 		//TODO only one of the following lines is needed. First original second experimental FK selections lists
-		final String[] fk = _db.getFKList(field.getForeignKey());
+		//final String[] fk = _db.getFKList(field.getForeignKey());
 		final ForeignKeyHolder fkh =  _db.getFKList2(field.getForeignKey());
-		if (fk == null) {
+		if (fkh == null) {
 			Utils.showMessage(_cont.getString(R.string.Error), _cont.getString(R.string.InvalidOrEmptyFK), _cont);
 		} 
 		final ArrayAdapter<String> adapter = new ArrayAdapter<String>(_cont,
