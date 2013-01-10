@@ -250,6 +250,15 @@
     <string name="NoSuchDatabase">Databasen findes ikke</string>
     <string name="MaxWidth">Max felt bredde</string>
     <string name="MaxWidthText">Maksimal bredde af felter i grid view</string>
+    <string name="AddToFilter">Føj til filter</string>
+    <string name="EnterValues">Indtast værdi()er)</string>
+    <string name="SQLEditor">SQL editor</string>
+    <string name="QEMaxLines">Max. linjer når i fokus</string>
+    <string name="QEMaxLinesText">Max antal linjer i editor under editering</string>
+    <string name="QEMinLines">Linjer når ikke i fokus</string>
+    <string name="QEMinLinesText">Antal linjer når editor ikke er i fokus</string>
+    <string name="CSVExport">Eksporter til CSV fil</string>
+    <string name="CSVImport">Importer fra CSV fil</string>
     		    
     <!-- From here text changes in every version -->
         
@@ -289,16 +298,14 @@
   	<string name="WelcomeMsg">aSQLiteManager er en gratis open source
       SQLite manager / front end til Android enheder.
       \n\nNy i version 3.4:
-      		\n\n•	Now default values also works from the record editor when the field is NOT NULL
-			\n•	Better handling of views with with instead of insert, update and delete
-				triggers
-			\n•	Trigger and index definitions now exported when table dumped and database
-				exported
-			\n•	Now also wrapping of long texts in queries
-			\n•	Remember path to last new database, last opened database and last opened SQL file
+     		\n\n•	SQL Editor in Query viewer now shrinks to a configurable number of
+     		lines when not in focus
+				\n•	New and more advanced (I know - it don\'t say much) filter builder to filter
+				data in the TableViewer
+				\n•	Export of data on CSV format from table viewer
+				\n•	Import of data on CSV formatted file from table viewer
 		\n\nBug fixes – thanks for reporting! And please report bug by both report feature
 			and email:
-			\n•	Special table names now works with the record editor during updates and insert
 			\n•	A few minor problem solved
 
       \n\nDu kan redigere system databaser med aShell (beta) på rooted telefoner
