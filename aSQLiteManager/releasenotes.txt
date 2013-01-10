@@ -1,5 +1,16 @@
 Download binaries here: http://market.android.com/details?pub=Andsen
 
+Next version:
+	News:
+		Export of data on CSV format from table viewer
+		Import of data on CSV formatted file from table viewer
+		New and more advanced (I know - it don't say much) filter builder to filter data in
+			the TableViewer
+		SQL Editor in Query viewer now shrinks to a configurable number of lines when not in
+			focus 		
+	Bug fixes:
+		Fixed problems with blank values in integer preferences
+
 Version 3.4:
 	Now default values also works from the record editor when the field is NOT NULL
 	Better handling of views with with instead of insert, update and delete

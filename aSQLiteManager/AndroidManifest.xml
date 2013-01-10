@@ -26,11 +26,13 @@
     <activity android:name=".Help"></activity>
     <activity android:name=".Prefs"></activity>
     <activity android:name=".QueryViewer"></activity>
+    <activity android:name=".SpatialQueryViewer"></activity>
     <activity android:name=".SQLViewer"></activity>
     <activity android:name=".ProgressBarTest"></activity>
     <activity android:name=".CreateTableWizard"></activity>
     <activity android:name=".CreateTableWizField"></activity>
-        <!--
+    <activity android:name=".FilterBuilder"></activity>
+    <!--
           Don't know why but by repeating the OpenOnClick intend in these two
           different ways aSQLiteManager can be opened from FileManager (Adao Team)
           and OI File Manager but not from "Simplest File Manager"
@@ -39,19 +41,20 @@
 		          android:label="@string/app_name"
 		          android:icon="@drawable/sqlite_icon"
 		          android:theme="@android:style/Theme.Dialog" >
-			<intent-filter android:icon="@drawable/sqlite_icon"
-				  android:label="@string/app_name" >
+<!--
+android:label="@string/app_name"
+ -->
+		    <intent-filter android:icon="@drawable/sqlite_icon"
+				  android:label="aSQL mime *" >
 		    <action android:name="android.intent.action.VIEW" />
 		    <category android:name="android.intent.category.DEFAULT" />
 		    <category android:name="android.intent.category.BROWSABLE" />
 		    <category android:name="android.intent.category.ALTERNATIVE" />
 		    <category android:name="android.intent.category.SELECTED_ALTERNATIVE" />
 		    <data android:scheme="file" android:host="*"  android:pathPattern=".*\\.sqlite" />
-		    <data android:scheme="content" android:host="*"  android:pathPattern=".*\\.sqlite" />
-		    <data android:scheme="http" android:host="*"  android:pathPattern=".*\\.sqlite" />
-		    <data android:scheme="file" android:host="*"  android:pathPattern=".*\\.db" />
-		    <data android:scheme="content" android:host="*"  android:pathPattern=".*\\.db" />
-		    <data android:scheme="http" android:host="*"  android:pathPattern=".*\\.db" />
+<!-- 		    <data android:scheme="content" android:host="*"  android:pathPattern=".*\\.sqlite" />   -->
+ 		    <data android:scheme="file" android:host="*"  android:pathPattern=".*\\.db" />   			
+<!--		    <data android:scheme="content" android:host="*"  android:pathPattern=".*\\.db" />	-->
 		    <data android:mimeType="*/*" /> 
 			</intent-filter> 
 		</activity>
@@ -59,22 +62,39 @@
 		          android:label="@string/app_name"
 		          android:icon="@drawable/sqlite_icon"
 		          android:theme="@android:style/Theme.Dialog">
-			<intent-filter android:icon="@drawable/sqlite_icon"
-			   android:label="@string/app_name">
+<!--
+android:label="@string/app_name"
+ -->
+		    <intent-filter android:icon="@drawable/sqlite_icon"
+					android:label="aSQL file">
 		    <action android:name="android.intent.action.VIEW" />
 		    <category android:name="android.intent.category.DEFAULT" />
 		    <category android:name="android.intent.category.BROWSABLE" />
 		    <category android:name="android.intent.category.ALTERNATIVE" />
 		    <category android:name="android.intent.category.SELECTED_ALTERNATIVE" />
 		    <data android:scheme="file" android:host="*"  android:pathPattern=".*\\.sqlite" />
-		    <data android:scheme="http" android:host="*"  android:pathPattern=".*\\.sqlite" />
 		    <data android:scheme="file" android:host="*"  android:pathPattern=".*\\.db" />
-		    <data android:scheme="http" android:host="*"  android:pathPattern=".*\\.db" />
 			</intent-filter> 
 		</activity>
+		<activity 
+      android:name=".OpenOnClick3"
+		  android:label="@string/app_name"
+		  android:icon="@drawable/sqlite_icon"
+      android:configChanges="orientation|keyboardHidden"
+      android:launchMode="singleTop">
+<!--
+android:label="@string/app_name"
+ -->
+		    <intent-filter android:icon="@drawable/sqlite_icon"
+					android:label="aSQL mime sqlite">
+        <action android:name="android.intent.action.VIEW" />
+        <category android:name="android.intent.category.DEFAULT" />
+        <data android:mimeType="application/x-sqlite3" />
+      </intent-filter>
+    </activity>
 	</application>
-      <uses-sdk android:minSdkVersion="3"
-              android:targetSdkVersion="16" />
+  <uses-sdk android:minSdkVersion="3"
+     android:targetSdkVersion="16" />
   <supports-screens
     android:largeScreens="true"
     android:normalScreens="true"
