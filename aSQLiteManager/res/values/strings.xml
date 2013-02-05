@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--β-->
-    <string name="VersionNo">3.4 +</string>
+    <string name="VersionNo">3.5</string>
     <string name="Version">Version</string>
     <string name="hello">aSQLiteManager</string>
     <string name="app_name">aSQLiteManager</string>
@@ -276,9 +276,24 @@
     <string name="QEMinLinesText">Number of lines in editor when not in focus</string>
     <string name="CSVExport">Export to CSV file</string>
     <string name="CSVImport">Import from CSV file</string>
+    <string name="BlobReadWrite">Read from / write to Blob</string>
+    <string name="BlobHint">In same dir. as database</string>
+    <string name="EnterFileName">Enter file name</string>
+    <string name="Extract">Extract</string>
+    <string name="Load">Load</string>
+    <string name="MustGiveFileName">You must give a file name</string>
+    <string name="BlobEditMessage">Extract from or load new data to BLOB field from\n</string>
+    <string name="BlobExtractMessage">Extract data from BLOB field from\n</string>
+    <string name="CSVExportError">CSV Export Error:\n</string>
+    <string name="CSVExportSavedHere">CSV Export saved here:\n</string>
+    <string name="CSVEImortError">CSV Import Error:\n</string>
+    <string name="CanNotRead">Can not read:</string>
+    <string name="CSVImported">CSV imported from:\n</string>
+    <string name="FileNotFound">File not found!</string>
+    <string name="CanNotReadFile">Can not read file!</string>
     
     <!-- Translated to Danish to here -->
-
+    
     <!-- Place new text above here -->
     <!-- From here text changes in every version -->
     
@@ -289,8 +304,13 @@
       \nTo get a complete list of the functionality supported by aSQLiteManager. 
       \n\nYou can also send comments bug reports and feature requests to me at:
       \nandroid41cv@gmail.com
-      \n\nData entry / editor tool allow insert, update and delete on views
-			with instead of insert, update and delete triggers 
+      \nImport and extract data from BLOB fields
+			\nSimple CSV import and export
+			\nNew advanced filter builder
+			\nNow works with large SQL queries - editor scrinks when SQL is executed (you
+				can configure the min. and max. numberof lines)
+			\nData entry / editor tool allow insert, update and delete on views
+				with instead of insert, update and delete triggers
 			\nSort data in table viewer by clicking on title of column
       \nA create databases tool to easily create tables 
       \nEasy deletion of tables, views and indexes
@@ -323,17 +343,27 @@
     <string name="WelcomeMsg">aSQLiteManager is a free open source
   	  SQLite manager / front end for Android devices.
       \n\nNew in version 3.5:
-     		\n\n•	SQL Editor in Query viewer now shrinks to a configurable number of
-     		lines when not in focus
-				\n•	New and more advanced (I know - it don\'t say much) filter builder to filter
+
+      \n\nYou can now support development of this app by buying the donate version. If you
+      	do that you will get more frequent updates and new features will appear in the
+      	donate version before they show up in this version.
+   		\n\n•	Load and extract data from BLOB fields from / to file
+   		\n•	SQL Editor in Query viewer now shrinks to a configurable number of
+   			lines when not in focus
+			\n•	New and more advanced (I know - it don\'t say much) filter builder to filter
 				data in the TableViewer
-				\n•	Export of data on CSV format from table viewer
-				\n•	Import of data on CSV formatted file from table viewer
-		\n\nBug fixes – thanks for reporting! And please report bug by both report feature
-			and email:
-			\n•	A few minor problem solved
-		\n\nYou can edit system database on rooted devices with aSQLiteManager using
-			aShell(beta). You find aShell here:
+			\n•	Simple export of data on CSV format from table viewer
+			\n•	Simple import of data on CSV formatted file from table viewer
+			\n•	Headings always visible in datagrid
+			\n\nBug fixes – thanks for reporting! And please report bug by both report feature
+				and email:
+			\n•	Copy of text in table viewer no longer fc on Android 4.0 (but does not copy the text)
+			\n•	Editing of a record with aBLOB field no longer clear the BLOB field
+			\n•	Fixed problems with blank values in integer preferences
+			\n•	Some other problem solved
+
+			\n\nYou can edit system database on rooted devices with aSQLiteManager using
+				aShell(beta). You find aShell here:
       \nhttp://market.android.com/search?q=pub:Andsen
       \n\nPlease report problems with aShell. I have only access to a few
       	rooted phones so testing is difficult. When aShell works properly the
@@ -341,7 +371,7 @@
       \n\nFor a description of all features check:
       \naaa.andsen.dk/aSQLiteManager.html
       \n\nComments, bug reports and feature requests are welcome.
-      just drop me a mail at:
+      	just drop me a mail at:
       \nandroid41cv@gmail.com
       \n\nAnd thanks to those of you who report bugs instead of complaining ;-) 
       \n\nHope you enjoy the app!

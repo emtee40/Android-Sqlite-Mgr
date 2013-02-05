@@ -8,6 +8,8 @@ package dk.andsen.utils;
 
 import java.io.File;
 
+import dk.andsen.asqlitemanager.R;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -92,9 +94,9 @@ public class Utils {
 	 */
 	public static void showException(String e, Context cont) {
 		AlertDialog alertDialog = new AlertDialog.Builder(cont).create();
-		alertDialog.setTitle("Error");
+		alertDialog.setTitle(cont.getText(R.string.Error));
 		alertDialog.setMessage(e);
-		alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+		alertDialog.setButton(cont.getText(R.string.OK), new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
 				return;
 			}
@@ -103,7 +105,7 @@ public class Utils {
 	}
 
 	public static void showMessage(String title, String msg, Context cont) {
-		showMessage(title, msg, null, "OK", cont);
+		showMessage(title, msg, null, cont.getText(R.string.OK).toString(), cont);
 	}
 
 	public static void showMessage(String title, String msg, String btnText,

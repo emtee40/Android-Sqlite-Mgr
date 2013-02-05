@@ -227,7 +227,12 @@ public class NewFilePicker extends ListActivity {
 
 			}
 		}
-		Arrays.sort(files, new FileComparator());
+		try {
+			Arrays.sort(files, new FileComparator());
+		} catch (Exception e) {
+			Utils.logD("Sorting failed", logging);
+			Utils.printStackTrace(e, logging);
+		}
 		for (int i = 0; i < files.length; i++) {
 			File file = files[i];
 			path.add(file.getPath());

@@ -2,14 +2,18 @@ Download binaries here: http://market.android.com/details?pub=Andsen
 
 Next version:
 	News:
-		Export of data on CSV format from table viewer
-		Import of data on CSV formatted file from table viewer
+		Load and extract data from BLOB fields from / to file
+		Simple export of data on CSV format from table viewer
+		Simple import of data on CSV formatted file from table viewer
 		New and more advanced (I know - it don't say much) filter builder to filter data in
 			the TableViewer
 		SQL Editor in Query viewer now shrinks to a configurable number of lines when not in
 			focus 		
 	Bug fixes:
+		Editing of a record with aBLOB field no longer clear the BLOB field 
+		Copy of text in table viewer no longer fc on Android 4.0 (but does not copy the text)
 		Fixed problems with blank values in integer preferences
+		Other bug fixes
 
 Version 3.4:
 	Now default values also works from the record editor when the field is NOT NULL

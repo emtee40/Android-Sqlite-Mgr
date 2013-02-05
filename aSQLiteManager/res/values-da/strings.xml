@@ -176,8 +176,8 @@
     <string name="MainScreenInPortraitText">Hold altid hoved skærmen i portræt mode (efter genstart)</string>
     <string name="FKLists">FK lister</string>
     <string name="FKListsText">Brug lister til redigering af FK felter</string>
-    <string name="SaveSQL">Gæm SQL</string>
-    <string name="SaveSQLText">Gæm SQL i databasen</string>
+    <string name="SaveSQL">Gem SQL</string>
+    <string name="SaveSQLText">Gem SQL i databasen</string>
     <string name="ForeignKeys">Slå fremmednøgler til</string>
     <string name="ForeignKeysText">Slå fremmednøgler constraints til</string>
     <!-- Common strings for Dialogs -->    
@@ -259,7 +259,22 @@
     <string name="QEMinLinesText">Antal linjer når editor ikke er i fokus</string>
     <string name="CSVExport">Eksporter til CSV fil</string>
     <string name="CSVImport">Importer fra CSV fil</string>
-    		    
+    <string name="BlobReadWrite">Læs / skriv til Blob</string>
+    <string name="BlobHint">I samme dir.som databasen</string>
+    <string name="EnterFileName">Indtast filenavn</string>
+    <string name="Extract">Gem</string>
+    <string name="Load">Indlæs</string>
+    <string name="MustGiveFileName">Du skal angive et filnavn</string>
+    <string name="BlobEditMessage">Gem eller indlæs data fra eller til et BLOB felt fra\n</string>
+    <string name="BlobExtractMessage">Gem data fra BLOB felt fra\n</string>
+    <string name="CSVExportError">CSV Eksport Fejl:\n</string>
+    <string name="CSVExportSavedHere">CSV Eksport gemt her:\n</string>
+    <string name="CSVEImortError">CSV Import Fejl:\n</string>
+    <string name="CanNotRead">Kan ikke læse:</string>
+    <string name="CSVImported">CSV importeret fra:\n</string>
+    <string name="FileNotFound">Filen ikke fundet!</string>
+    <string name="CanNotReadFile">Kan ikke læse filen!</string>
+    
     <!-- From here text changes in every version -->
         
     <string name="HelpText">
@@ -297,16 +312,24 @@
         		    
   	<string name="WelcomeMsg">aSQLiteManager er en gratis open source
       SQLite manager / front end til Android enheder.
-      \n\nNy i version 3.4:
-     		\n\n•	SQL Editor in Query viewer now shrinks to a configurable number of
-     		lines when not in focus
-				\n•	New and more advanced (I know - it don\'t say much) filter builder to filter
+      \n\nNew in version 3.5:
+      \n\nYou can now support development of this app by buying the donate version. If you
+      	do that you will get more frequent updates and new features will appear in the
+      	donate version before they show up in this version.
+   		\n\n•	Load and extract data from BLOB fields from / to file
+   		\n•	SQL Editor in Query viewer now shrinks to a configurable number of
+   			lines when not in focus
+			\n•	New and more advanced (I know - it don\'t say much) filter builder to filter
 				data in the TableViewer
-				\n•	Export of data on CSV format from table viewer
-				\n•	Import of data on CSV formatted file from table viewer
-		\n\nBug fixes – thanks for reporting! And please report bug by both report feature
-			and email:
-			\n•	A few minor problem solved
+			\n•	Simple export of data on CSV format from table viewer
+			\n•	Simple import of data on CSV formatted file from table viewer
+			\n•	Headings always visible in datagrid
+			\n\nBug fixes – thanks for reporting! And please report bug by both report feature
+				and email:
+			\n•	Copy of text in table viewer no longer fc on Android 4.0 (but does not copy the text)
+			\n•	Editing of a record with aBLOB field no longer clear the BLOB field
+			\n•	Fixed problems with blank values in integer preferences
+			\n•	Some other problem solved
 
       \n\nDu kan redigere system databaser med aShell (beta) på rooted telefoner
       med aSQLiteManager. Du finder aShell her:

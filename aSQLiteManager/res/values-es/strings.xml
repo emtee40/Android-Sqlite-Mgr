@@ -299,18 +299,25 @@
     <!-- Here write what is new in this version -->
     <string name="WelcomeMsg">aSQLiteManager is a free open source
   	  Administrador SQLite / interfaz para dispositivos Android.
-      \n\nNuevo en esta versión 3.4:
-            		\n\n•	Now default values also works from the record editor when the field is NOT NULL
-			\n•	Better handling of views with with instead of insert, update and delete
-				triggers
-			\n•	Trigger and index definitions now exported when table dumped and database
-				exported
-			\n•	Now also wrapping of long texts in queries
-			\n•	Remember path to last new database, last opened database and last opened SQL file
-		\n\nBug fixes – thanks for reporting! And please report bug by both report feature
-			and email:
-			\n•	Special table names now works with the record editor during updates and insert
-			\n•	A few minor problem solved
+      \n\nNuevo en esta versión 3.5:
+
+      \n\nYou can now support development of this app by buying the donate version. If you
+      	do that you will get more frequent updates and new features will appear in the
+      	donate version before they show up in this version.
+   		\n\n•	Load and extract data from BLOB fields from / to file
+   		\n•	SQL Editor in Query viewer now shrinks to a configurable number of
+   			lines when not in focus
+			\n•	New and more advanced (I know - it don\'t say much) filter builder to filter
+				data in the TableViewer
+			\n•	Simple export of data on CSV format from table viewer
+			\n•	Simple import of data on CSV formatted file from table viewer
+			\n•	Headings always visible in datagrid
+			\n\nBug fixes – thanks for reporting! And please report bug by both report feature
+				and email:
+			\n•	Copy of text in table viewer no longer fc on Android 4.0 (but does not copy the text)
+			\n•	Editing of a record with aBLOB field no longer clear the BLOB field
+			\n•	Fixed problems with blank values in integer preferences
+			\n•	Some other problem solved
       
 		\n\nYou can edit system database on rooted devices with aSQLiteManager using
 		aShell(beta). You find aShell here:

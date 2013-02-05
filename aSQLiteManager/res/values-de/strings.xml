@@ -266,27 +266,25 @@
 			\n•	Maximal width of fields in data grid can now be configured to wrap long text
 				to several lines. If max width is set to 0 (default) long fields will not
 				be wrapped
-			
-			\n\nNeu in dieser Version 3.3:
+			\n\nNeu in dieser Version 3.5:
 
-      \n\n•	A new CREATE TABLE wizard where entered fields can be edited / deleted
-			\n•	Data entry / editor tool allow insert, update and delete on views
-				with instead of insert, update and delete triggers 
-			\n•	Sort data in table viewer by clicking on title of column
-			\n•	Font size in directory and table lists follow the font size of data grids
-			\n•	Now check if database exists before trying to open recently opened databases
-				and removes deleted databases from the list
-			\n\nBug fixes – thanks for reporting!:
-			\n•	Welcome and Tip screens now works with with with change in orientation
-			\n•	Table definitions shows triggers regardless of case
-			\n•	Data entry / editor tool now handle strings with quotation marks
-			\n•	Paging and filter are no longer reset during rotation of device
-			\n\nYou can edit system database on rooted devices with aSQLiteManager using
-			aShell(beta). You find aShell here:
-      \nhttp://market.android.com/search?q=pub:Andsen
-      \n\nPlease report problems with aShell. I have only access to a few
-      rooted phones so testing is difficult. When aShell works properly the
-      functionality will be implemented in aSQLiteManager
+      \n\nYou can now support development of this app by buying the donate version. If you
+      	do that you will get more frequent updates and new features will appear in the
+      	donate version before they show up in this version.
+   		\n\n•	Load and extract data from BLOB fields from / to file
+   		\n•	SQL Editor in Query viewer now shrinks to a configurable number of
+   			lines when not in focus
+			\n•	New and more advanced (I know - it don\'t say much) filter builder to filter
+				data in the TableViewer
+			\n•	Simple export of data on CSV format from table viewer
+			\n•	Simple import of data on CSV formatted file from table viewer
+			\n•	Headings always visible in datagrid
+			\n\nBug fixes – thanks for reporting! And please report bug by both report feature
+				and email:
+			\n•	Copy of text in table viewer no longer fc on Android 4.0 (but does not copy the text)
+			\n•	Editing of a record with aBLOB field no longer clear the BLOB field
+			\n•	Fixed problems with blank values in integer preferences
+			\n•	Some other problem solved
 
 			\n\nEine Beschreibung alles Funktionalitäten findest du auf:
 			\naaa.andsen.dk/aSQLiteManager.html 

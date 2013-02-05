@@ -12,17 +12,14 @@ Will be downsized to mini or micro
 
 ToDo / unsorted list of ideas for coming development:
 	Functions:
-		Spatialite support
-			Spatial queries
-			View spatial objects
-			Save / read WKT
 		Support for editing of BLOBs in record editor (save to sdCard / load from sdCard)
-		CSV import
+		Configurable CSV import / export
 		Build in root access to system databases (from aShell and experimental)
 		Viewing and editing using forms and a kind of form generator / editor
 		Progress with info during restore of databases based on comments in the file
 			user thread to run script
 		Progress indicator during queries (run in thread)
+		Progress indicator during CSV imprt / export
 		Create view wizards
 		Scripts editor?
 			or use of external editor to edit scripts
@@ -42,6 +39,8 @@ ToDo / unsorted list of ideas for coming development:
 		Add a tablet layout
 
 Done:
+	Support for editing of BLOBs in record editor
+	CSV import / export
 	A filter builder
 	Remember last directory when opening databases and SQL files
 	Default values also works from the record editor when the field is NOT NULL
