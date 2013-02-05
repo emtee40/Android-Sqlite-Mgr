@@ -1,6 +1,6 @@
 Download binaries here: http://market.android.com/details?pub=Andsen
 
-Next version:
+Version 3.5:
 	News:
 		Load and extract data from BLOB fields from / to file
 		Simple export of data on CSV format from table viewer
