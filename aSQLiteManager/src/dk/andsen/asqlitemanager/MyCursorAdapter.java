@@ -1,3 +1,12 @@
+/**
+ * Part of aSQLiteManager (http://sourceforge.net/projects/asqlitemanager/)
+ * a a SQLite Manager by andsen (http://sourceforge.net/users/andsen)
+ *
+ * This is not used. Intended for scrolling instead of paging
+ *
+ * @author andsen
+ *
+ */
 package dk.andsen.asqlitemanager;
 
 import java.util.ArrayList;

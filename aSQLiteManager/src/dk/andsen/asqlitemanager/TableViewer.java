@@ -17,22 +17,23 @@
 package dk.andsen.asqlitemanager;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.text.ClipboardManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
+import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -50,19 +51,24 @@ import dk.andsen.types.Types;
 import dk.andsen.types.ViewUpdateable;
 import dk.andsen.utils.Utils;
 /**
- * @author mh
+ * @author andsen
  *
  */
+//TODO Configurable csv importer / exporter select fields to exports and lines and 
+//			fields to skip during import 
 public class TableViewer extends Activity implements OnClickListener {
 	private Database _db = null;
 	private String _table;
 	private Context _cont;
 	//private String _type = "Fields";
 	private TableLayout _aTable;
+	private TableLayout _aHeadings;
+	private TableRow _trHeadings;
+	private TableRow _trLastRow;
 	//Page offset
-	private int offset = 0;
-	private int limit = 15;
-	private boolean _updateTable;
+	private int offset = 0;				// default page offset
+	private int limit = 15; 			// default page size
+	private boolean _updateTable;	
 	private Button bUp;
 	private Button bDwn;
 	private int sourceType;
@@ -73,6 +79,8 @@ public class TableViewer extends Activity implements OnClickListener {
 	private static final int MENU_LAST_REC = 2;
 	private static final int MENU_FILETR = 3;
 	private static final int MENU_TABLE_DEF = 4;
+	private static final int MENU_CSV_EXPORT_TABLE = 5;
+	private static final int MENU_CSV_IMPORT_TABLE = 6;
 	
 	private boolean _logging;
 	private int _fontSize;
@@ -82,10 +90,15 @@ public class TableViewer extends Activity implements OnClickListener {
 	private boolean _canUpdateView = false;
 	private boolean _canDeleteView = false;
 	
-	Record[] _data;
+	private Record[] _data;
 	private boolean _fieldMode = false;
 	private boolean _showTip = false;
 	private int _maxWidth;
+	private TextView tvDB;
+	//private String _dbPath;
+	private boolean resize = false;
+	private boolean resizing;
+	private boolean measured = false;
 	
 	/*
 	 * What is needed to allow editing form  table viewer 
@@ -113,10 +126,12 @@ public class TableViewer extends Activity implements OnClickListener {
 		_logging = Prefs.getLogging(this);
 		_fontSize = Prefs.getFontSize(this);
 		setContentView(R.layout.table_viewer);
-		TextView tvDB = (TextView)this.findViewById(R.id.TableToView);
+		tvDB = (TextView)this.findViewById(R.id.TableToView);
 		Button bFields = (Button) this.findViewById(R.id.Fields);
 		Button bData = (Button) this.findViewById(R.id.Data);
 		Button bNewRec = (Button) this.findViewById(R.id.NewRec);
+		_aHeadings = (TableLayout) this.findViewById(R.id.headinggrid);
+		_aTable = (TableLayout) this.findViewById(R.id.datagrid);
 		bUp = (Button) this.findViewById(R.id.PgUp);
 		bDwn = (Button) this.findViewById(R.id.PgDwn);
 		bUp.setOnClickListener(this);
@@ -124,6 +139,7 @@ public class TableViewer extends Activity implements OnClickListener {
 		bUp.setVisibility(View.GONE);
 		bDwn.setVisibility(View.GONE);
 		_cont = this;
+		_maxWidth = Prefs.getMaxWidth(_cont);
 		limit = Prefs.getPageSize(this);
 		bFields.setOnClickListener(this);
 		bData.setOnClickListener(this);
@@ -135,6 +151,7 @@ public class TableViewer extends Activity implements OnClickListener {
 			sourceType = extras.getInt("type");
 			Utils.logD("Opening database", _logging);
 			_table = extras.getString("Table");
+			//_dbPath = extras.getString("db");
 			_db = aSQLiteManager.database;
 			Utils.logD("Database open", _logging);
 			if (sourceType == Types.TABLE) {
@@ -143,7 +160,6 @@ public class TableViewer extends Activity implements OnClickListener {
 			else if (sourceType == Types.VIEW) {
 				tvDB.setText(getString(R.string.DBView) + " " + _table);
 			}
-
 			if (savedInstanceState != null) {
 				Utils.logD("TableViewer RestoreInstanceState", _logging);
 				offset = savedInstanceState.getInt("PageOffset", 0);
@@ -216,21 +232,19 @@ public class TableViewer extends Activity implements OnClickListener {
 	 */
 	public void onClick(View v) {
 		int key = v.getId();
-		_aTable=(TableLayout)findViewById(R.id.datagrid);
-		//boolean _isView = false;
 		if (key == R.id.Fields) {
 			offset = 0;
 			_fieldMode = true;
-			String[][] data;
 			_canInsertInView = false;
 			_canUpdateView = false;
 			_canDeleteView = false;
 			try {
 				String[] fieldNames = _db.getTableStructureHeadings(_table);
-				setTitles(_aTable, fieldNames, false);
-				data = _db.getTableStructure(_table);
+				setTitles(fieldNames, false);
+				_data = _db.getTableStructure(_cont, _table);
+				Utils.logD("_data " + _data.length, _logging);
 				updateButtons(false);
-				oldappendRows(_aTable, data, false);
+				newAppendRows(false);
 			} catch (Exception e) {
 				Utils.showException(e.getLocalizedMessage(), _cont);
 				e.printStackTrace();
@@ -254,10 +268,7 @@ public class TableViewer extends Activity implements OnClickListener {
 			if (childs >= limit) {  //  No more data on to display - no need to PgDwn
 				offset += limit;
 				fillDataTableWithArgs();
-//				String [] fieldNames = _db.getFieldsNames(_table);
-//				setTitles(_aTable, fieldNames, !_isView);
-//				Record[] data = _db.getTableDataWithWhere(_table, _where, offset, limit, _isView);
-//				appendRows(_aTable, data, !_isView);
+				onWindowFocusChanged(true);
 			}
 			Utils.logD("PgDwn:" + offset, _logging);
 		} else if (key == R.id.PgUp) {
@@ -265,14 +276,13 @@ public class TableViewer extends Activity implements OnClickListener {
 			if (offset < 0)
 				offset = 0;
 			fillDataTableWithArgs();
-//			String [] fieldNames = _db.getFieldsNames(_table);
-//			setTitles(_aTable, fieldNames, !_isView);
-//			Record[] data = _db.getTableDataWithWhere(_table, _where, offset, limit, _isView);
-//			appendRows(_aTable, data, !_isView);
-//			Utils.logD("PgUp: " + offset, _logging);
+			onWindowFocusChanged(true);
 		}
 	}
 	
+	/**
+	 * Update the data grid
+	 */
 	private void updateData() {
 		checkForUpdateableView();
 		try {
@@ -284,6 +294,9 @@ public class TableViewer extends Activity implements OnClickListener {
 		}
 	}
 
+	/**
+	 * Add a new record to the data grid
+	 */
 	private void addNewRecord() {
 		if ( sourceType != Types.VIEW || _canInsertInView) {
 			final RecordEditorBuilder re;
@@ -349,10 +362,37 @@ public class TableViewer extends Activity implements OnClickListener {
 
 	@Override
 	public void onWindowFocusChanged(boolean hasFocus) {
-		super.onWindowFocusChanged(hasFocus);
-		if (_updateTable) {
-			onClick((Button) this.findViewById(R.id.Data));
+		if(hasFocus) {
+			Utils.logD("onWindowsFocusChange " + resize + resizing, _logging);
+			super.onWindowFocusChanged(hasFocus);
+			if (resize)
+				setWidths();
+			if (_updateTable) {
+				onClick((Button) this.findViewById(R.id.Data));
+			}
 		}
+	}
+	
+	/**
+	 * Equalise the size of heading and data rows if any rows 
+	 */
+	private void setWidths() {
+		//resizing = true;
+		if (_trLastRow != null) {
+			for (int i = 0; i < _trHeadings.getChildCount(); i++) {
+				TextView vT = (TextView) _trHeadings.getChildAt(i);
+				TextView vD = (TextView) _trLastRow.getChildAt(i);
+				if (vT != null && vD != null) {
+					Utils.logD("Width " + i + " " + vT.getWidth() + " " + vD.getWidth(), _logging);
+					if (vT.getWidth() > vD.getWidth())
+						vD.setWidth(vT.getWidth());
+					else
+						vT.setWidth(vD.getWidth());
+				}
+			}
+		}
+		//resizing = false;
+		resize = false;
 	}
 
 	/**
@@ -375,7 +415,8 @@ public class TableViewer extends Activity implements OnClickListener {
 	 * @param aTable true if it is a table and false if it is a view
 	 * Append rows to the table grid
 	 */
-	private void newAppendRows(TableLayout table, final boolean aTable) {
+	private void newAppendRows(final boolean aTable) {
+		_aTable.removeAllViews();
 		if (_data == null)
 			return;
 		int rowSize = _data.length;
@@ -390,7 +431,6 @@ public class TableViewer extends Activity implements OnClickListener {
 			//Make every second row dark gray
 			if (i%2 == 1)
 				row.setBackgroundColor(Color.DKGRAY);
-			_maxWidth = Prefs.getMaxWidth(_cont);
 			//Go through all the columns
 			for(int j = 0; j < colSize; j++){
 				// if it is the first cell (and updateable) add a cell with "Edit" 
@@ -408,25 +448,221 @@ public class TableViewer extends Activity implements OnClickListener {
 					else
 						c.setText(_data[i].getFields()[j].getFieldData());
 					c.setBackgroundColor(getBackgroundColor(_data[i].getFields()[j].getFieldType(), (i%2 == 1)));
-					c.setPadding(3, 3, 3, 3);
+					c.setPadding(5, 3, 5, 3);
 					// Adding a onClickListener to copy cell value to clip board
-					c.setOnClickListener(new OnClickListener() {
-						public void onClick(View v) {
-							String text = (String)((TextView)v).getText();
-							ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-							clipboard.setText(text);
-							Utils.toastMsg(_cont, getText(R.string.CopiedToClipboard).toString());
+					if (_data[i].getFields()[j].getFieldType().toString().equalsIgnoreCase("blob")) {
+						//if the field is a BLOB field make it possible to retrieve / change it
+						int id = rowNo;
+						if (aTable) {
+							if (_data[rowNo].getFields()[0].getFieldData() != "") {
+								c.setHint(new Long(_data[rowNo].getFields()[0].getFieldData()).toString());
+								c.setId(id);
+							}
+						} else {
+							c.setHint(new Long(rowNo).toString());
+							c.setId(id);
 						}
-					});
+						c.setHint(new Long(_data[rowNo].getFields()[0].getFieldData()).toString());
+						OnClickListener clickl = addBolbEditor(new Long(_data[rowNo].getFields()[0].getFieldData()), aTable, j); 
+						if (clickl != null)
+							c.setOnClickListener(clickl);
+					} else {
+						c.setOnClickListener(new OnClickListener() {
+							// if the field is not a BLOB field copy it to the clip board
+							public void onClick(View v) {
+								String text = (String) ((TextView) v).getText();
+								int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+								try {
+									if (currentapiVersion >= 11) { // HONEYCOMB
+										android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+										ClipData clip = ClipData.newPlainText("simple text", text);
+										clipboard.setPrimaryClip(clip);
+										Utils.toastMsg(_cont, getText(R.string.CopiedToClipboard)
+												.toString());
+									} else {
+										android.text.ClipboardManager clipboard = (android.text.ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+										clipboard.setText(text);
+										Utils.toastMsg(_cont, getText(R.string.CopiedToClipboard)
+												.toString());
+									}
+								} catch (Exception e) {
+									Utils.logD("setText failed " + e.getLocalizedMessage(),
+											_logging);
+									Utils.logD("setText failed " + e.getMessage(), _logging);
+									e.printStackTrace();
+								}
+
+//								ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+//								if (clipboard != null) {
+//									Utils.logD("Clipboard is not null", _logging);
+//									try {
+//										Utils.logD("text = " + text, _logging);
+//										ClipData clip = ClipData.newPlainText("simple text",text);
+//										clipboard.setPrimaryClip(clip);
+//										//clipboard.setText(text);
+//										Utils.toastMsg(_cont, getText(R.string.CopiedToClipboard).toString());
+//									} catch (Exception e) {
+//										Utils.logD("setText failed " + e.getLocalizedMessage(), _logging);
+//										Utils.logD("setText failed " + e.getMessage(), _logging);
+//										e.printStackTrace();
+//									}
+//								}
+								
+							}
+						});
+					}
 					row.addView(c);
 				}
 			}
-			table.addView(row, new TableLayout.LayoutParams());
+			_trLastRow = row;
+			_aTable.addView(row, new TableLayout.LayoutParams());
 		}
 	}
 	
+	/**
+	 * Create a OnClickListener to handle tap on a BLOB field
+	 * @param rowNo			The rowId for the record taped on
+	 * @param aTable		Name of the table
+	 * @param columnNo	The column clicked
+	 * @return					a OnClickedListener
+	 */
+	private OnClickListener addBolbEditor(long rowNo, boolean aTable, int columnNo) {
+		final long _rowNo = rowNo;
+		final boolean _isATable = aTable;
+		final int _columnNo = columnNo;
+		OnClickListener cListener = null;
+		if (_isATable) {
+			// allow extract and insert
+			cListener = new OnClickListener() {
+				public void onClick(View v) {
+					AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(_cont);
+					// set title
+					alertDialogBuilder.setCancelable(false);
+					alertDialogBuilder.setTitle(_cont.getText(R.string.BlobReadWrite));
+					LinearLayout ll = new LinearLayout(_cont);
+					ll.setOrientation(LinearLayout.VERTICAL);
+					ll.setPadding(3, 3, 3, 3);
+					ll.setLayoutParams(new LinearLayout.LayoutParams(
+							LinearLayout.LayoutParams.WRAP_CONTENT,
+							LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
+					TextView message = new TextView(_cont);
+					message.setText(_cont.getText(R.string.BlobHint));
+					message.setPadding(3, 3, 3, 3);
+					final EditText input = new EditText(_cont);
+					input.setHint(_cont.getText(R.string.EnterFileName));
+					ll.addView(message);
+					ll.addView(input);
+					alertDialogBuilder.setView(ll);
+					// set dialog message
+					alertDialogBuilder
+							.setMessage(_cont.getText(R.string.BlobEditMessage) + _table)
+							.setCancelable(false)
+							.setNeutralButton(_cont.getText(R.string.Extract),
+									new DialogInterface.OnClickListener() {
+										public void onClick(DialogInterface dialog, int id) {
+											//save the BLOB data to file
+											if (input.getText().toString().trim().equals("")) {
+												//input.setText(_cont.getText(R.string.MustGiveFileName));
+												Utils.showException(_cont.getText(R.string.MustGiveFileName).toString(), _cont);
+											} else {
+												//_dbPath
+												Utils.logD("File name " + input.getText().toString().trim(), _logging);
+												_db.saveBlobData(input.getText().toString(), _table, _rowNo, _columnNo, _cont);
+												dialog.cancel();
+											}
+										}
+									})
+							.setNegativeButton(_cont.getText(R.string.Load) ,
+									new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog, int id) {
+									if (input.getText().toString().trim().equals("")) {
+										//input.setText(_cont.getText(R.string.MustGiveFileName));
+										Utils.showException(_cont.getText(R.string.MustGiveFileName).toString(), _cont);
+									} else {
+										Utils.logD("File name " + input.getText().toString().trim(), _logging);
+										//TODO test for file exists
+										_db.loadBlobData(input.getText().toString(), _table, _rowNo, _columnNo, _cont);
+										updateData();
+										dialog.cancel();
+									}
+								}
+							})
+							.setPositiveButton(getText(R.string.Cancel),
+									new DialogInterface.OnClickListener() {
+										public void onClick(DialogInterface dialog, int id) {
+											dialog.cancel();
+										}
+									});
+					// create alert dialog
+					AlertDialog alertDialog = alertDialogBuilder.create();
+					// show it
+					alertDialog.show();
+				}
+			};
+		} else {
+			// It is a view allow extract only
+			cListener = new OnClickListener() {
+				public void onClick(View v) {
+					AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(_cont);
+					// set title
+					alertDialogBuilder.setCancelable(false);
+					alertDialogBuilder.setTitle(_cont.getText(R.string.BlobReadWrite));
+					LinearLayout ll = new LinearLayout(_cont);
+					ll.setOrientation(LinearLayout.VERTICAL);
+					ll.setPadding(3, 3, 3, 3);
+					ll.setLayoutParams(new LinearLayout.LayoutParams(
+							LinearLayout.LayoutParams.WRAP_CONTENT,
+							LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
+					TextView message = new TextView(_cont);
+					message.setText(_cont.getText(R.string.BlobHint));
+					message.setPadding(3, 3, 3, 3);
+					final EditText input = new EditText(_cont);
+					input.setHint(_cont.getText(R.string.EnterFileName));
+					ll.addView(message);
+					ll.addView(input);
+					alertDialogBuilder.setView(ll);
+					// set dialog message
+					alertDialogBuilder
+							.setMessage(_cont.getText(R.string.BlobExtractMessage) + _table)
+							.setCancelable(false)
+							.setNeutralButton(_cont.getText(R.string.Extract),
+									new DialogInterface.OnClickListener() {
+										public void onClick(DialogInterface dialog, int id) {
+											//save the BLOB data to file
+											if (input.getText().toString().trim().equals("")) {
+												//input.setText(_cont.getText(R.string.MustGiveFileName));
+												Utils.showException(_cont.getText(R.string.MustGiveFileName).toString(), _cont);
+											} else {
+												//_dbPath
+												Utils.logD("File name " + input.getText().toString().trim(), _logging);
+												_db.saveBlobData(input.getText().toString(), _table, _rowNo, _columnNo, _cont);
+												dialog.cancel();
+											}
+										}
+									})
+							.setPositiveButton(getText(R.string.Cancel),
+									new DialogInterface.OnClickListener() {
+										public void onClick(DialogInterface dialog, int id) {
+											dialog.cancel();
+										}
+									});
+					// create alert dialog
+					AlertDialog alertDialog = alertDialogBuilder.create();
+					// show it
+					alertDialog.show();
+				}
+			};
+		}
+		return cListener;
+	}
+
+	/**
+	 * Create a TextView with OnClickListener used to edit the row
+	 * @param rowNo		The rowId for the record taped on
+	 * @param aTable	The table name
+	 * @return				A TextView with that start a record editor 
+	 */
 	private TextView addEditField(final int rowNo, final boolean aTable){
-		Utils.logD("addEditField rowNo,  aTable: " + rowNo + ", " + aTable, _logging);
 		TextView c = new TextView(this);
 		if (_maxWidth > 0)
 			c.setMaxWidth(_maxWidth);
@@ -576,6 +812,12 @@ public class TableViewer extends Activity implements OnClickListener {
 	}
 	
 	
+	/**
+	 * Return a colour based on the field type and a boolean to say if should be light
+	 * @param fieldType	A string with the field type
+	 * @param light			If true the colour will be light
+	 * @return					The colour
+	 */
 	private int getBackgroundColor(FieldType fieldType, boolean light) {
 		int color = 0;
 		if (fieldType == AField.FieldType.NULL) {
@@ -612,136 +854,145 @@ public class TableViewer extends Activity implements OnClickListener {
 	 * @param table
 	 * @param data
 	 */
-	private void oldappendRows(TableLayout table, String[][] data, boolean allowEdit) {
-		int rowSize=data.length;
-		int colSize=(data.length>0)?data[0].length:0;
-		for(int i=0; i<rowSize; i++){
-			TableRow row = new TableRow(this);
-			row.setOnClickListener(new OnClickListener() {
-				public void onClick(View v) {
-					// Edit button was clicked!
-					Utils.logD("OnClick: " + v.getId(),_logging);
-				}
-			});
-			if (i%2 == 1)
-				row.setBackgroundColor(Color.DKGRAY);
-			// TODO change rows to ConvertView
-			// Adding all columns as TextView's should be changed to a ConvertView
-			// as described here:
-			// http://android-er.blogspot.com/2010/06/using-convertview-in-getview-to-make.html
-			// or in android41cv dk.andsen.utils.MyArrayAdapter
-			for(int j=0; j<colSize; j++){
-				if (j==0 && allowEdit) {
-					TextView c = new TextView(this);
-					c.setText(getText(R.string.Edit));
-					c.setTextSize(_fontSize);
-					int id;
-					id = i;
-					c.setHint(new Long(data[i][j]).toString());
-					c.setId(id);
-					c.setPadding(3, 3, 3, 3);
-					// TODO More efficient to make one OnClickListener and assign this to all records edit field?
-					c.setOnClickListener(new OnClickListener() {
-						public void onClick(View v) {
-							final RecordEditorBuilder re;
-							TextView a = (TextView)v;
-							final Long rowid = new Long(a.getHint().toString());
-							Utils.logD("Ready to edit rowid " +v.getId() + " in table " + _table,_logging);
-							TableField[] rec = _db.getRecord(_table, rowid);
-							final Dialog dial = new Dialog(_cont);
-							dial.setContentView(R.layout.line_editor);
-							dial.setTitle(getText(R.string.EditRow) + " " + rowid);
-							LinearLayout ll = (LinearLayout)dial.findViewById(R.id.LineEditor);
-							re = new RecordEditorBuilder(rec, true, _cont, _db);
-							re.setFieldNameWidth(200);
-							re.setTreatEmptyFieldsAsNull(true);
-							final ScrollView sv = re.getScrollView();
-							final Button btnOK = new Button(_cont);
-							btnOK.setText(getText(R.string.OK));
-							btnOK.setLayoutParams(new LinearLayout.LayoutParams(
-									LinearLayout.LayoutParams.FILL_PARENT,
-									LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
-							btnOK.setOnClickListener(new OnClickListener() {
-								public void onClick(View v) {
-									if (v == btnOK) {
-										String msg = re.checkInput(sv); 
-										if (msg == null) {
-											//Utils.logD("Record edited; " + rowid);
-											TableField[] res = re.getEditedData(sv);
-											if (_table.equals("sqlite_master")) {
-												Utils.showMessage(getString(R.string.Error), getString(R.string.ROSystemTable), _cont);
-											} else {
-												_db.updateRecord(_table, rowid, res, _cont);
-												_updateTable = true;
-											}
-											dial.dismiss();
-										}
-										else
-											Utils.showException(msg, sv.getContext());
-									} 
-								}
-							});
-							final Button btnCancel = new Button(_cont);
-							btnCancel.setText(getText(R.string.Cancel));
-							btnCancel.setLayoutParams(new LinearLayout.LayoutParams(
-									LinearLayout.LayoutParams.FILL_PARENT,
-									LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
-							btnCancel.setOnClickListener(new OnClickListener() {
-								public void onClick(View v) {
-									if (v == btnCancel) {
-										dial.dismiss();
-									}
-								}
-							});
-							LinearLayout llButtons = new LinearLayout(_cont);
-							llButtons.setOrientation(LinearLayout.HORIZONTAL);
-							llButtons.setLayoutParams(new LinearLayout.LayoutParams(
-									LinearLayout.LayoutParams.FILL_PARENT,
-									LinearLayout.LayoutParams.WRAP_CONTENT));
-							llButtons.addView(btnOK);
-							llButtons.addView(btnCancel);
-							ll.addView(llButtons);
-							ll.addView(sv);
-							dial.show();
-						}
-					});
-					row.addView(c);
-				} else {
-					TextView c = new TextView(this);
-					c.setText(data[i][j]);
-					c.setTextSize(_fontSize);
-					c.setPadding(3, 3, 3, 3);
-					c.setOnClickListener(new OnClickListener() {
-						public void onClick(View v) {
-							String text = (String)((TextView)v).getText();
-							ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-							clipboard.setText(text);
-							Utils.toastMsg(_cont, "Text copied to clip board");
-						}
-					});
-					row.addView(c);
-				}
-
-			}
-			table.addView(row, new TableLayout.LayoutParams());
-		}
-	}
+//	private void xoldappendRows(String[][] data, boolean allowEdit) {
+//		int rowSize=data.length;
+//		int colSize=(data.length>0)?data[0].length:0;
+//		_aTable.removeAllViews();
+//		for(int i=0; i<rowSize; i++){
+//			TableRow row = new TableRow(this);
+//			row.setOnClickListener(new OnClickListener() {
+//				public void onClick(View v) {
+//					// Edit button was clicked!
+//					Utils.logD("OnClick: " + v.getId(),_logging);
+//				}
+//			});
+//			if (i%2 == 1)
+//				row.setBackgroundColor(Color.DKGRAY);
+//			// Adding all columns as TextView's should be changed to a ConvertView
+//			// as described here:
+//			// http://android-er.blogspot.com/2010/06/using-convertview-in-getview-to-make.html
+//			// or in android41cv dk.andsen.utils.MyArrayAdapter
+//			for(int j=0; j<colSize; j++){
+//				if (j==0 && allowEdit) {
+//					TextView c = new TextView(this);
+//					c.setText(getText(R.string.Edit));
+//					c.setTextSize(_fontSize);
+//					int id;
+//					id = i;
+//					c.setHint(new Long(data[i][j]).toString());
+//					c.setId(id);
+//					c.setPadding(3, 3, 3, 3);
+//					c.setOnClickListener(new OnClickListener() {
+//						public void onClick(View v) {
+//							final RecordEditorBuilder re;
+//							TextView a = (TextView)v;
+//							final Long rowid = new Long(a.getHint().toString());
+//							Utils.logD("Ready to edit rowid " +v.getId() + " in table " + _table,_logging);
+//							TableField[] rec = _db.getRecord(_table, rowid);
+//							final Dialog dial = new Dialog(_cont);
+//							dial.setContentView(R.layout.line_editor);
+//							dial.setTitle(getText(R.string.EditRow) + " " + rowid);
+//							LinearLayout ll = (LinearLayout)dial.findViewById(R.id.LineEditor);
+//							re = new RecordEditorBuilder(rec, true, _cont, _db);
+//							re.setFieldNameWidth(200);
+//							re.setTreatEmptyFieldsAsNull(true);
+//							final ScrollView sv = re.getScrollView();
+//							final Button btnOK = new Button(_cont);
+//							btnOK.setText(getText(R.string.OK));
+//							btnOK.setLayoutParams(new LinearLayout.LayoutParams(
+//									LinearLayout.LayoutParams.FILL_PARENT,
+//									LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
+//							btnOK.setOnClickListener(new OnClickListener() {
+//								public void onClick(View v) {
+//									if (v == btnOK) {
+//										String msg = re.checkInput(sv); 
+//										if (msg == null) {
+//											//Utils.logD("Record edited; " + rowid);
+//											TableField[] res = re.getEditedData(sv);
+//											if (_table.equals("sqlite_master")) {
+//												Utils.showMessage(getString(R.string.Error), getString(R.string.ROSystemTable), _cont);
+//											} else {
+//												_db.updateRecord(_table, rowid, res, _cont);
+//												_updateTable = true;
+//											}
+//											dial.dismiss();
+//										}
+//										else
+//											Utils.showException(msg, sv.getContext());
+//									} 
+//								}
+//							});
+//							final Button btnCancel = new Button(_cont);
+//							btnCancel.setText(getText(R.string.Cancel));
+//							btnCancel.setLayoutParams(new LinearLayout.LayoutParams(
+//									LinearLayout.LayoutParams.FILL_PARENT,
+//									LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
+//							btnCancel.setOnClickListener(new OnClickListener() {
+//								public void onClick(View v) {
+//									if (v == btnCancel) {
+//										dial.dismiss();
+//									}
+//								}
+//							});
+//							LinearLayout llButtons = new LinearLayout(_cont);
+//							llButtons.setOrientation(LinearLayout.HORIZONTAL);
+//							llButtons.setLayoutParams(new LinearLayout.LayoutParams(
+//									LinearLayout.LayoutParams.FILL_PARENT,
+//									LinearLayout.LayoutParams.WRAP_CONTENT));
+//							llButtons.addView(btnOK);
+//							llButtons.addView(btnCancel);
+//							ll.addView(llButtons);
+//							ll.addView(sv);
+//							dial.show();
+//						}
+//					});
+//					row.addView(c);
+//				} else {
+//					TextView c = new TextView(this);
+//					c.setText(data[i][j]);
+//					c.setTextSize(_fontSize);
+//					c.setPadding(3, 3, 3, 3);
+//					c.setOnClickListener(new OnClickListener() {
+//						public void onClick(View v) {
+//							String text = (String)((TextView)v).getText();
+//							ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+//							if (clipboard != null) {
+//								Utils.logD("Clipboard is not null", _logging);
+//								try {
+//									Utils.logD("text = " + text, _logging);
+//									ClipData clip = ClipData.newPlainText("simple text",text);
+//									clipboard.setPrimaryClip(clip);
+//									//clipboard.setText(text);
+//									Utils.toastMsg(_cont, getText(R.string.CopiedToClipboard).toString());
+//								} catch (Exception e) {
+//									Utils.logD("setText failed " + e.getLocalizedMessage(), _logging);
+//								}
+//							}
+//						}
+//					});
+//					row.addView(c);
+//				}
+//
+//			}
+//			_aTable.addView(row, new TableLayout.LayoutParams());
+//		}
+//	}
 
 	/**
 	 * Add titles to the columns
 	 * @param table
 	 * @param titles
 	 */
-	private void setTitles(TableLayout table, String[] titles, boolean allowEdit) {
+	private void setTitles(String[] titles, boolean allowEdit) {
 		int rowSize=titles.length;
-		table.removeAllViews();
+		_aHeadings.removeAllViews();
 		TableRow row = new TableRow(this);
 		row.setBackgroundColor(Color.BLUE);
 		if (allowEdit || (_canInsertInView || _canUpdateView || _canDeleteView)) {
 			TextView c = new TextView(this);
 			c.setTextSize(_fontSize);
 			c.setTextAppearance(this, Typeface.BOLD);
-			c.setPadding(3, 3, 3, 3);
+			c.setPadding(5, 3, 5, 3);
 			if (allowEdit || _canInsertInView) {
 				c.setText(getText(R.string.New));
 				c.setOnClickListener(new OnClickListener() {
@@ -837,7 +1088,18 @@ public class TableViewer extends Activity implements OnClickListener {
 			});
 			row.addView(c);
 		}
-		table.addView(row, new TableLayout.LayoutParams());
+		measured  = false;
+		row.getViewTreeObserver().addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
+      public void onGlobalLayout() {
+      	Utils.logD("onGlobalLayout", _logging);
+          if (!measured) {
+          	setWidths();
+            measured = true;
+          }
+      }
+		});
+		_trHeadings = row;
+		_aHeadings.addView(_trHeadings, new TableLayout.LayoutParams());
 	}
 	
 	/**
@@ -888,7 +1150,9 @@ public class TableViewer extends Activity implements OnClickListener {
 		menu.add(0, MENU_LAST_REC, 1, R.string.Last);
 		menu.add(0, MENU_FILETR, 2, R.string.Filter);
 		menu.add(0, MENU_DUMP_TABLE, 3, R.string.DumpTable);
-		menu.add(0, MENU_TABLE_DEF, 4, R.string.TableDef);
+		menu.add(0, MENU_CSV_EXPORT_TABLE, 4, R.string.CSVExport);
+		menu.add(0, MENU_CSV_IMPORT_TABLE, 5, R.string.CSVImport);
+		menu.add(0, MENU_TABLE_DEF, 6, R.string.TableDef);
 		return true;
 	}
 
@@ -906,6 +1170,29 @@ public class TableViewer extends Activity implements OnClickListener {
     	else
     	  Utils.toastMsg(this, this.getString(R.string.DumpFailed));
     	return true;
+    case MENU_CSV_EXPORT_TABLE:
+    	String exportFile = null;
+    	//TODO Let user select file
+    	//TODO Run in thread
+    	String exportRes = _db.csvExport(_cont, _table, exportFile);
+    	if (exportRes == null) {
+    		
+    	} else {
+    		Utils.showMessage(getString(R.string.Message).toString(), exportRes, _cont);
+    	}
+    	break;
+    case MENU_CSV_IMPORT_TABLE:
+    	String importFile = null;
+    	//TODO let user select file and configure which items to import in to which fields
+    	//TODO Run in thread
+    	String importRes = _db.cvsImport(_cont, _table, importFile);
+    	updateData();
+    	if (importRes == null) {
+    		
+    	} else {
+    		Utils.showMessage(getString(R.string.Message).toString(), importRes, _cont);
+    	}
+    	break;
     case MENU_FIRST_REC:
     	offset = 0;
     	fillDataTableWithArgs();
@@ -916,8 +1203,13 @@ public class TableViewer extends Activity implements OnClickListener {
 			offset = childs - limit;
 			fillDataTableWithArgs();
     	return true;
+    	//TODO GoTo page option
+    	
     case MENU_FILETR:
-    	buildFilerMenu(_table);
+			Intent i = new Intent(_cont, FilterBuilder.class);
+			i.putExtra("FILTER", _where);
+			i.putExtra("TABLE", _table);
+    	startActivityForResult(i, 2);
     	return true;
     case MENU_TABLE_DEF:
     	getTableDefinition();
@@ -926,6 +1218,9 @@ public class TableViewer extends Activity implements OnClickListener {
 		return false;
 	}
 	
+	/**
+	 * Retrieve the tabledefinition
+	 */
 	private void getTableDefinition() {
 		offset = 0;
 		if (_db == null) {
@@ -933,54 +1228,15 @@ public class TableViewer extends Activity implements OnClickListener {
 					getString(R.string.NoDatabaseOpen), _cont);
 		} else {
 			String [] fieldNames = {"SQL"};
-			setTitles(_aTable, fieldNames, false);
-			String [][] data = _db.getSQL(_table); 
+			setTitles(fieldNames, false);
+			_data = _db.getSQL(_cont, _table); 
 			updateButtons(false);
-			oldappendRows(_aTable, data, false);
+			newAppendRows(false);
 		}
 	}
 
-	private void buildFilerMenu(String _table2) {
-		final Dialog dial = new Dialog(_cont);
-		dial.setTitle(R.string.Filter);
-		ScrollView sv = new ScrollView(_cont);
-		sv.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.FILL_PARENT,
-				ViewGroup.LayoutParams.WRAP_CONTENT));
-		sv.setPadding(5, 5, 5, 5);
-		LinearLayout lmain = new LinearLayout(_cont);
-		lmain.setOrientation(LinearLayout.VERTICAL);
-		lmain.setLayoutParams(new LinearLayout.LayoutParams(
-				LinearLayout.LayoutParams.FILL_PARENT,
-				LinearLayout.LayoutParams.WRAP_CONTENT));
-		TextView tv = new TextView(_cont);
-		tv.setText(R.string.EnterWhere);
-		tv.setPadding(5, 5, 5, 5);
-		lmain.addView(tv);
-		final EditText et = new EditText(_cont);
-		et.setText(_where);
-		lmain.addView(et);
-		Button btn = new Button(_cont);
-		btn.setText(R.string.OK);
-		btn.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				String where = et.getText().toString();
-				dial.dismiss();
-				offset = 0;
-				if (where.trim().equals("")) {
-					_where = "";
-				} else {
-					_where = where;
-				}
-				fillDataTableWithArgs();
-			}});
-		lmain.addView(btn);
-		dial.setContentView(lmain);
-		//.setPositiveButton(getText(R.string.OK), new DialogButtonClickHandler())
-		dial.show();
-	}
-
 	/**
-	 * 
+	 * Retrieve data for the current table 
 	 */
 	private void fillDataTableWithArgs() {
 		boolean isUnUpdateableView = false;
@@ -997,13 +1253,18 @@ public class TableViewer extends Activity implements OnClickListener {
 			else
 				order += "] DESC ";
 		}
-		//Record[] data = _db.getTableDataWithWhere(_table, _where, order, offset, limit, isUnUpdateableView);
-		_data = _db.getTableDataWithWhere(_table, _where, order, offset, limit, isUnUpdateableView);
-		setTitles(_aTable, _db.getFieldsNames(_table), !isUnUpdateableView);
-		newAppendRows(_aTable, !isUnUpdateableView);
+		_data = _db.getTableDataWithWhere(_cont, _table, _where, order, offset, limit, isUnUpdateableView);
+		setTitles(_db.getFieldsNames(_table), !isUnUpdateableView);
+		newAppendRows(!isUnUpdateableView);
+		//resize = true;
+		//onWindowFocusChanged(true);
 		Utils.logD("where = " + _where, _logging);
 	}
 
+	/**
+	 * @author mh
+	 *
+	 */
 	public class DialogButtonClickHandler implements DialogInterface.OnClickListener {
 		public void onClick( DialogInterface dialog, int clicked )
 		{
@@ -1011,7 +1272,6 @@ public class TableViewer extends Activity implements OnClickListener {
 			switch(clicked)
 			{
 			case DialogInterface.BUTTON_POSITIVE:
-
 				Utils.showMessage("Debug", "Filter", _cont);
 				break;
 			}
@@ -1033,4 +1293,22 @@ public class TableViewer extends Activity implements OnClickListener {
 		Utils.logD("Deleteable: " + _canDeleteView, _logging);
 	}
 
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// Return here if a activity is called with startActivityForResult
+		if (resultCode == 2) {
+			// returned from FilterBuilder
+			Bundle res = data.getExtras();
+			String filter = res.getString("FILTER");
+			Utils.logD("Filter returned: " + filter, _logging);
+			if (filter == null)
+				filter = "";
+			_where = filter;
+			if (_where.trim().equals("")) {
+				tvDB.setText(getString(R.string.DBTable) + " " + _table);
+			} else {
+				tvDB.setText(getString(R.string.DBTable) + " " + _table + " (f)");
+			}
+			fillDataTableWithArgs();
+		}
+	}
 }

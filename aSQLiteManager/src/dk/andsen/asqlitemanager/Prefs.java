@@ -2,27 +2,19 @@
  * Part of aSQLiteManager (http://sourceforge.net/projects/asqlitemanager/)
  * a a SQLite Manager by andsen (http://sourceforge.net/users/andsen)
  *
- * The preferences screen
+ * This class contains the preference functionalities.
  *
  * @author andsen
  *
  */
 package dk.andsen.asqlitemanager;
 
+import dk.andsen.asqlitemanager.R;
 import android.content.Context;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 
-/**
- * Part of aSQLiteManager (http://sourceforge.net/projects/asqlitemanager/)
- * a a SQLite Manager by andsen (http://sourceforge.net/users/andsen)
- *
- * This class contains the preference functionalities.
- *
- * @author andsen
- *
- */
 public class Prefs extends PreferenceActivity {
    // Option names and default values
    private static final String OPT_PAGESIZE = "PageSize";
@@ -49,6 +41,12 @@ public class Prefs extends PreferenceActivity {
    private static final boolean OPT_TESTROOT_DEF = false;
    private static final String OPT_MAX_WIDTH = "MaxWidth";
    private static final String OPT_MAX_WIDTH_DEF = "0";
+   private static final String OPT_QEDIT_MAX_LINES = "QEMaxLines";
+   private static final String OPT_QEDIT_MAX_LINES_DEF = "5";
+   private static final String OPT_QEDIT_MIN_LINES = "QEMinLines";
+   private static final String OPT_QEDIT_MIN_LINES_DEF = "2";
+   private static final String OPT_SPATIALITE = "Spatialite";
+   private static final boolean OPT_SPATIALITE_DEF = true;
 
    @Override
    protected void onCreate(Bundle savedInstanceState) {
@@ -56,14 +54,24 @@ public class Prefs extends PreferenceActivity {
       addPreferencesFromResource(R.xml.settings);
    }
 
+		public static int getQEMaxLines(Context context) {
+		   return validPositiveIntegerOrNumber(PreferenceManager.getDefaultSharedPreferences(context)
+		         .getString(OPT_QEDIT_MAX_LINES, OPT_QEDIT_MAX_LINES_DEF), 5);
+		}
+
+   public static int getQEMinLines(Context context) {
+		   return validPositiveIntegerOrNumber(PreferenceManager.getDefaultSharedPreferences(context)
+		         .getString(OPT_QEDIT_MIN_LINES, OPT_QEDIT_MIN_LINES_DEF), 1);
+		}
+
    /**
     * Return the numbers of records to retrieve when paging data
     * @param context
     * @return page size
     */
 		public static int getPageSize(Context context) {
-		   return new Integer(PreferenceManager.getDefaultSharedPreferences(context)
-		         .getString(OPT_PAGESIZE, OPT_PAGESIZE_DEF)).intValue();
+		   return validPositiveIntegerOrNumber(PreferenceManager.getDefaultSharedPreferences(context)
+		         .getString(OPT_PAGESIZE, OPT_PAGESIZE_DEF), 0);
 		}
 
   /**
@@ -72,8 +80,8 @@ public class Prefs extends PreferenceActivity {
    * @return page size
    */
 	 public static int getFontSize(Context context) {
-	    return new Integer(PreferenceManager.getDefaultSharedPreferences(context)
-	          .getString(OPT_FONTSIZE, OPT_FONTSIZE_DEF)).intValue();
+	    return validPositiveIntegerOrNumber(PreferenceManager.getDefaultSharedPreferences(context)
+	          .getString(OPT_FONTSIZE, OPT_FONTSIZE_DEF), 0);
 	 }
 
   /**
@@ -87,13 +95,13 @@ public class Prefs extends PreferenceActivity {
   }
 
 	public static int getNoOfFiles(Context context) {
-    return new Integer(PreferenceManager.getDefaultSharedPreferences(context)
-      	.getString(OPT_FILENO, OPT_FILENO_DEF)).intValue();
+    return validPositiveIntegerOrNumber(PreferenceManager.getDefaultSharedPreferences(context)
+      	.getString(OPT_FILENO, OPT_FILENO_DEF), 0);
 	}
 	
 	public static int getMaxWidth(Context context) {
-    return new Integer(PreferenceManager.getDefaultSharedPreferences(context)
-      	.getString(OPT_MAX_WIDTH, OPT_MAX_WIDTH_DEF)).intValue();
+		return validPositiveIntegerOrNumber(PreferenceManager.getDefaultSharedPreferences(context)
+      	.getString(OPT_MAX_WIDTH, OPT_MAX_WIDTH_DEF), 0);
 	}
 	
   public static boolean getFKList(Context context) {
@@ -117,8 +125,8 @@ public class Prefs extends PreferenceActivity {
   }
 
   public static int getPause(Context context) {
-  	return new Integer(PreferenceManager.getDefaultSharedPreferences(context)
-  		.getString(OPT_PAUSE, OPT_PAUSE_DEF)).intValue();
+  	return validPositiveIntegerOrNumber(PreferenceManager.getDefaultSharedPreferences(context)
+  		.getString(OPT_PAUSE, OPT_PAUSE_DEF), 0);
   }
 
   public static String getSuLocation(Context context) {
@@ -135,5 +143,28 @@ public class Prefs extends PreferenceActivity {
   	return new Integer(PreferenceManager.getDefaultSharedPreferences(context)
     .getString("DefaultView", "1")).intValue();
   }
-  
+
+  public static boolean getUseSpatialite(Context context) {
+  	return PreferenceManager.getDefaultSharedPreferences(context)
+  		.getBoolean(OPT_SPATIALITE, OPT_SPATIALITE_DEF);
+  }
+ 
+  /**
+   * convert a Sting to a int >= 0 all negative and invalid numbers are treated as zero
+   * @param strVal
+   * @return
+   */
+  private static int validPositiveIntegerOrNumber(String strVal, int number) {
+		if (strVal.trim().equals(""))
+			strVal = "" + number;
+		Integer i = number;
+		try {
+			i = new Integer(strVal).intValue();
+			if (i<0)
+				i = 0;
+		} catch (Exception e) {
+			
+		}
+  	return i.intValue();
+  }
 }

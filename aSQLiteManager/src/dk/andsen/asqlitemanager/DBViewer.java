@@ -214,10 +214,10 @@ public class DBViewer extends Activity implements OnClickListener {
 
 	@Override
 	protected void onRestart() {
+		super.onRestart();
 		Utils.logD("DBViewer onRestart", _logging);
 		if (aSQLiteManager.database == null)
 			aSQLiteManager.database = new Database(_dbPath, _cont);
-		super.onRestart();
 	}
 
 	@Override
@@ -421,7 +421,7 @@ public class DBViewer extends Activity implements OnClickListener {
 	 * @see android.view.View.OnClickListener#onClick(android.view.View)
 	 */
 	public void onClick(View v) {
-		if (!aSQLiteManager.database.isDatabase) {
+		if (aSQLiteManager.database == null || !aSQLiteManager.database.isDatabase) {
 			Utils.logD("User trying to do things with something that is not a database!", _logging);
 			Utils.showMessage(getText(R.string.Error).toString(),
 					_dbPath + " " + getText(R.string.IsNotADatabase).toString(), _cont);
@@ -437,7 +437,8 @@ public class DBViewer extends Activity implements OnClickListener {
 			buildList("Index");
 		} else if (key == R.id.Query) {
 			_update = true;
-			Intent i = new Intent(this, QueryViewer.class);
+			Intent i = null;
+			i = new Intent(this, QueryViewer.class);
 			i.putExtra("db", _dbPath);
 			try {
 				startActivity(i);

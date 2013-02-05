@@ -1,5 +1,6 @@
 package dk.andsen.asqlitemanager;
 
+import dk.andsen.asqlitemanager.R;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;

@@ -24,19 +24,23 @@ import android.os.Bundle;
 import android.text.ClipboardManager;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnFocusChangeListener;
+import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import dk.andsen.asqlitemanager.R;
 import dk.andsen.types.QueryResult;
 import dk.andsen.utils.Utils;
 
 /**
- * @author os
+ * @author andsen
  *
  */
 public class QueryViewer extends Activity implements OnClickListener{
@@ -87,19 +91,40 @@ public class QueryViewer extends Activity implements OnClickListener{
 	private boolean logging;
 	private boolean _showTip = false;
 	private int _maxWidth;
+	private int _qeMinLines;
+	private int _qeMaxLines;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+		_cont = this;
+		logging = Prefs.getLogging(_cont);
 		Utils.logD("QueryViewer onCreate", logging);
 		setContentView(R.layout.query_viewer);
+		_qeMinLines =Prefs.getQEMinLines(_cont);
+		_qeMaxLines= Prefs.getQEMaxLines(_cont);
+		Utils.logD("Maxlines " + _qeMaxLines, logging);
+		Utils.logD("Minlines " + _qeMinLines, logging);
 		_tvQ = (EditText) this.findViewById(R.id.SQLStm);
+		_tvQ.setOnTouchListener(new OnTouchListener() {
+			public boolean onTouch(View v, MotionEvent event) {
+				_tvQ.setMaxLines(_qeMaxLines);
+				return false;
+			}
+		});
+		_tvQ.setLines(_qeMinLines);
+		_tvQ.setOnFocusChangeListener(new OnFocusChangeListener() {
+			public void onFocusChange(View v, boolean hasFocus) {
+				if (hasFocus) {
+					_tvQ.setMaxLines(_qeMaxLines);
+				} else {
+					_tvQ.setMaxLines(_qeMinLines);
+				}
+			}
+		});
 		_tvTransaction = (TextView)this.findViewById(R.id.Transaction);
 		_btR = (Button) this.findViewById(R.id.Run);
 		_btR.setOnClickListener(this);
-		_cont = _tvQ.getContext();
-		logging = Prefs.getLogging(_cont);
 		_save = Prefs.getSaveSQL(_cont);
 		_limit = Prefs.getPageSize(_cont);
 		bUp = (Button) this.findViewById(R.id.PgUp);
@@ -112,12 +137,16 @@ public class QueryViewer extends Activity implements OnClickListener{
 		if(extras !=null)
 		{
 			_cont = _tvQ.getContext();
-			_dbPath = extras.getString("db");
-			Utils.logD("Opening database", logging);
-
 			_db = aSQLiteManager.database;
-			//_db = new Database(_dbPath, _cont); 
-			if (!_db.isDatabase) { //TODO 3.3 NullPointerException here
+			if (_db == null) {
+				// database not opened or closed if memory reclaimed
+				_dbPath = extras.getString("db");
+				Utils.logD("Opening database", logging);
+				aSQLiteManager.database = new Database(_dbPath, _cont);
+				_db = aSQLiteManager.database;
+			}
+
+			if (!_db.isDatabase) { //TODO 3.4 NullPointerException here sometimes no database open - reopen in aSQLiteManager after onPause???
 				Utils.logD("Not a database!", logging);
 				Utils.showException(_dbPath + " is not a database!", _cont);
 				finish();
@@ -137,9 +166,11 @@ public class QueryViewer extends Activity implements OnClickListener{
 	
 	@Override
 	protected void onRestart() {
-		Utils.logD("QueryViewer onRestart", logging);
-		_db = aSQLiteManager.database;
 		super.onRestart();
+		Utils.logD("QueryViewer onRestart", logging);
+		if (aSQLiteManager.database == null)
+			aSQLiteManager.database = new Database(_dbPath, _cont);
+		_db = aSQLiteManager.database;
 	}
 	
 	@Override
@@ -159,48 +190,50 @@ public class QueryViewer extends Activity implements OnClickListener{
 		String sql = _tvQ.getText().toString();
 		Utils.logD("Offset: " + _offset, logging);
 		Utils.logD("Limit: " + _limit, logging);
+		_tvQ.setMaxLines(_qeMinLines);
 		if (!sql.equals(""))
-		if (key == R.id.Run) {
-			QueryResult result = _db.getSQLQueryPage(sql, _offset, _limit);
-			if (_save) {
-				// If in transaction store SQL in List for later writing to table
-				if(_db.inTransaction()) {
-					saveSQL.add(new String(_tvQ.getText().toString()));
-					// Also write to database for use during transaction
+			if (key == R.id.Run) {
+				QueryResult result = _db.getSQLQueryPage(sql, _offset, _limit);
+				if (_save) {
+					// If in transaction store SQL in List for later writing to table
+					if (_db.inTransaction()) {
+						saveSQL.add(new String(_tvQ.getText().toString()));
+						// Also write to database for use during transaction
+						_db.saveSQL(_tvQ.getText().toString());
+					}
 					_db.saveSQL(_tvQ.getText().toString());
+					// New SQL -> menu must be rebuild
+					_rebuildMenu = true;
 				}
-				_db.saveSQL(_tvQ.getText().toString());
-				// New SQL -> menu must be rebuild
-				_rebuildMenu = true;
-			}
-			_aTable=(TableLayout)findViewById(R.id.datagrid);
-			setTitles(_aTable, result.getColumnNames());
-			appendRows(_aTable, result.getData());			
-		}  else if (key == R.id.PgDwn) {
-			if (_aTable != null) {
-				Utils.logD("PgDwn:" + _offset, logging);
-				int childs = _aTable.getChildCount();
-				Utils.logD("Table childs: " + childs, logging);
-				if (childs >= _limit) {  //  No more data on to display - no need to PgDwn
-					_offset += _limit;
-					String [] nn = {};
-					setTitles(_aTable, nn);
+				_aTable = (TableLayout) findViewById(R.id.datagrid);
+				setTitles(_aTable, result.getColumnNames());
+				appendRows(_aTable, result.getData());
+			} else if (key == R.id.PgDwn) {
+				if (_aTable != null) {
+					Utils.logD("PgDwn:" + _offset, logging);
+					int childs = _aTable.getChildCount();
+					Utils.logD("Table childs: " + childs, logging);
+					if (childs >= _limit) { // No more data on to display - no need to
+																	// PgDwn
+						_offset += _limit;
+						String[] nn = {};
+						setTitles(_aTable, nn);
+						QueryResult result = _db.getSQLQueryPage(sql, _offset, _limit);
+						setTitles(_aTable, result.getColumnNames());
+						appendRows(_aTable, result.getData());
+					}
+				}
+			} else if (key == R.id.PgUp) {
+				if (_aTable != null) {
+					Utils.logD("PgUp: " + _offset, logging);
+					_offset -= _limit;
+					if (_offset < 0)
+						_offset = 0;
 					QueryResult result = _db.getSQLQueryPage(sql, _offset, _limit);
 					setTitles(_aTable, result.getColumnNames());
 					appendRows(_aTable, result.getData());
 				}
 			}
-		} else if (key == R.id.PgUp) {
-			if (_aTable != null) {
-				Utils.logD("PgUp: " + _offset, logging);
-				_offset -= _limit;
-				if (_offset < 0)
-					_offset = 0;
-				QueryResult result = _db.getSQLQueryPage(sql, _offset, _limit);
-				setTitles(_aTable, result.getColumnNames());
-				appendRows(_aTable, result.getData());
-			}
-		}
 	}
 
 	@Override
@@ -796,7 +829,7 @@ public class QueryViewer extends Activity implements OnClickListener{
 	 * @return the sql statement
 	 */
 	private String buildCreateTableSQL() {
-		String sql = "Create table [TableName] ([feild1] f1type, [feild2] f2type)";
+		String sql = "Create table [TableName] ([field1] f1type, [field2] f2type)";
 		return sql;
 	}
 

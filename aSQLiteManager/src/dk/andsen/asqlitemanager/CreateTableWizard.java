@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import dk.andsen.asqlitemanager.R;
 import dk.andsen.utils.Utils;
 
 public class CreateTableWizard extends Activity implements OnClickListener {

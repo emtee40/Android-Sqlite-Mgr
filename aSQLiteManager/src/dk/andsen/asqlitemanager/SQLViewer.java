@@ -34,6 +34,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.AdapterView.OnItemClickListener;
+import dk.andsen.asqlitemanager.R;
 import dk.andsen.utils.Utils;
 //extends ListActivity
 public class SQLViewer extends Activity implements OnClickListener, Runnable {

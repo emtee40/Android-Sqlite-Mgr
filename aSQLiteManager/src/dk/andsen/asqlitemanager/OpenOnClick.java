@@ -9,6 +9,7 @@
  */
 package dk.andsen.asqlitemanager;
 
+import dk.andsen.asqlitemanager.R;
 import dk.andsen.utils.Utils;
 import android.app.Activity;
 import android.content.Intent;

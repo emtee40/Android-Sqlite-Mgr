@@ -13,6 +13,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import dk.andsen.asqlitemanager.R;
 import dk.andsen.utils.Utils;
 
 public class CreateTableWizField extends Activity implements OnClickListener {

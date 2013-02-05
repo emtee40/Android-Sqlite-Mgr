@@ -9,13 +9,19 @@
  */
 package dk.andsen.asqlitemanager;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.DataInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +31,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
 import android.widget.ProgressBar;
@@ -38,6 +45,7 @@ import dk.andsen.types.ForeignKeyHolder;
 import dk.andsen.types.QueryResult;
 import dk.andsen.types.Record;
 import dk.andsen.types.ViewUpdateable;
+import dk.andsen.utils.CSVUtils;
 import dk.andsen.utils.Utils;
 /**
  * @author Andsen
@@ -53,11 +61,13 @@ public class Database {
 	private int myProgress = 0;
 	private TextView progressTitle;
 	private TextView progressTable;
-	private String progressTitleText ="";
-	private String progressTableText ="";
+	private String progressTitleText = "";
+	private String progressTableText = "";
 	private Dialog pd;
 	private Handler theHandle;	
 	private boolean logging = false;
+	
+	//TODO add Context to all call to be able to show error messages generated here 
 	/**
 	 * Open a existing database at the given path
 	 * @param dbPath Path to the database
@@ -156,7 +166,7 @@ public class Database {
 	private void testDB() {
 		if (_db == null) {
 			Utils.logD("TestDB database is null", logging);
-			if (_dbPath != null) {
+			if (_dbPath != null) {  //then Content probably also null
 				try {
 					_db = SQLiteDatabase.openDatabase(_dbPath, null, SQLiteDatabase.OPEN_READWRITE); 
 				} catch (Exception e) {
@@ -172,8 +182,7 @@ public class Database {
 			}
 		} else if (!_db.isOpen()) {
 			Utils.logD("TestDB database not open", logging);
-
-			if (_dbPath != null) {
+			if (_dbPath == null) {
 				Utils.showMessage(_cont.getText(R.string.Error).toString(),
 						_cont.getText(R.string.StrangeErr).toString() + " dbPath = null", _cont);
 			} else {
@@ -380,6 +389,7 @@ public class Database {
 
 	/**
 	 * Retrieve data for table viewer
+	 * @param cont Context on which to display errors
 	 * @param table Name of table
 	 * @param where Where clause for filter
 	 * @param order Order if data sorted (by clicking on title)
@@ -388,7 +398,8 @@ public class Database {
 	 * @param view indication of view (with out on update trigger) 
 	 * @return a list of Records
 	 */
-	public Record[] getTableDataWithWhere(String table, String where, String order, int offset, int limit, boolean view) {
+	public Record[] getTableDataWithWhere(Context cont, String table, String where, String order, int offset, int limit, boolean view) {
+		testDB();
 		String sql = "";
 		if (view)
 			sql = "select ";
@@ -443,7 +454,7 @@ public class Database {
 			}
 			cursor.close();
 		} catch (Exception e) {
-			Utils.showMessage(_cont.getText(R.string.Error).toString(), e.getLocalizedMessage(), _cont);
+			Utils.showMessage(_cont.getText(R.string.Error).toString(), e.getLocalizedMessage(), cont);
 			Utils.logE("getTableDataWithWhere", logging);
 			Utils.printStackTrace(e, logging);
 		}
@@ -479,8 +490,6 @@ public class Database {
 		 * If not a query or view include rowid in data if no single field
 		 * primary key exists
 		 */
-		//TODO implement sorting on single column asc / desc
-		// first time a columns is clicked sort asc if it is clicked again sort des
 		testDB();
 		String sql = "";
 		if (view)
@@ -515,19 +524,39 @@ public class Database {
 	 * @param table
 	 * @return a String[] with sql needed to create the table
 	 */
-	public String[][] getSQL(String table) {
+	public Record[] getSQL(Context cont, String table) {
 		testDB();
 		String sql = "select sql from sqlite_master where UPPER(tbl_name) = '" + table.toUpperCase() +"'	";
-		Cursor cursor = _db.rawQuery(sql, null);
-		int i = 0;
-		String[][] res = new String[cursor.getCount()][1];
-		// Split SQL in lines
-		while(cursor.moveToNext()) {
-				res[i][0] = cursor.getString(0);
-			i++;
+		Record[] recs = null;
+		Utils.logD(sql, logging);
+		String[] fieldNames = getTableStructureHeadings(table);
+		try {
+			Cursor cursor = _db.rawQuery(sql, null);
+			int columns = cursor.getColumnCount();
+			int rows = cursor.getCount();
+			//Utils.logD("Rows " + rows + " cols " + columns, logging);
+			recs = new Record[rows];
+			int i = 0;
+			while(cursor.moveToNext()) {
+				recs[i] = new Record();
+				AField[] fields = new AField[columns];
+				for(int j = 0; j < columns; j++) {
+					AField fld = new AField();
+					fld.setFieldData(cursor.getString(j));
+					fld.setFieldType(FieldType.TEXT);
+					fields[j] = fld;
+				}
+				recs[i].setFieldNames(fieldNames);
+				recs[i].setFields(fields);
+				i++;
+			}
+			cursor.close();
+		} catch (Exception e) {
+			Utils.showMessage(cont.getText(R.string.Error).toString(), e.getLocalizedMessage(), cont);
+			Utils.logE("getTableDataWithWhere", logging);
+			Utils.printStackTrace(e, logging);
 		}
-		cursor.close();
-		return res;
+		return recs;
 	}
 
 	/**
@@ -541,26 +570,45 @@ public class Database {
 	}
 	
 	/**
-	 * Return table structure i two dimentional string list
+	 * Return table structure i a list of Record
+	 * @param cont 
 	 * @param table
 	 * @return
 	 */
-	public String[][] getTableStructure(String table) {
+	public Record[] getTableStructure(Context cont, String table) {
 		testDB();
 		String sql = "pragma table_info (["+table+"])";
-		Cursor cursor = _db.rawQuery(sql, null);	
-		int cols = cursor.getColumnCount();
-		int rows = cursor.getCount();
-		String[][] res = new String[rows][cols];
-		int i = 0;
-		while(cursor.moveToNext()) {
-			for (int k=0; k<cols; k++) {
-				res[i][k] = cursor.getString(k);
+		Record[] recs = null;
+		Utils.logD(sql, logging);
+		String[] fieldNames = getTableStructureHeadings(table);
+		try {
+			Cursor cursor = _db.rawQuery(sql, null);
+			int columns = cursor.getColumnCount();
+			int rows = cursor.getCount();
+			//Utils.logD("Rows " + rows + " cols " + columns, logging);
+			recs = new Record[rows];
+			int i = 0;
+			while(cursor.moveToNext()) {
+				recs[i] = new Record();
+				AField[] fields = new AField[columns];
+				for(int j = 0; j < columns; j++) {
+					AField fld = new AField();
+					fld.setFieldData(cursor.getString(j));
+					fld.setFieldType(FieldType.TEXT);
+					fields[j] = fld;
+					//Utils.logD("Field no " + j + " " + fld.toString(), logging);
+				}
+				recs[i].setFieldNames(fieldNames);
+				recs[i].setFields(fields);
+				i++;
 			}
-			i++;
+			cursor.close();
+		} catch (Exception e) {
+			Utils.showMessage(cont.getText(R.string.Error).toString(), e.getLocalizedMessage(), cont);
+			Utils.logE("getTableDataWithWhere", logging);
+			Utils.printStackTrace(e, logging);
 		}
-		cursor.close();
-		return res;
+		return recs;
 	}
 
 	/**
@@ -1373,6 +1421,7 @@ public class Database {
 				tf.setValue(cursor.getString(j));
 			} catch (Exception e) {
 				tf.setUpdateable(false);
+				tf.setValue("BLOB");
 				Utils.logE(e.getMessage(), logging);
 				Utils.printStackTrace(e, logging);
 			}
@@ -1447,12 +1496,15 @@ public class Database {
 	 */
 	public void updateRecord(String tableName, long rowId, TableField[] fields, Context cont) {
     ContentValues values = new ContentValues();
+    //TODO This clears BLOB fields
 		try {
 			for (TableField fld: fields) {
 				String val = fld.getValue();
 				if (val.trim().equals(""))
 					val = null;
-				values.put("[" + fld.getName() + "]", val);
+				//Only change updateable fields
+				if (fld.isUpdateable())
+					values.put("[" + fld.getName() + "]", val);
 			}
 			String[] args = {"" + rowId};
 			_db.update("[" + tableName + "]", values, "rowId = ?", args);
@@ -1993,5 +2045,179 @@ public class Database {
 		}
 		Utils.logD("View updateable: " + res, logging);
 		return res;
+	}
+
+	public String csvExport(Context cont, String table, String exportFile) {
+		// if no filename is given use databasename + "." + tablename + .csv
+		if (exportFile == null)
+			exportFile = _dbPath + "." + table + ".csv";
+		File file = new File(exportFile);
+	  FileWriter txt;
+		try {
+			txt = new FileWriter(file);
+			Cursor curs = _db.rawQuery("select * from " + table , null);
+			while(curs.moveToNext()) {
+				//Utils.logD("Exporting new row", logging);
+				List<String> values = new ArrayList<String>();
+				int cols = curs.getColumnCount();
+				for (int i = 0; i < cols; i++) {
+					String cal = null;
+					try {
+						cal = curs.getString(i);
+					} catch (Exception e) {
+						cal = "Blob";
+					}
+					values.add(cal);
+				}
+				try {
+					CSVUtils.writeLine(txt, values);
+				} catch (Exception e) {
+					e.printStackTrace();
+					return _cont.getText(R.string.CSVExportError) + e.getLocalizedMessage();
+				}
+			}
+			curs.close();
+			txt.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return _cont.getText(R.string.CSVExportError) + e.getLocalizedMessage();
+		}
+		return _cont.getText(R.string.CSVExportSavedHere) + exportFile;
+	}
+
+	/**
+	 * Import a CSV filr
+	 * @param table
+	 * @param importFile
+	 * @return
+	 */
+	public String cvsImport(Context cont, String table, String importFile) {
+		// if no filename is given use databasename + "." + tablename + .csv
+		if (importFile == null)
+			importFile = _dbPath + "." + table + ".csv";
+		File file = new File(importFile);
+		if (!file.canRead())
+			return _cont.getText(R.string.CSVEImortError) + " "
+				+ _cont.getText(R.string.CanNotRead) + importFile;
+    ContentValues values = new ContentValues();
+  	String line = null;
+    try {
+  		FileInputStream fstream = new FileInputStream(importFile);
+  	  DataInputStream in = new DataInputStream(fstream);
+  	  BufferedReader br = new BufferedReader(new InputStreamReader(in));
+    	String[] fieldNames = getFieldsNames(table);
+    	while ((line = br.readLine()) != null)   {
+    		int fieldNo = 0;
+    		//Utils.logD("CSV line: " + line, logging);
+      	List<String> items = CSVUtils.parseLine(line);
+  			for (String item: items) {
+  				// Only import as many items as fields in the table
+  				if (fieldNo >= fieldNames.length)
+  					break;
+  				if (!item.trim().equals(""))
+  					values.put("[" + fieldNames[fieldNo] + "]", item.trim());
+  				//Utils.logD("Field " + fieldNames[fieldNo] +" val " + item.trim(), logging);
+  				fieldNo++;
+  			}
+  			_db.insertOrThrow("[" + table + "]", null, values);
+    	}
+    	br.close();
+    	in.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return _cont.getText(R.string.CSVEImortError) + e.getLocalizedMessage() + "\n"
+					+ line;
+		}
+		return _cont.getText(R.string.CSVImported) + importFile;
+	}
+
+	/**
+	 * Read a single BLOB field from the database and save it on sdCard
+	 * 
+	 * @param fileName the file to save the blob in
+	 * @param tableName table to read data from
+	 * @param rowNo row of the table
+	 * @param columnNo column to find the blob field
+	 * @param cont the context of the form to display messages on
+	 */
+	public void saveBlobData(String fileName, String tableName, long rowNo,
+			int columnNo, Context cont) {
+		String sql = "select rowid, * from " + tableName + " where rowid = " + rowNo;
+		Cursor cursor = _db.rawQuery(sql, null);
+		int cols = cursor.getColumnCount();
+		Utils.logD("cols " + cols + " columnNo " + columnNo, logging);
+		if (!(columnNo > cols-1)) {
+			while(cursor.moveToNext()) {
+				byte[] blob = cursor.getBlob(columnNo);
+				Utils.logD("Field length " + blob.length, logging);
+				BufferedOutputStream bos;
+				try {
+					String path = _dbPath.substring(0, _dbPath.lastIndexOf("/"));
+					Utils.logD("Path " + path, logging);
+					bos = new BufferedOutputStream(new FileOutputStream(path + "/" + fileName));
+					bos.write(blob);
+					bos.flush();
+					bos.close();
+				} catch (FileNotFoundException e) {
+					Utils.showException(e.getLocalizedMessage(), cont);
+					e.printStackTrace();
+				} catch (IOException e) {
+					Utils.showException(e.getLocalizedMessage(), cont);
+					e.printStackTrace();
+				}
+			}
+		} else {
+			Utils.showMessage(cont.getText(R.string.Error).toString(), "column miss match", cont);
+		}
+
+		//byte[] blob = c.getBlob(1);
+		// write insert blob
+		//byte[] photo = baos.toByteArray(); 
+		//db.insertUserDetails(value1,value2, value3, photo,value2);_
+	}
+
+	/**
+	 * Load a file into a BLOB field
+	 * @param fileName name of file toload
+	 * @param tableName table name
+	 * @param rowNo The rowId of the table toload data into
+	 * @param columnNo The column of the record which hold the BLOB field
+	 * @param cont The Content to display errors on
+	 */
+	public void loadBlobData(String fileName, String tableName, long rowNo,
+			int columnNo, Context cont) {
+		String sql = "select rowid, * from " + tableName + " where rowid = " + rowNo;
+		Cursor cursor = _db.rawQuery(sql, null);
+		String fieldName = "";
+		while(cursor.moveToNext()) {
+			fieldName = cursor.getColumnName(columnNo);
+		}
+		Utils.logD("Updating BLOB in field" + fieldName, logging);
+    ContentValues values = new ContentValues();
+		try {
+			String path = _dbPath.substring(0, _dbPath.lastIndexOf("/"));
+			Utils.logD("Path " + path, logging);
+			File f = new File(path + "/" + fileName);
+			if (!f.isFile()) {
+				Utils.showMessage(_cont.getText(R.string.Error).toString(), 
+						_cont.getText(R.string.FileNotFound).toString(), cont);
+				return;
+			}
+			if (!f.canRead()) {
+				Utils.showMessage(_cont.getText(R.string.Error).toString(), 
+						_cont.getText(R.string.CanNotReadFile).toString() , cont);
+				return;
+			}
+			InputStream is = _cont.getContentResolver().openInputStream(Uri.fromFile(f));
+			int size = (int)f.length();
+			byte[] bytes = new byte[size];
+			is.read(bytes);
+			values.put("[" + fieldName + "]", bytes);
+			_db.update(tableName, values, "rowId = " + rowNo, null);
+		} catch (Exception e) {
+			Utils.showException(e.getLocalizedMessage(), cont);
+			Utils.logE(e.getMessage(), logging);
+			Utils.printStackTrace(e, logging);
+		}
 	}
 }

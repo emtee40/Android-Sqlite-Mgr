@@ -21,7 +21,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
-public class OpenOnClick2 extends Activity implements OnClickListener {
+public class OpenOnClick3 extends Activity implements OnClickListener {
 	Button _btOK;
 	CheckBox _remember;
 	private String _file;

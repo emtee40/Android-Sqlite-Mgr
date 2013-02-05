@@ -2,7 +2,7 @@
  * Part of aSQLiteManager (http://sourceforge.net/projects/asqlitemanager/)
  * a a SQLite Manager by andsen (http://sourceforge.net/users/andsen)
  *
- * The mail class of the aSQLiteManager
+ * The main class of the aSQLiteManager
  *
  * @author andsen
  *
@@ -33,6 +33,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
+import dk.andsen.asqlitemanager.R;
 import dk.andsen.utils.FilePickerMode;
 import dk.andsen.utils.NewFilePicker;
 import dk.andsen.utils.RootFilePicker;
@@ -45,8 +46,8 @@ public class aSQLiteManager extends Activity implements OnClickListener {
 	private static final int MENU_OPT = 1;
 	private static final int MENU_HLP = 2;
 	private static final int MENU_RESET = 3;
-	final String WelcomeId = "ShowWelcome3.4";
-	final String vers = "3.4";
+	private final String WelcomeId = "ShowWelcome3.5";
+	private final String vers = "3.5";
 	private Context _cont;
 	private String _recentFiles;
 	private boolean testRoot = false;
@@ -54,9 +55,10 @@ public class aSQLiteManager extends Activity implements OnClickListener {
 	private boolean loadSettings = false;
 	private boolean _showWelcome = false;
 	private boolean _showTip = false;
-	public static Database database = null;
-
 	private Dialog newDatabaseDialog;
+
+	public static Database database = null;
+	//public jsqlite.Database spatialDatabase;
 
 	/** Called when the activity is first created. */
 	@Override
