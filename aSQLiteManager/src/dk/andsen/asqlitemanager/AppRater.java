@@ -1,6 +1,15 @@
+/**
+ * Part of aSQLiteManager (http://sourceforge.net/projects/asqlitemanager/)
+ * a a SQLite Manager by andsen (http://sourceforge.net/users/andsen)
+ *
+ * The app rater dialog
+ *
+ * @author Andsen
+ *
+ */
+
 package dk.andsen.asqlitemanager;
 
-import dk.andsen.asqlitemanager.R;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -16,13 +25,14 @@ import android.widget.TextView;
 
 public class AppRater {
 	private static String APP_TITLE;
-	private static String APP_PNAME = "dk.andsen.asqlitemanager";
+	private static String APP_PNAME;
 
 	private final static int DAYS_UNTIL_PROMPT = 7;
 	private final static int LAUNCHES_UNTIL_PROMPT = 10;
 
 	public static void app_launched(Context mContext) {
-		APP_TITLE = (String) mContext.getText(R.string.hello);
+		APP_TITLE = (String) mContext.getText(R.string.app_name);
+		APP_PNAME = mContext.getPackageName();
 		SharedPreferences prefs = mContext.getSharedPreferences("aSQLiteManager", 0);
 		if (prefs.getBoolean("dontshowagain", false)) {
 			return;
