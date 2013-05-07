@@ -8,6 +8,7 @@
     android:layout_width="fill_parent" 
     android:layout_height="wrap_content" 
     android:id="@+id/DatabaseToView"
+    android:textIsSelectable="true"
     />
   <LinearLayout
     android:orientation="horizontal"
@@ -56,7 +57,7 @@
       android:text="@string/Run"
       android:id="@+id/Run"
       android:layout_gravity="right"
-      android:minWidth="30px"/>
+      android:minWidth="30dp"/>
     <EditText
       android:layout_height="wrap_content" 
       android:id="@+id/SQLStm"

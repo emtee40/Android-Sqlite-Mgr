@@ -7,13 +7,14 @@
   <TextView
     android:id="@+id/path"
     android:layout_width="fill_parent" 
-    android:layout_height="wrap_content" 
+    android:layout_height="wrap_content"
+    android:textIsSelectable="true"
     />
   <Button
     android:id="@+id/SelectFolder" 
     android:layout_width="fill_parent" 
     android:layout_height="wrap_content"
-    android:text="@string/PlaceNewDBHere"
+    android:text="@string/PlaceItHere"
     android:visibility="gone" 
     />
   <ListView
@@ -24,7 +25,6 @@
   <TextView
     android:id="@android:id/empty"
     android:layout_width="fill_parent" 
-    android:layout_height="wrap_content" 
-    android:text="No Data"
+    android:layout_height="wrap_content"
     />
 </LinearLayout>

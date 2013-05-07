@@ -1,0 +1,1002 @@
+dk.andsen.RecordEditor.RecordEditorBuilder -> dk.andsen.a.a:
+    android.widget.ScrollView sv -> b
+    dk.andsen.RecordEditor.types.TableField[] _fields -> c
+    android.content.Context _cont -> d
+    boolean treatEmptyFieldsAsNull -> e
+    int fieldNameWidth -> f
+    dk.andsen.asqlitemanager.Database _db -> a
+    boolean useSelectLists -> g
+    boolean logging -> h
+    boolean _editing -> i
+    android.widget.LinearLayout buildEditField(dk.andsen.RecordEditor.types.TableField,int,int) -> a
+    android.widget.LinearLayout buildFKList(dk.andsen.RecordEditor.types.TableField,int,int) -> b
+    boolean int2boolean(java.lang.String) -> a
+    android.widget.ScrollView getScrollView() -> a
+    java.lang.String checkInput(android.widget.ScrollView) -> a
+    dk.andsen.RecordEditor.types.TableField[] getEditedData(android.widget.ScrollView) -> b
+    void setFieldNameWidth(int) -> a
+    void setTreatEmptyFieldsAsNull(boolean) -> a
+    android.content.Context access$0(dk.andsen.RecordEditor.RecordEditorBuilder) -> a
+dk.andsen.RecordEditor.RecordEditorBuilder$1 -> dk.andsen.a.b:
+    dk.andsen.RecordEditor.RecordEditorBuilder this$0 -> a
+    android.widget.ArrayAdapter val$adapter -> b
+    dk.andsen.types.ForeignKeyHolder val$fkh -> c
+    android.widget.Button val$btn -> d
+    android.widget.EditText val$ets -> e
+    void onClick(android.view.View) -> onClick
+dk.andsen.RecordEditor.RecordEditorBuilder$1$1 -> dk.andsen.a.c:
+    dk.andsen.RecordEditor.RecordEditorBuilder$1 this$1 -> a
+    dk.andsen.types.ForeignKeyHolder val$fkh -> b
+    android.widget.Button val$btn -> c
+    android.widget.EditText val$ets -> d
+    void onClick(android.content.DialogInterface,int) -> onClick
+dk.andsen.RecordEditor.types.TableField -> dk.andsen.a.a.a:
+    java.lang.String name -> a
+    int type -> b
+    java.lang.String value -> c
+    java.lang.Boolean notNull -> d
+    java.lang.Boolean primaryKey -> e
+    java.lang.String defaultValue -> f
+    java.lang.String foreignKey -> g
+    java.lang.Boolean updateable -> h
+    java.lang.String hint -> i
+    java.lang.String displayName -> j
+    java.lang.Boolean isUpdateable() -> a
+    void setUpdateable(java.lang.Boolean) -> a
+    java.lang.String getHint() -> b
+    java.lang.String getDisplayName() -> c
+    void setDisplayName(java.lang.String) -> a
+    java.lang.String getName() -> d
+    void setName(java.lang.String) -> b
+    int getType() -> e
+    void setType(int) -> a
+    java.lang.String getValue() -> f
+    void setValue(java.lang.String) -> c
+    java.lang.Boolean getNotNull() -> g
+    void setNotNull(java.lang.Boolean) -> b
+    void setPrimaryKey(java.lang.Boolean) -> c
+    java.lang.String getDefaultValue() -> h
+    void setDefaultValue(java.lang.String) -> d
+    java.lang.String getForeignKey() -> i
+    void setForeignKey(java.lang.String) -> e
+dk.andsen.asqlitemanager.AppRater -> dk.andsen.asqlitemanager.a:
+    java.lang.String APP_TITLE -> a
+    java.lang.String APP_PNAME -> b
+    void app_launched(android.content.Context) -> a
+    void showRateDialog(android.content.Context,android.content.SharedPreferences$Editor) -> a
+    java.lang.String access$0() -> a
+dk.andsen.asqlitemanager.AppRater$1 -> dk.andsen.asqlitemanager.b:
+    android.content.Context val$mContext -> a
+    android.app.Dialog val$dialog -> b
+    void onClick(android.view.View) -> onClick
+dk.andsen.asqlitemanager.AppRater$2 -> dk.andsen.asqlitemanager.c:
+    android.app.Dialog val$dialog -> a
+    void onClick(android.view.View) -> onClick
+dk.andsen.asqlitemanager.AppRater$3 -> dk.andsen.asqlitemanager.d:
+    android.content.SharedPreferences$Editor val$editor -> a
+    android.app.Dialog val$dialog -> b
+    void onClick(android.view.View) -> onClick
+dk.andsen.asqlitemanager.AppSettings -> dk.andsen.asqlitemanager.e:
+    boolean _logging -> a
+    void saveString(android.content.Context,java.lang.String,java.lang.String) -> a
+    java.lang.String getString(android.content.Context,java.lang.String) -> a
+    void saveInt(android.content.Context,java.lang.String,int) -> a
+    int getInt(android.content.Context,java.lang.String,int) -> b
+    void saveBoolean(android.content.Context,java.lang.String,boolean) -> a
+    boolean getBoolean(android.content.Context,java.lang.String,boolean) -> b
+    boolean showHint(android.content.Context,int) -> a
+    void setHint(android.content.Context,int,boolean) -> a
+    boolean showWelcome(android.content.Context,java.lang.String) -> b
+    void setWelcomeMsg(android.content.Context,java.lang.String,boolean) -> c
+    java.lang.String getRecentFile(android.content.Context) -> a
+dk.andsen.asqlitemanager.CreateTableWizField -> dk.andsen.asqlitemanager.CreateTableWizField:
+    android.widget.EditText fName -> b
+    android.widget.EditText fDef -> c
+    android.widget.CheckBox fNotNull -> d
+    android.widget.CheckBox fPK -> e
+    android.widget.CheckBox fUnique -> f
+    android.widget.CheckBox fAutoInc -> g
+    android.widget.CheckBox fDesc -> h
+    android.widget.EditText fFKTab -> i
+    android.widget.EditText fFKField -> j
+    android.widget.Spinner fSPType -> k
+    android.widget.Button newFieldCancel -> l
+    android.widget.Button newFieldOk -> m
+    android.content.Context _cont -> n
+    boolean _logging -> o
+    boolean _editing -> p
+    java.lang.String[] _edField -> q
+    int _edFieldNo -> r
+    java.lang.String[] type -> a
+    void onCreate(android.os.Bundle) -> onCreate
+    void dataToUI() -> a
+    void setUpUI() -> b
+    void onClick(android.view.View) -> onClick
+    android.widget.Spinner access$0(dk.andsen.asqlitemanager.CreateTableWizField) -> a
+    android.widget.CheckBox access$1(dk.andsen.asqlitemanager.CreateTableWizField) -> b
+    android.widget.CheckBox access$2(dk.andsen.asqlitemanager.CreateTableWizField) -> c
+dk.andsen.asqlitemanager.CreateTableWizField$1 -> dk.andsen.asqlitemanager.f:
+    dk.andsen.asqlitemanager.CreateTableWizField this$0 -> a
+    void onCheckedChanged(android.widget.CompoundButton,boolean) -> onCheckedChanged
+dk.andsen.asqlitemanager.CreateTableWizard -> dk.andsen.asqlitemanager.CreateTableWizard:
+    android.widget.Button newTabNewField -> a
+    android.widget.Button newTabCancel -> b
+    android.widget.Button newTabOk -> c
+    android.widget.EditText newTabTabName -> d
+    boolean _logging -> f
+    android.content.Context _cont -> g
+    android.widget.LinearLayout newTabSV -> h
+    java.util.ArrayList _fieldDefs -> e
+    void onCreate(android.os.Bundle) -> onCreate
+    void onClick(android.view.View) -> onClick
+    boolean buildAndExecuteSQL() -> a
+    java.lang.String field2SQL(java.lang.String[]) -> a
+    void onActivityResult(int,int,android.content.Intent) -> onActivityResult
+    void rebuildList() -> b
+    void adFieldToUI(java.lang.String[]) -> b
+    void removeField(int) -> a
+    void onSaveInstanceState(android.os.Bundle) -> onSaveInstanceState
+    boolean access$0(dk.andsen.asqlitemanager.CreateTableWizard) -> a
+    android.content.Context access$1(dk.andsen.asqlitemanager.CreateTableWizard) -> b
+    void access$2(dk.andsen.asqlitemanager.CreateTableWizard) -> c
+dk.andsen.asqlitemanager.CreateTableWizard$1 -> dk.andsen.asqlitemanager.g:
+    dk.andsen.asqlitemanager.CreateTableWizard this$0 -> a
+    void onClick(android.view.View) -> onClick
+dk.andsen.asqlitemanager.CreateTableWizard$2 -> dk.andsen.asqlitemanager.h:
+    dk.andsen.asqlitemanager.CreateTableWizard this$0 -> a
+    boolean onLongClick(android.view.View) -> onLongClick
+dk.andsen.asqlitemanager.CreateTableWizard$3 -> dk.andsen.asqlitemanager.i:
+    dk.andsen.asqlitemanager.CreateTableWizard this$0 -> a
+    void onClick(android.content.DialogInterface,int) -> onClick
+dk.andsen.asqlitemanager.CreateTableWizard$4 -> dk.andsen.asqlitemanager.j:
+    dk.andsen.asqlitemanager.CreateTableWizard this$0 -> a
+    int val$id -> b
+    void onClick(android.content.DialogInterface,int) -> onClick
+dk.andsen.asqlitemanager.DBViewer -> dk.andsen.asqlitemanager.DBViewer:
+    java.lang.String _dbPath -> a
+    java.lang.String[] indexes -> b
+    android.widget.ListView list -> c
+    android.widget.LinearLayout query -> d
+    java.lang.String[] toList -> e
+    android.content.Context _cont -> f
+    boolean _update -> g
+    int MENU_EXPORT -> h
+    int MENU_RESTORE -> i
+    int MENU_SQL -> j
+    int MENU_INFO -> k
+    int MENU_CREATETABLE -> l
+    int FILEPICKER_SQL -> m
+    int _dialogClicked -> n
+    boolean _logging -> o
+    boolean newFeatures -> p
+    boolean _showTip -> q
+    void onCreate(android.os.Bundle) -> onCreate
+    void onDestroy() -> onDestroy
+    void onPause() -> onPause
+    void onRestart() -> onRestart
+    void onSaveInstanceState(android.os.Bundle) -> onSaveInstanceState
+    void buildList(java.lang.String) -> a
+    void dropSelected(java.lang.String,int) -> b
+    void showTip(java.lang.CharSequence,int) -> a
+    void selectRecord(java.lang.String,int) -> a
+    void onClick(android.view.View) -> onClick
+    void onWindowFocusChanged(boolean) -> onWindowFocusChanged
+    boolean onCreateOptionsMenu(android.view.Menu) -> onCreateOptionsMenu
+    boolean onOptionsItemSelected(android.view.MenuItem) -> onOptionsItemSelected
+    android.app.Dialog onCreateDialog(int) -> onCreateDialog
+    void onActivityResult(int,int,android.content.Intent) -> onActivityResult
+    void selectSQLFile() -> a
+    void openSQL(java.io.File) -> a
+    boolean access$0(dk.andsen.asqlitemanager.DBViewer) -> a
+    int access$1(dk.andsen.asqlitemanager.DBViewer) -> b
+    android.content.Context access$2(dk.andsen.asqlitemanager.DBViewer) -> c
+    void access$3(dk.andsen.asqlitemanager.DBViewer) -> d
+    void access$4(dk.andsen.asqlitemanager.DBViewer,java.lang.String,int) -> a
+    void access$5(dk.andsen.asqlitemanager.DBViewer,java.lang.String) -> a
+    void access$6(dk.andsen.asqlitemanager.DBViewer,boolean) -> a
+dk.andsen.asqlitemanager.DBViewer$1 -> dk.andsen.asqlitemanager.k:
+    dk.andsen.asqlitemanager.DBViewer this$0 -> a
+    java.lang.String val$type -> b
+    void onItemClick(android.widget.AdapterView,android.view.View,int,long) -> onItemClick
+dk.andsen.asqlitemanager.DBViewer$2 -> dk.andsen.asqlitemanager.l:
+    dk.andsen.asqlitemanager.DBViewer this$0 -> a
+    java.lang.String val$type -> b
+    boolean onItemLongClick(android.widget.AdapterView,android.view.View,int,long) -> onItemLongClick
+dk.andsen.asqlitemanager.DBViewer$3 -> dk.andsen.asqlitemanager.m:
+    dk.andsen.asqlitemanager.DBViewer this$0 -> a
+    void onClick(android.content.DialogInterface,int) -> onClick
+dk.andsen.asqlitemanager.DBViewer$4 -> dk.andsen.asqlitemanager.n:
+    dk.andsen.asqlitemanager.DBViewer this$0 -> a
+    java.lang.String val$sql -> b
+    java.lang.String val$type -> c
+    void onClick(android.content.DialogInterface,int) -> onClick
+dk.andsen.asqlitemanager.DBViewer$5 -> dk.andsen.asqlitemanager.o:
+    dk.andsen.asqlitemanager.DBViewer this$0 -> a
+    android.app.Dialog val$dial -> b
+    int val$tipNo -> c
+    void onClick(android.view.View) -> onClick
+dk.andsen.asqlitemanager.DBViewer$DialogButtonClickHandler -> dk.andsen.asqlitemanager.p:
+    dk.andsen.asqlitemanager.DBViewer this$0 -> a
+    void onClick(android.content.DialogInterface,int) -> onClick
+dk.andsen.asqlitemanager.Database -> dk.andsen.asqlitemanager.q:
+    boolean isDatabase -> a
+    android.database.sqlite.SQLiteDatabase _db -> b
+    java.lang.String _dbPath -> c
+    android.content.Context _cont -> d
+    java.lang.String nl -> e
+    android.widget.ProgressBar myProgressBar -> f
+    int myProgress -> g
+    android.widget.TextView progressTitle -> h
+    android.widget.TextView progressTable -> i
+    java.lang.String progressTitleText -> j
+    java.lang.String progressTableText -> k
+    android.app.Dialog pd -> l
+    android.os.Handler theHandle -> m
+    boolean _logging -> n
+    java.lang.Runnable myExportThread -> o
+    boolean testDBFile(java.lang.String) -> l
+    void close() -> a
+    void testDB() -> o
+    java.lang.String[] getTables() -> b
+    java.lang.String[] getViews() -> c
+    java.lang.String[] getIndex() -> d
+    dk.andsen.types.Field[] getFields(java.lang.String) -> a
+    java.lang.String[] getFieldsNames(java.lang.String) -> b
+    dk.andsen.types.Record[] getTableDataWithWhere(android.content.Context,java.lang.String,java.lang.String,java.lang.String,int,int,boolean) -> a
+    dk.andsen.types.AField$FieldType getFieldType(java.lang.String) -> m
+    dk.andsen.types.Record[] getSQL(android.content.Context,java.lang.String) -> a
+    java.lang.String[] getTableStructureHeadings(java.lang.String) -> c
+    dk.andsen.types.Record[] getTableStructure(android.content.Context,java.lang.String) -> b
+    dk.andsen.types.FieldDescr[] getTableStructureDef(java.lang.String) -> d
+    int fieldType2Int(java.lang.String) -> n
+    boolean int2boolean(int) -> a
+    java.lang.String[] getTablesFieldsNames(java.lang.String[]) -> a
+    void saveSQL(java.lang.String) -> e
+    void testHistoryTable() -> p
+    dk.andsen.types.QueryResult getSQLQueryPage(java.lang.String,int,int) -> a
+    java.lang.String getIndexDef(java.lang.String) -> f
+    java.lang.String[] getListOfSQL() -> e
+    boolean exportDatabase() -> f
+    void exportData(java.io.BufferedWriter) -> a
+    void exportIndexDefinitions(java.io.BufferedWriter) -> b
+    void exportViews(java.io.BufferedWriter) -> c
+    void exportTriggers(java.io.BufferedWriter) -> d
+    void exportTableDefinitions(java.io.BufferedWriter) -> e
+    boolean restoreDatabase() -> g
+    boolean executeStatement(java.lang.String,android.content.Context) -> a
+    boolean runScript(java.io.File) -> a
+    void dropAllTables() -> q
+    void dropAllViews() -> r
+    boolean beginTransaction() -> h
+    boolean commit() -> i
+    boolean rollback() -> j
+    boolean inTransaction() -> k
+    void exportQueryResult(java.lang.String) -> g
+    boolean historyExists() -> l
+    dk.andsen.RecordEditor.types.TableField[] getRecord(java.lang.String,long) -> a
+    dk.andsen.RecordEditor.types.TableField[] getEmptyRecord(java.lang.String) -> h
+    void updateRecord(java.lang.String,long,dk.andsen.RecordEditor.types.TableField[],android.content.Context) -> a
+    void updateViewRecord(java.lang.String,dk.andsen.types.Record,dk.andsen.RecordEditor.types.TableField[],android.content.Context) -> a
+    void insertRecord(java.lang.String,dk.andsen.RecordEditor.types.TableField[],android.content.Context) -> a
+    boolean exportTable(java.lang.String) -> i
+    boolean exportSingleTableData(java.lang.String,java.io.BufferedWriter) -> a
+    java.lang.String selectWithTypes(java.lang.String) -> o
+    java.lang.String byteArrayToHexString(byte[]) -> a
+    boolean exportSingleTableDefinition(java.lang.String,java.io.BufferedWriter) -> b
+    java.lang.String getVersionInfo() -> m
+    void deleteRecord(java.lang.String,java.lang.Long,android.content.Context) -> a
+    void deleteViewRecord(java.lang.String,dk.andsen.types.Record,android.content.Context) -> a
+    int getNoOfRecords(java.lang.String,java.lang.String) -> a
+    dk.andsen.types.ForeignKeyHolder getFKList2(java.lang.String) -> j
+    void FKOn() -> n
+    dk.andsen.types.ViewUpdateable isViewUpdatable(java.lang.String) -> k
+    java.lang.String csvExport(android.content.Context,java.lang.String,java.util.List,java.lang.String) -> a
+    java.lang.String cvsImport(android.content.Context,java.lang.String,java.lang.String,int,java.util.List,java.util.List) -> a
+    void saveBlobData(java.lang.String,java.lang.String,long,int,android.content.Context) -> a
+    void loadBlobData(java.lang.String,java.lang.String,long,int,android.content.Context) -> b
+    android.widget.ProgressBar access$0(dk.andsen.asqlitemanager.Database) -> a
+    int access$1(dk.andsen.asqlitemanager.Database) -> b
+    android.widget.TextView access$2(dk.andsen.asqlitemanager.Database) -> c
+    java.lang.String access$3(dk.andsen.asqlitemanager.Database) -> d
+    android.widget.TextView access$4(dk.andsen.asqlitemanager.Database) -> e
+    java.lang.String access$5(dk.andsen.asqlitemanager.Database) -> f
+    void access$6(dk.andsen.asqlitemanager.Database) -> g
+    void access$7(dk.andsen.asqlitemanager.Database,android.os.Handler) -> a
+    boolean access$8(dk.andsen.asqlitemanager.Database) -> h
+    void access$9(dk.andsen.asqlitemanager.Database,java.lang.String) -> a
+    void access$10(dk.andsen.asqlitemanager.Database,int) -> a
+    void access$11(dk.andsen.asqlitemanager.Database,java.io.BufferedWriter) -> a
+    void access$12(dk.andsen.asqlitemanager.Database,java.io.BufferedWriter) -> b
+    void access$13(dk.andsen.asqlitemanager.Database,java.io.BufferedWriter) -> c
+    void access$14(dk.andsen.asqlitemanager.Database,java.io.BufferedWriter) -> d
+    void access$15(dk.andsen.asqlitemanager.Database,java.io.BufferedWriter) -> e
+    android.app.Dialog access$16(dk.andsen.asqlitemanager.Database) -> i
+dk.andsen.asqlitemanager.Database$1 -> dk.andsen.asqlitemanager.r:
+    android.os.Handler myHandle -> a
+    dk.andsen.asqlitemanager.Database this$0 -> b
+    void run() -> run
+    dk.andsen.asqlitemanager.Database access$0(dk.andsen.asqlitemanager.Database$1) -> a
+dk.andsen.asqlitemanager.Database$1$1 -> dk.andsen.asqlitemanager.s:
+    dk.andsen.asqlitemanager.Database$1 this$1 -> a
+    void handleMessage(android.os.Message) -> handleMessage
+dk.andsen.asqlitemanager.FilterBuilder -> dk.andsen.asqlitemanager.FilterBuilder:
+    android.content.Context _cont -> a
+    boolean _logging -> b
+    java.lang.String _sql -> c
+    java.lang.String _table -> d
+    android.widget.EditText etValue -> e
+    android.widget.EditText etSQL -> f
+    android.widget.Spinner spField -> g
+    android.widget.Spinner spQualifier -> h
+    android.widget.Button btnAdd -> i
+    android.widget.Button btnOk -> j
+    android.widget.Button btnClear -> k
+    void onCreate(android.os.Bundle) -> onCreate
+    void onClick(android.view.View) -> onClick
+    void setUpUI() -> a
+    boolean isNumeric(java.lang.String) -> a
+dk.andsen.asqlitemanager.Help -> dk.andsen.asqlitemanager.Help:
+    void onCreate(android.os.Bundle) -> onCreate
+dk.andsen.asqlitemanager.OpenOnClick -> dk.andsen.asqlitemanager.OpenOnClick:
+    android.widget.Button _btOK -> a
+    android.widget.CheckBox _remember -> b
+    java.lang.String _file -> c
+    boolean logging -> d
+    void onCreate(android.os.Bundle) -> onCreate
+    void onClick(android.view.View) -> onClick
+dk.andsen.asqlitemanager.OpenOnClick2 -> dk.andsen.asqlitemanager.OpenOnClick2:
+    android.widget.Button _btOK -> a
+    android.widget.CheckBox _remember -> b
+    java.lang.String _file -> c
+    boolean logging -> d
+    void onCreate(android.os.Bundle) -> onCreate
+    void onClick(android.view.View) -> onClick
+dk.andsen.asqlitemanager.OpenOnClick3 -> dk.andsen.asqlitemanager.OpenOnClick3:
+    android.widget.Button _btOK -> a
+    android.widget.CheckBox _remember -> b
+    java.lang.String _file -> c
+    boolean logging -> d
+    void onCreate(android.os.Bundle) -> onCreate
+    void onClick(android.view.View) -> onClick
+dk.andsen.asqlitemanager.Prefs -> dk.andsen.asqlitemanager.Prefs:
+    java.lang.String OPT_SULOCATION_DEF -> a
+    void onCreate(android.os.Bundle) -> onCreate
+    int getQEMaxLines(android.content.Context) -> a
+    int getQEMinLines(android.content.Context) -> b
+    int getPageSize(android.content.Context) -> c
+    int getFontSize(android.content.Context) -> d
+    boolean getSaveSQL(android.content.Context) -> e
+    int getNoOfFiles(android.content.Context) -> f
+    int getMaxWidth(android.content.Context) -> g
+    boolean getFKList(android.content.Context) -> h
+    boolean getEnableFK(android.content.Context) -> i
+    boolean getLogging(android.content.Context) -> j
+    boolean getMainVertical(android.content.Context) -> k
+    int getDefaultView(android.content.Context) -> l
+    int validPositiveIntegerOrNumber(java.lang.String,int) -> a
+dk.andsen.asqlitemanager.QueryViewer -> dk.andsen.asqlitemanager.QueryViewer:
+    boolean inTransaction -> b
+    int _transactionLevel -> c
+    java.util.List saveSQL -> d
+    java.lang.String[] _queryTypes -> e
+    java.lang.String[] _transaction -> f
+    android.widget.EditText _tvQ -> g
+    android.widget.Button _btR -> h
+    android.widget.TextView _tvTransaction -> i
+    android.content.Context _cont -> j
+    java.lang.String _dbPath -> k
+    dk.andsen.asqlitemanager.Database _db -> l
+    int _offset -> m
+    int _limit -> n
+    android.widget.TableLayout _aTable -> o
+    boolean _save -> p
+    boolean[] listOfTables_selected -> q
+    java.lang.String[] listOfTables -> r
+    java.lang.String[] listOfSQL -> s
+    boolean[] listOfFields_selected -> t
+    java.lang.String[] listOfFields -> u
+    android.widget.Button bUp -> v
+    android.widget.Button bDwn -> w
+    int _queryType -> x
+    boolean _rebuildMenu -> a
+    java.lang.String _tableDialogString -> y
+    boolean logging -> z
+    boolean _showTip -> A
+    int _maxWidth -> B
+    int _qeMinLines -> C
+    int _qeMaxLines -> D
+    void onCreate(android.os.Bundle) -> onCreate
+    void onRestart() -> onRestart
+    void onSaveInstanceState(android.os.Bundle) -> onSaveInstanceState
+    void onClick(android.view.View) -> onClick
+    void onBackPressed() -> onBackPressed
+    void setTitles(android.widget.TableLayout,java.lang.String[]) -> a
+    void showTip(java.lang.CharSequence,int) -> a
+    void appendRows(android.widget.TableLayout,java.lang.String[][]) -> a
+    boolean onOptionsItemSelected(android.view.MenuItem) -> onOptionsItemSelected
+    boolean onPrepareOptionsMenu(android.view.Menu) -> onPrepareOptionsMenu
+    boolean onCreateOptionsMenu(android.view.Menu) -> onCreateOptionsMenu
+    android.app.Dialog onCreateDialog(int) -> onCreateDialog
+    java.lang.String buildSQL() -> a
+    java.lang.String buildInsertIntoSQL() -> b
+    java.lang.String buildSelectSQL() -> c
+    int noSelected(boolean[]) -> a
+    java.lang.String buildDropTableSQL() -> d
+    java.lang.String buildDropViewSQL() -> e
+    java.lang.String buildDeleteSQL() -> f
+    java.lang.String buildCreateViewSQL() -> g
+    java.lang.String buildCreateTableSQL() -> h
+    boolean access$0(dk.andsen.asqlitemanager.QueryViewer) -> a
+    java.lang.String access$1(dk.andsen.asqlitemanager.QueryViewer) -> b
+    boolean[] access$2(dk.andsen.asqlitemanager.QueryViewer) -> c
+    java.lang.String access$3(dk.andsen.asqlitemanager.QueryViewer) -> d
+    android.widget.EditText access$4(dk.andsen.asqlitemanager.QueryViewer) -> e
+    void access$5(dk.andsen.asqlitemanager.QueryViewer,int) -> a
+    int access$6(dk.andsen.asqlitemanager.QueryViewer) -> f
+    void access$7(dk.andsen.asqlitemanager.QueryViewer,int) -> b
+    android.widget.TextView access$8(dk.andsen.asqlitemanager.QueryViewer) -> g
+    boolean access$9(dk.andsen.asqlitemanager.QueryViewer) -> h
+    java.util.List access$10(dk.andsen.asqlitemanager.QueryViewer) -> i
+    dk.andsen.asqlitemanager.Database access$11(dk.andsen.asqlitemanager.QueryViewer) -> j
+    void access$12(dk.andsen.asqlitemanager.QueryViewer,boolean) -> a
+    java.lang.String[] access$13(dk.andsen.asqlitemanager.QueryViewer) -> k
+    int access$14(dk.andsen.asqlitemanager.QueryViewer) -> l
+    int access$15(dk.andsen.asqlitemanager.QueryViewer) -> m
+    android.content.Context access$16(dk.andsen.asqlitemanager.QueryViewer) -> n
+    void access$17(dk.andsen.asqlitemanager.QueryViewer,boolean) -> b
+dk.andsen.asqlitemanager.QueryViewer$1 -> dk.andsen.asqlitemanager.t:
+    dk.andsen.asqlitemanager.QueryViewer this$0 -> a
+    boolean onTouch(android.view.View,android.view.MotionEvent) -> onTouch
+dk.andsen.asqlitemanager.QueryViewer$2 -> dk.andsen.asqlitemanager.u:
+    dk.andsen.asqlitemanager.QueryViewer this$0 -> a
+    void onFocusChange(android.view.View,boolean) -> onFocusChange
+dk.andsen.asqlitemanager.QueryViewer$3 -> dk.andsen.asqlitemanager.v:
+    dk.andsen.asqlitemanager.QueryViewer this$0 -> a
+    android.app.Dialog val$dial -> b
+    boolean val$logging -> c
+    int val$tipNo -> d
+    void onClick(android.view.View) -> onClick
+dk.andsen.asqlitemanager.QueryViewer$4 -> dk.andsen.asqlitemanager.w:
+    dk.andsen.asqlitemanager.QueryViewer this$0 -> a
+    void onClick(android.view.View) -> onClick
+dk.andsen.asqlitemanager.QueryViewer$5 -> dk.andsen.asqlitemanager.x:
+    dk.andsen.asqlitemanager.QueryViewer this$0 -> a
+    void onClick(android.view.View) -> onClick
+dk.andsen.asqlitemanager.QueryViewer$DialogButtonClickHandler -> dk.andsen.asqlitemanager.y:
+    dk.andsen.asqlitemanager.QueryViewer this$0 -> a
+    void onClick(android.content.DialogInterface,int) -> onClick
+dk.andsen.asqlitemanager.QueryViewer$DialogSelectionClickHandler -> dk.andsen.asqlitemanager.z:
+    dk.andsen.asqlitemanager.QueryViewer this$0 -> a
+    void onClick(android.content.DialogInterface,int,boolean) -> onClick
+dk.andsen.asqlitemanager.QueryViewer$QueryTypeOnClickHandler -> dk.andsen.asqlitemanager.aa:
+    dk.andsen.asqlitemanager.QueryViewer this$0 -> a
+    void onClick(android.content.DialogInterface,int) -> onClick
+dk.andsen.asqlitemanager.QueryViewer$ResentSQLOnClickHandler -> dk.andsen.asqlitemanager.ab:
+    dk.andsen.asqlitemanager.QueryViewer this$0 -> a
+    void onClick(android.content.DialogInterface,int) -> onClick
+dk.andsen.asqlitemanager.QueryViewer$TransactionOnClickHandler -> dk.andsen.asqlitemanager.ac:
+    dk.andsen.asqlitemanager.QueryViewer this$0 -> a
+    void onClick(android.content.DialogInterface,int) -> onClick
+dk.andsen.asqlitemanager.SQLViewer -> dk.andsen.asqlitemanager.SQLViewer:
+    java.lang.String _dbPath -> b
+    android.app.ProgressDialog _pd -> c
+    android.widget.ListView _lv -> d
+    int _dialogClicked -> e
+    dk.andsen.asqlitemanager.Database _db -> f
+    java.lang.String _scriptPath -> g
+    dk.andsen.asqlitemanager.SQLViewer _cont -> h
+    java.lang.String _sql -> a
+    boolean logging -> i
+    android.os.Handler handler -> j
+    void onCreate(android.os.Bundle) -> onCreate
+    void run() -> run
+    boolean onCreateOptionsMenu(android.view.Menu) -> onCreateOptionsMenu
+    android.app.Dialog onCreateDialog(int) -> onCreateDialog
+    boolean onOptionsItemSelected(android.view.MenuItem) -> onOptionsItemSelected
+    void onClick(android.view.View) -> onClick
+    android.app.ProgressDialog access$0(dk.andsen.asqlitemanager.SQLViewer) -> a
+    boolean access$1(dk.andsen.asqlitemanager.SQLViewer) -> b
+    int access$2(dk.andsen.asqlitemanager.SQLViewer) -> c
+    java.lang.String access$3(dk.andsen.asqlitemanager.SQLViewer) -> d
+    dk.andsen.asqlitemanager.Database access$4(dk.andsen.asqlitemanager.SQLViewer) -> e
+    dk.andsen.asqlitemanager.SQLViewer access$5(dk.andsen.asqlitemanager.SQLViewer) -> f
+    void access$6(dk.andsen.asqlitemanager.SQLViewer,int) -> a
+dk.andsen.asqlitemanager.SQLViewer$1 -> dk.andsen.asqlitemanager.ad:
+    dk.andsen.asqlitemanager.SQLViewer this$0 -> a
+    void handleMessage(android.os.Message) -> handleMessage
+dk.andsen.asqlitemanager.SQLViewer$2 -> dk.andsen.asqlitemanager.ae:
+    dk.andsen.asqlitemanager.SQLViewer this$0 -> a
+    java.util.ArrayList val$mylist -> b
+    void onItemClick(android.widget.AdapterView,android.view.View,int,long) -> onItemClick
+dk.andsen.asqlitemanager.SQLViewer$DialogButtonClickHandler -> dk.andsen.asqlitemanager.af:
+    dk.andsen.asqlitemanager.SQLViewer this$0 -> a
+    void onClick(android.content.DialogInterface,int) -> onClick
+dk.andsen.asqlitemanager.TableViewer -> dk.andsen.asqlitemanager.TableViewer:
+    dk.andsen.asqlitemanager.Database _db -> c
+    java.lang.String _table -> d
+    android.content.Context _cont -> e
+    android.widget.TableLayout _aTable -> f
+    android.widget.TableLayout _aHeadings -> g
+    android.widget.TableRow _trHeadings -> h
+    android.widget.TableRow _trLastRow -> i
+    int offset -> j
+    int limit -> k
+    boolean _updateTable -> l
+    android.widget.Button bUp -> m
+    android.widget.Button bDwn -> n
+    int sourceType -> o
+    java.lang.String _where -> a
+    boolean _logging -> p
+    int _fontSize -> q
+    java.lang.String _order -> b
+    boolean _increasing -> r
+    boolean _canInsertInView -> s
+    boolean _canUpdateView -> t
+    boolean _canDeleteView -> u
+    dk.andsen.types.Record[] _data -> v
+    boolean _fieldMode -> w
+    boolean _showTip -> x
+    int _maxWidth -> y
+    android.widget.TextView tvDB -> z
+    boolean resize -> A
+    boolean resizing -> B
+    boolean measured -> C
+    void onCreate(android.os.Bundle) -> onCreate
+    void onSaveInstanceState(android.os.Bundle) -> onSaveInstanceState
+    void onPause() -> onPause
+    void onDestroy() -> onDestroy
+    void onRestart() -> onRestart
+    void onClick(android.view.View) -> onClick
+    void updateData() -> a
+    void addNewRecord() -> b
+    void onWindowFocusChanged(boolean) -> onWindowFocusChanged
+    void setWidths() -> c
+    void updateButtons(boolean) -> a
+    void newAppendRows(boolean) -> b
+    android.view.View$OnClickListener addBolbEditor(long,boolean,int) -> a
+    android.widget.TextView addEditField(int,boolean) -> a
+    int getBackgroundColor(dk.andsen.types.AField$FieldType,boolean) -> a
+    void setTitles(java.lang.String[],boolean) -> a
+    void showTip(java.lang.CharSequence,int) -> a
+    boolean onCreateOptionsMenu(android.view.Menu) -> onCreateOptionsMenu
+    boolean onOptionsItemSelected(android.view.MenuItem) -> onOptionsItemSelected
+    void csvImport(java.lang.String) -> a
+    void csvExport() -> d
+    void getTableDefinition() -> e
+    void fillDataTableWithArgs() -> f
+    void checkForUpdateableView() -> g
+    void onActivityResult(int,int,android.content.Intent) -> onActivityResult
+    boolean access$0(dk.andsen.asqlitemanager.TableViewer) -> a
+    android.content.Context access$1(dk.andsen.asqlitemanager.TableViewer) -> b
+    dk.andsen.asqlitemanager.Database access$2(dk.andsen.asqlitemanager.TableViewer) -> c
+    java.lang.String access$3(dk.andsen.asqlitemanager.TableViewer) -> d
+    void access$4(dk.andsen.asqlitemanager.TableViewer,boolean) -> a
+    void access$5(dk.andsen.asqlitemanager.TableViewer) -> e
+    dk.andsen.types.Record[] access$6(dk.andsen.asqlitemanager.TableViewer) -> f
+    boolean access$7(dk.andsen.asqlitemanager.TableViewer) -> g
+    boolean access$8(dk.andsen.asqlitemanager.TableViewer) -> h
+    void access$9(dk.andsen.asqlitemanager.TableViewer,boolean) -> b
+    void access$10(dk.andsen.asqlitemanager.TableViewer) -> i
+    boolean access$11(dk.andsen.asqlitemanager.TableViewer) -> j
+    void access$12(dk.andsen.asqlitemanager.TableViewer) -> k
+    void access$13(dk.andsen.asqlitemanager.TableViewer,boolean) -> c
+    void access$14(dk.andsen.asqlitemanager.TableViewer,boolean) -> d
+dk.andsen.asqlitemanager.TableViewer$1 -> dk.andsen.asqlitemanager.ag:
+    dk.andsen.asqlitemanager.TableViewer this$0 -> a
+    android.widget.Button val$btnOK -> b
+    dk.andsen.RecordEditor.RecordEditorBuilder val$re -> c
+    android.widget.ScrollView val$sv -> d
+    android.app.Dialog val$dial -> e
+    void onClick(android.view.View) -> onClick
+dk.andsen.asqlitemanager.TableViewer$10 -> dk.andsen.asqlitemanager.ah:
+    dk.andsen.asqlitemanager.TableViewer this$0 -> a
+    android.app.Dialog val$dial -> b
+    boolean val$logging -> c
+    int val$tipNo -> d
+    void onClick(android.view.View) -> onClick
+dk.andsen.asqlitemanager.TableViewer$2 -> dk.andsen.asqlitemanager.ai:
+    dk.andsen.asqlitemanager.TableViewer this$0 -> a
+    android.widget.Button val$btnCancel -> b
+    android.app.Dialog val$dial -> c
+    void onClick(android.view.View) -> onClick
+dk.andsen.asqlitemanager.TableViewer$3 -> dk.andsen.asqlitemanager.aj:
+    dk.andsen.asqlitemanager.TableViewer this$0 -> a
+    void onClick(android.view.View) -> onClick
+dk.andsen.asqlitemanager.TableViewer$4 -> dk.andsen.asqlitemanager.ak:
+    dk.andsen.asqlitemanager.TableViewer this$0 -> a
+    long val$_rowNo -> b
+    int val$_columnNo -> c
+    void onClick(android.view.View) -> onClick
+    dk.andsen.asqlitemanager.TableViewer access$0(dk.andsen.asqlitemanager.TableViewer$4) -> a
+dk.andsen.asqlitemanager.TableViewer$4$1 -> dk.andsen.asqlitemanager.al:
+    dk.andsen.asqlitemanager.TableViewer$4 this$1 -> a
+    android.widget.EditText val$input -> b
+    long val$_rowNo -> c
+    int val$_columnNo -> d
+    void onClick(android.content.DialogInterface,int) -> onClick
+dk.andsen.asqlitemanager.TableViewer$4$2 -> dk.andsen.asqlitemanager.am:
+    dk.andsen.asqlitemanager.TableViewer$4 this$1 -> a
+    android.widget.EditText val$input -> b
+    long val$_rowNo -> c
+    int val$_columnNo -> d
+    void onClick(android.content.DialogInterface,int) -> onClick
+dk.andsen.asqlitemanager.TableViewer$4$3 -> dk.andsen.asqlitemanager.an:
+    dk.andsen.asqlitemanager.TableViewer$4 this$1 -> a
+    void onClick(android.content.DialogInterface,int) -> onClick
+dk.andsen.asqlitemanager.TableViewer$5 -> dk.andsen.asqlitemanager.ao:
+    dk.andsen.asqlitemanager.TableViewer this$0 -> a
+    long val$_rowNo -> b
+    int val$_columnNo -> c
+    void onClick(android.view.View) -> onClick
+    dk.andsen.asqlitemanager.TableViewer access$0(dk.andsen.asqlitemanager.TableViewer$5) -> a
+dk.andsen.asqlitemanager.TableViewer$5$1 -> dk.andsen.asqlitemanager.ap:
+    dk.andsen.asqlitemanager.TableViewer$5 this$1 -> a
+    android.widget.EditText val$input -> b
+    long val$_rowNo -> c
+    int val$_columnNo -> d
+    void onClick(android.content.DialogInterface,int) -> onClick
+dk.andsen.asqlitemanager.TableViewer$5$2 -> dk.andsen.asqlitemanager.aq:
+    dk.andsen.asqlitemanager.TableViewer$5 this$1 -> a
+    void onClick(android.content.DialogInterface,int) -> onClick
+dk.andsen.asqlitemanager.TableViewer$6 -> dk.andsen.asqlitemanager.ar:
+    dk.andsen.asqlitemanager.TableViewer this$0 -> a
+    boolean val$aTable -> b
+    int val$rowNo -> c
+    void onClick(android.view.View) -> onClick
+    dk.andsen.asqlitemanager.TableViewer access$0(dk.andsen.asqlitemanager.TableViewer$6) -> a
+dk.andsen.asqlitemanager.TableViewer$6$1 -> dk.andsen.asqlitemanager.as:
+    dk.andsen.asqlitemanager.TableViewer$6 this$1 -> a
+    android.widget.Button val$btnOK -> b
+    dk.andsen.RecordEditor.RecordEditorBuilder val$re -> c
+    android.widget.ScrollView val$sv -> d
+    boolean val$aTable -> e
+    java.lang.Long val$rowid -> f
+    android.app.Dialog val$dial -> g
+    void onClick(android.view.View) -> onClick
+dk.andsen.asqlitemanager.TableViewer$6$2 -> dk.andsen.asqlitemanager.at:
+    dk.andsen.asqlitemanager.TableViewer$6 this$1 -> a
+    android.widget.Button val$btnCancel -> b
+    android.app.Dialog val$dial -> c
+    void onClick(android.view.View) -> onClick
+dk.andsen.asqlitemanager.TableViewer$6$3 -> dk.andsen.asqlitemanager.au:
+    dk.andsen.asqlitemanager.TableViewer$6 this$1 -> a
+    android.widget.Button val$btnDelete -> b
+    boolean val$aTable -> c
+    java.lang.Long val$rowid -> d
+    android.app.Dialog val$dial -> e
+    void onClick(android.view.View) -> onClick
+dk.andsen.asqlitemanager.TableViewer$7 -> dk.andsen.asqlitemanager.av:
+    dk.andsen.asqlitemanager.TableViewer this$0 -> a
+    void onClick(android.view.View) -> onClick
+    dk.andsen.asqlitemanager.TableViewer access$0(dk.andsen.asqlitemanager.TableViewer$7) -> a
+dk.andsen.asqlitemanager.TableViewer$7$1 -> dk.andsen.asqlitemanager.aw:
+    dk.andsen.asqlitemanager.TableViewer$7 this$1 -> a
+    android.widget.Button val$btnOK -> b
+    dk.andsen.RecordEditor.RecordEditorBuilder val$re -> c
+    android.widget.ScrollView val$sv -> d
+    android.app.Dialog val$dial -> e
+    void onClick(android.view.View) -> onClick
+dk.andsen.asqlitemanager.TableViewer$7$2 -> dk.andsen.asqlitemanager.ax:
+    dk.andsen.asqlitemanager.TableViewer$7 this$1 -> a
+    android.widget.Button val$btnCancel -> b
+    android.app.Dialog val$dial -> c
+    void onClick(android.view.View) -> onClick
+dk.andsen.asqlitemanager.TableViewer$8 -> dk.andsen.asqlitemanager.ay:
+    dk.andsen.asqlitemanager.TableViewer this$0 -> a
+    void onClick(android.view.View) -> onClick
+dk.andsen.asqlitemanager.TableViewer$9 -> dk.andsen.asqlitemanager.az:
+    dk.andsen.asqlitemanager.TableViewer this$0 -> a
+    void onGlobalLayout() -> onGlobalLayout
+dk.andsen.asqlitemanager.aSQLiteManager -> dk.andsen.asqlitemanager.aSQLiteManager:
+    java.lang.String WelcomeId -> b
+    java.lang.String vers -> c
+    android.content.Context _cont -> d
+    java.lang.String _recentFiles -> e
+    boolean _logging -> f
+    boolean loadSettings -> g
+    boolean _showWelcome -> h
+    boolean _showTip -> i
+    android.app.Dialog newDatabaseDialog -> j
+    dk.andsen.asqlitemanager.Database database -> a
+    void onCreate(android.os.Bundle) -> onCreate
+    void showTip(java.lang.CharSequence,int) -> a
+    void showWelcome() -> a
+    void onClick(android.view.View) -> onClick
+    void onSaveInstanceState(android.os.Bundle) -> onSaveInstanceState
+    void onWindowFocusChanged(boolean) -> onWindowFocusChanged
+    void showAboutDialog() -> b
+    void onActivityResult(int,int,android.content.Intent) -> onActivityResult
+    void newDatabase() -> c
+    boolean onCreateOptionsMenu(android.view.Menu) -> onCreateOptionsMenu
+    boolean onOptionsItemSelected(android.view.MenuItem) -> onOptionsItemSelected
+    void resetAllPreferences() -> d
+    android.content.Context access$0(dk.andsen.asqlitemanager.aSQLiteManager) -> a
+    boolean access$1(dk.andsen.asqlitemanager.aSQLiteManager) -> b
+    void access$2(dk.andsen.asqlitemanager.aSQLiteManager,boolean) -> a
+    void access$3(dk.andsen.asqlitemanager.aSQLiteManager,boolean) -> b
+    android.app.Dialog access$4(dk.andsen.asqlitemanager.aSQLiteManager) -> c
+    void access$5(dk.andsen.asqlitemanager.aSQLiteManager,android.app.Dialog) -> a
+dk.andsen.asqlitemanager.aSQLiteManager$1 -> dk.andsen.asqlitemanager.ba:
+    dk.andsen.asqlitemanager.aSQLiteManager this$0 -> a
+    android.app.Dialog val$dial -> b
+    boolean val$logging -> c
+    int val$tipNo -> d
+    void onClick(android.view.View) -> onClick
+dk.andsen.asqlitemanager.aSQLiteManager$2 -> dk.andsen.asqlitemanager.bb:
+    dk.andsen.asqlitemanager.aSQLiteManager this$0 -> a
+    android.app.Dialog val$dial -> b
+    void onClick(android.view.View) -> onClick
+dk.andsen.asqlitemanager.aSQLiteManager$3 -> dk.andsen.asqlitemanager.bc:
+    dk.andsen.asqlitemanager.aSQLiteManager this$0 -> a
+    java.lang.String val$pathToNewDB -> b
+    void onClick(android.view.View) -> onClick
+dk.andsen.asqlitemanager.aSQLiteManager$4 -> dk.andsen.asqlitemanager.bd:
+    dk.andsen.asqlitemanager.aSQLiteManager this$0 -> a
+    android.widget.Button val$btnMOK -> b
+    android.widget.TextView val$newFolder -> c
+    android.widget.EditText val$edNewDB -> d
+    void onClick(android.view.View) -> onClick
+dk.andsen.asqlitemanager.aSQLiteManager$5 -> dk.andsen.asqlitemanager.be:
+    dk.andsen.asqlitemanager.aSQLiteManager this$0 -> a
+    void onClick(android.content.DialogInterface,int) -> onClick
+dk.andsen.asqlitemanager.aSQLiteManager$6 -> dk.andsen.asqlitemanager.bf:
+    dk.andsen.asqlitemanager.aSQLiteManager this$0 -> a
+    void onClick(android.content.DialogInterface,int) -> onClick
+dk.andsen.asqlitemanager.aSQLiteManager$ResentFileOnClickHandler -> dk.andsen.asqlitemanager.bg:
+    dk.andsen.asqlitemanager.aSQLiteManager this$0 -> a
+    void onClick(android.content.DialogInterface,int) -> onClick
+dk.andsen.csv.CSVUtils -> dk.andsen.b.a:
+    void writeLine(java.io.Writer,java.util.List) -> a
+    java.util.List parseLine(java.lang.String) -> a
+    java.util.List readFirstLines(java.lang.String,int,int) -> a
+dk.andsen.csv.CsvExport -> dk.andsen.b.b:
+    boolean _logging -> a
+    java.lang.String _table -> b
+    dk.andsen.asqlitemanager.Database _db -> c
+    dk.andsen.types.Field[] fields -> d
+    android.widget.LinearLayout _ll -> e
+    android.widget.Button btnOk -> f
+    android.widget.Button btnCansel -> g
+    android.content.Context _cont -> h
+    void onCreate(android.os.Bundle) -> onCreate
+    void setUpUi() -> a
+    void onClick(android.view.View) -> onClick
+dk.andsen.csv.CsvImport -> dk.andsen.b.c:
+    boolean _logging -> a
+    java.lang.String _table -> b
+    dk.andsen.asqlitemanager.Database _db -> c
+    dk.andsen.types.Field[] fields -> d
+    android.widget.LinearLayout _ll -> e
+    android.widget.Button btnOk -> f
+    android.widget.Button btnCansel -> g
+    android.widget.Button btnReread -> h
+    android.widget.EditText etLinesToSkip -> i
+    android.widget.TextView tvFirstLines -> j
+    android.content.Context _cont -> k
+    java.util.List firstLines -> l
+    java.lang.String _fileName -> m
+    void onCreate(android.os.Bundle) -> onCreate
+    void setUpUi() -> a
+    void onClick(android.view.View) -> onClick
+    void readFirstLines() -> b
+dk.andsen.filepicker.FPSettings -> dk.andsen.filepicker.a:
+    boolean _logging -> a
+    java.lang.String getRecentDirs(android.content.Context) -> a
+    void saveRecentDirs(android.content.Context,java.lang.String) -> a
+dk.andsen.filepicker.FileItem -> dk.andsen.filepicker.b:
+    boolean _logging -> a
+    java.util.regex.Pattern unix -> b
+    java.util.regex.Pattern inet -> c
+    java.util.regex.Pattern msdos -> d
+    java.text.SimpleDateFormat format_date_time -> e
+    java.text.SimpleDateFormat format_date_year -> f
+    java.text.SimpleDateFormat format_full_date -> g
+    java.text.SimpleDateFormat format_msdos_date -> h
+    java.lang.String name -> i
+    java.lang.String link_target_name -> j
+    java.lang.String attr -> k
+    boolean directory -> l
+    boolean link -> m
+    long size -> n
+    java.util.Date date -> o
+    java.lang.String getName() -> a
+    java.util.Date getDate() -> b
+    long length() -> c
+    boolean isDirectory() -> d
+    java.lang.String getLinkTarget() -> e
+    int compareTo(dk.andsen.filepicker.FileItem) -> a
+dk.andsen.filepicker.FileItemComparator -> dk.andsen.filepicker.c:
+    int _type -> a
+    boolean _case_ignore -> b
+    boolean _ascending -> c
+    int compare(dk.andsen.filepicker.FileItem,dk.andsen.filepicker.FileItem) -> a
+    java.lang.String getFileExt(java.lang.String) -> a
+    int compare(java.lang.Object,java.lang.Object) -> compare
+dk.andsen.filepicker.FileListArrayAdapter -> dk.andsen.filepicker.d:
+    android.app.Activity activity -> a
+    java.lang.String[] filetypes -> b
+    java.util.List ls -> c
+    boolean _logging -> d
+    android.view.View getView(int,android.view.View,android.view.ViewGroup) -> getView
+    boolean fileType(java.lang.String,java.lang.String[]) -> a
+dk.andsen.filepicker.FileListArrayAdapter$ViewHolder -> dk.andsen.filepicker.e:
+    android.widget.ImageView imageView -> a
+    android.widget.TextView textViewName -> b
+    android.widget.TextView textViewDate -> c
+    android.widget.TextView textViewSize -> d
+dk.andsen.filepicker.FilePicker -> dk.andsen.filepicker.FilePicker:
+    int GET_DIR -> a
+    int GET_FILE -> b
+    boolean get_dir -> d
+    boolean open_file -> e
+    java.util.List item -> f
+    java.util.List ls -> g
+    android.widget.TextView tvPath -> h
+    java.lang.String _path -> i
+    java.lang.String _startPath -> j
+    java.lang.String root -> k
+    android.app.ProgressDialog _pd -> l
+    android.app.Activity _act -> m
+    java.lang.String[] _fileTypes -> n
+    boolean _logging -> o
+    android.widget.Button btnGetDir -> p
+    android.widget.ListView _lv -> q
+    boolean caseIgnore -> r
+    boolean asending -> s
+    int sortBy -> t
+    java.lang.String fileFilter -> c
+    java.lang.String _recentDirs -> u
+    void onCreate(android.os.Bundle) -> onCreate
+    void onListItemClick(android.widget.ListView,android.view.View,int,long) -> onListItemClick
+    void openDatabase(android.net.Uri) -> a
+    java.lang.String endWithSlash(java.lang.String) -> b
+    boolean onCreateOptionsMenu(android.view.Menu) -> onCreateOptionsMenu
+    boolean onOptionsItemSelected(android.view.MenuItem) -> onOptionsItemSelected
+    void sortingDialog() -> e
+    void onWindowFocusChanged(boolean) -> onWindowFocusChanged
+    void updateList() -> f
+    void refreshList(java.lang.String) -> c
+    void getDir(java.lang.String) -> d
+    boolean onKeyDown(int,android.view.KeyEvent) -> onKeyDown
+    boolean access$0() -> a
+    android.app.Activity access$1() -> b
+    void access$2(java.lang.String) -> a
+    android.widget.TextView access$3() -> c
+    void access$4(dk.andsen.filepicker.FilePicker,java.lang.String) -> a
+    java.lang.String access$5() -> d
+    java.lang.String access$6(dk.andsen.filepicker.FilePicker,java.lang.String) -> b
+    void access$7(dk.andsen.filepicker.FilePicker,boolean) -> a
+    void access$8(dk.andsen.filepicker.FilePicker,boolean) -> b
+    void access$9(dk.andsen.filepicker.FilePicker,int) -> a
+    int access$10(dk.andsen.filepicker.FilePicker) -> a
+    boolean access$11(dk.andsen.filepicker.FilePicker) -> b
+    boolean access$12(dk.andsen.filepicker.FilePicker) -> c
+dk.andsen.filepicker.FilePicker$1 -> dk.andsen.filepicker.f:
+    dk.andsen.filepicker.FilePicker this$0 -> a
+    void onClick(android.view.View) -> onClick
+dk.andsen.filepicker.FilePicker$2 -> dk.andsen.filepicker.g:
+    dk.andsen.filepicker.FilePicker this$0 -> a
+    android.widget.CheckBox val$cbAscending -> b
+    android.widget.CheckBox val$cbIgnoreCase -> c
+    android.widget.RadioGroup val$orderByGroup -> d
+    int val$byNameId -> e
+    int val$byExtId -> f
+    int val$byDateId -> g
+    int val$bySizeId -> h
+    android.widget.EditText val$etFilter -> i
+    android.app.Dialog val$sortingDialog -> j
+    void onClick(android.view.View) -> onClick
+dk.andsen.filepicker.FilePicker$3 -> dk.andsen.filepicker.h:
+    dk.andsen.filepicker.FilePicker this$0 -> a
+    boolean accept(java.io.File) -> accept
+dk.andsen.filepicker.FilePicker$ResentFileOnClickHandler -> dk.andsen.filepicker.i:
+    dk.andsen.filepicker.FilePicker this$0 -> a
+    void onClick(android.content.DialogInterface,int) -> onClick
+dk.andsen.filepicker.RecentlyDirs -> dk.andsen.filepicker.j:
+    java.lang.String updateList(java.lang.String,java.lang.String,int) -> a
+dk.andsen.types.AField -> dk.andsen.c.a:
+    java.lang.String fieldData -> a
+    dk.andsen.types.AField$FieldType fieldType -> b
+    java.lang.String toString() -> toString
+    java.lang.String getFieldData() -> a
+    void setFieldData(java.lang.String) -> a
+    dk.andsen.types.AField$FieldType getFieldType() -> b
+    void setFieldType(dk.andsen.types.AField$FieldType) -> a
+dk.andsen.types.AField$FieldType -> dk.andsen.c.b:
+    dk.andsen.types.AField$FieldType NULL -> a
+    dk.andsen.types.AField$FieldType INTEGER -> b
+    dk.andsen.types.AField$FieldType REAL -> c
+    dk.andsen.types.AField$FieldType TEXT -> d
+    dk.andsen.types.AField$FieldType BLOB -> e
+    dk.andsen.types.AField$FieldType UNRESOLVED -> f
+    dk.andsen.types.AField$FieldType[] ENUM$VALUES -> g
+    dk.andsen.types.AField$FieldType[] values() -> values
+    dk.andsen.types.AField$FieldType valueOf(java.lang.String) -> valueOf
+dk.andsen.types.Field -> dk.andsen.c.c:
+    java.lang.String fieldName -> a
+    java.lang.String fieldType -> b
+    int notNull -> c
+    int pk -> d
+    java.lang.String def -> e
+    void setDef(java.lang.String) -> a
+    void setNotNull(int) -> a
+    void setPk(int) -> b
+    java.lang.String getFieldName() -> a
+    void setFieldName(java.lang.String) -> b
+    void setFieldType(java.lang.String) -> c
+dk.andsen.types.FieldDescr -> dk.andsen.c.d:
+    int cid -> a
+    java.lang.String name -> b
+    int type -> c
+    boolean notNull -> d
+    java.lang.String defaultValue -> e
+    boolean pk -> f
+    void setCid(int) -> a
+    java.lang.String getName() -> a
+    void setName(java.lang.String) -> a
+    int getType() -> b
+    void setType(int) -> b
+    boolean isNotNull() -> c
+    void setNotNull(boolean) -> a
+    java.lang.String getDefaultValue() -> d
+    void setDefaultValue(java.lang.String) -> b
+    boolean isPk() -> e
+    void setPk(boolean) -> b
+dk.andsen.types.ForeignKeyHolder -> dk.andsen.c.e:
+    java.lang.String[] ids -> a
+    java.lang.String[] texts -> b
+    java.lang.String[] getIds() -> a
+    void setId(java.lang.String[]) -> a
+    java.lang.String[] getText() -> b
+    void setText(java.lang.String[]) -> b
+dk.andsen.types.QueryResult -> dk.andsen.c.f:
+    java.lang.String[] columnNames -> a
+    java.lang.String[][] Data -> b
+    java.lang.String[] getColumnNames() -> a
+    void setColumnNames(java.lang.String[]) -> a
+    java.lang.String[][] getData() -> b
+dk.andsen.types.Record -> dk.andsen.c.g:
+    dk.andsen.types.AField[] fields -> a
+    java.lang.String[] fieldNames -> b
+    void setFieldNames(java.lang.String[]) -> a
+    void setFields(dk.andsen.types.AField[]) -> a
+    dk.andsen.types.AField[] getFields() -> a
+dk.andsen.types.ViewUpdateable -> dk.andsen.c.h:
+    boolean editable -> a
+    boolean insertable -> b
+    boolean deleteable -> c
+    boolean isUpdateable() -> a
+    void setUpdateable(boolean) -> a
+    boolean isInsertable() -> b
+    void setInsertable(boolean) -> b
+    boolean isDeleteable() -> c
+    void setDeleteable(boolean) -> c
+dk.andsen.utils.MyDBArrayAdapter -> dk.andsen.d.a:
+    android.app.Activity context -> a
+    java.util.List names -> b
+    float fontSize -> c
+    android.view.View getView(int,android.view.View,android.view.ViewGroup) -> getView
+dk.andsen.utils.MyDBArrayAdapter$ViewHolder -> dk.andsen.d.b:
+    android.widget.TextView textView -> a
+dk.andsen.utils.Recently -> dk.andsen.d.c:
+    java.lang.String updateList(java.lang.String,java.lang.String,int) -> a
+dk.andsen.utils.SQLTools -> dk.andsen.d.d:
+    boolean _logging -> a
+    java.util.List parseSQLFile(android.content.Context,java.lang.String) -> a
+dk.andsen.utils.Utils -> dk.andsen.d.e:
+    java.lang.String app -> a
+    void logD(java.lang.String,boolean) -> a
+    void logE(java.lang.String,boolean) -> b
+    void showException(java.lang.String,android.content.Context) -> a
+    void showMessage(java.lang.String,java.lang.String,android.content.Context) -> a
+    void showMessage(java.lang.String,java.lang.String,java.lang.Integer,java.lang.String,android.content.Context) -> a
+    void toastMsg(android.content.Context,java.lang.String) -> a
+    void redToastMsg(android.content.Context,java.lang.String) -> b
+    boolean isSDAvailable() -> a
+    void printStackTrace(java.lang.Exception,boolean) -> a
+    java.lang.String addSlashIfNotEnding(java.lang.String) -> a
+    boolean isPathAValidDirectory(java.lang.String) -> b
+dk.andsen.utils.Utils$1 -> dk.andsen.d.f:
+    void onClick(android.content.DialogInterface,int) -> onClick
+dk.andsen.utils.Utils$2 -> dk.andsen.d.g:
+    void onClick(android.content.DialogInterface,int) -> onClick

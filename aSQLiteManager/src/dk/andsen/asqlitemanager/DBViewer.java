@@ -12,6 +12,7 @@ package dk.andsen.asqlitemanager;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -37,9 +38,9 @@ import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import dk.andsen.filepicker.FilePicker;
 import dk.andsen.types.Types;
 import dk.andsen.utils.MyDBArrayAdapter;
-import dk.andsen.utils.NewFilePicker;
 import dk.andsen.utils.Recently;
 import dk.andsen.utils.Utils;
 
@@ -59,12 +60,9 @@ public class DBViewer extends Activity implements OnClickListener {
 	private final int MENU_SQL = 2;
 	private final int MENU_INFO = 3;
 	private final int MENU_CREATETABLE = 4;
-	//Where to store temporary databases
-	private final String tempDir = "/aSQLiteManager";
+	private final int FILEPICKER_SQL = 1;
 	protected boolean editingDatabase;
 	protected String databasePath;
-//	private String databaseTemp;
-	
 	private int _dialogClicked;
 	private boolean _logging = false;
 	private boolean newFeatures = true;
@@ -73,7 +71,6 @@ public class DBViewer extends Activity implements OnClickListener {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Utils.logD("DBViewer onCreate", _logging);
 		setContentView(R.layout.dbviewer);
 		_logging = Prefs.getLogging(this);
 		TextView tvDB = (TextView)this.findViewById(R.id.DatabaseToView);
@@ -87,10 +84,12 @@ public class DBViewer extends Activity implements OnClickListener {
 		bVie.setOnClickListener(this);
 		bInd.setOnClickListener(this);
 		bQue.setOnClickListener(this);
+		_cont = this;
+		_logging = Prefs.getLogging(this);
+		Utils.logD("DBViewer onCreate", _logging);
 		Bundle extras = getIntent().getExtras();
 		if(extras !=null)
 		{
-			_cont = tvDB.getContext();
 			_dbPath = extras.getString("db");
 			tvDB.setText(getText(R.string.Database) + ": " + _dbPath);
 			Utils.logD("Opening database " + _dbPath, _logging);
@@ -143,58 +142,6 @@ public class DBViewer extends Activity implements OnClickListener {
 			}
 		} else {
 			showTip(getText(R.string.Tip3), 3);
-		}
-	}
-	
-	/**
-	 * Open a copy file from the root part of the phone. The file is copied to 
-	 * /mnt/sccard/aSQLiteManager (this method of opening the file did not
-	 * work with catalogs containing "."
-	 * @param dbPath Path to the file
-	 * @param file The name of the file
-	 */
-	private void openRootFile(String dbPath, String file) {
-//		testTempDir();
-//		// Does not work with "." in temp path (.aSQLiteManager)
-//		String tmpPath = Environment.getExternalStorageDirectory().toString() + tempDir; 
-//		AShellInterface shc = new AShellInterface(suShell, delay, _cont);
-//		String cmd = "cat " + dbPath + "/" + file + " > " + tmpPath + "/" + file + ".bck";
-//		shc.runCommand(cmd);
-//		cmd = "cat " + dbPath  + "/" + file + " > " + tmpPath + "/" + file;
-//		shc.runCommand(cmd);
-//		editingDatabase = true;
-//		databasePath = dbPath + "/" + file;
-//		databaseTemp = tmpPath + "/" + file;
-//		try {
-//			Thread.sleep(delay);
-//		}
-//		catch (InterruptedException e) {
-//			e.printStackTrace();
-//		}
-//		openFile(databaseTemp);
-	}
-	
-	/**
-	 * This just check if the temporary catalog for files to be edited is present
-	 * if not it is created
-	 */
-	private void testTempDir() {
-		String state = Environment.getExternalStorageState();
-		if (Environment.MEDIA_MOUNTED.equals(state)) {
-			//Utils.toastMsg(this, "sdcard ok");
-			//mExternalStorageAvailable = mExternalStorageWriteable = true;
-			String tmpPath = Environment.getExternalStorageDirectory().toString() + tempDir; 
-			if( new File(tmpPath).canRead()) {
-				//Utils.toastMsg(this, "tmpdir ok");
-			} else {
-				//Utils.toastMsg(this, "create dir: " + tmpPath);
-				if ( (new File(tmpPath)).mkdir()) {
-					//Utils.toastMsg(this, "tmpdir created");
-				} else {
-					// in troubles
-					//Utils.toastMsg(this, "in troubles");
-				}
-			}
 		}
 	}
 	
@@ -494,8 +441,7 @@ public class DBViewer extends Activity implements OnClickListener {
 			showDialog(MENU_RESTORE);
 			break;
 		case MENU_SQL:
-			_dialogClicked = MENU_SQL; 
-			showDialog(MENU_SQL);
+			selectSQLFile();
 			break;
 		case MENU_INFO:
 			String versionStr = aSQLiteManager.database.getVersionInfo();
@@ -818,7 +764,7 @@ public class DBViewer extends Activity implements OnClickListener {
 	public class DialogButtonClickHandler implements DialogInterface.OnClickListener {
 		
 		public void onClick(DialogInterface dialog, int clicked) {
-			//Utils.logD("Dialog: " + dialog.getClass().getName());
+			Utils.logD("Dialog: " + dialog.getClass().getName(), _logging);
 			switch (clicked) {
 			// OK button clicked
 			case DialogInterface.BUTTON_POSITIVE:
@@ -834,19 +780,7 @@ public class DBViewer extends Activity implements OnClickListener {
 					Utils.toastMsg(_cont, getString(R.string.DataBaseRestored));
 					break;
 				case MENU_SQL:
-					//Utils.logD("Open SQL file");
-					Intent i = new Intent(_cont, NewFilePicker.class);
-					i.putExtra("SQLtype", true);
-					i.putExtra("dbPath", _dbPath);
-					try {
-						startActivity(i);
-					} catch (Exception e) {
-						Utils.logE("Error in NewFilePicker", _logging);
-						e.printStackTrace();
-						Utils.showException("Plase report this error with descriptions of how to generate it", _cont);
-					}
-					//TODO call NewFIlePicker with db(?) = true
-					
+					selectSQLFile();
 					break;
 				}
 				break;
@@ -855,5 +789,60 @@ public class DBViewer extends Activity implements OnClickListener {
 				break;
 			}
 		}
+	}
+	
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		Utils.logD("requestCode = " + requestCode, _logging);
+		// requestCode 1 = from file picker
+		if (requestCode == FILEPICKER_SQL && data != null) {
+			String sqlFile = data.getStringExtra("RESULT");
+			Utils.logD("SQL file selected " + sqlFile, _logging);
+			File file = new File(sqlFile);
+			String oPath = sqlFile.substring(0, file.getAbsolutePath().lastIndexOf("/")); 
+			if (file.getName().toLowerCase(Locale.US).endsWith("sql")) {
+				AppSettings.saveString(_cont, "RecentOpenSQLPath", oPath);
+				openSQL(file);
+			} else {
+				Utils.showMessage("Error", "Not a SQL file", _cont);
+			}
+		} else if (resultCode == RESULT_CANCELED) {
+			// no file selected
+		}
+	}
+
+	private void selectSQLFile() {
+		Utils.logD("Open SQL file", _logging);
+		String extStore = AppSettings.getString(_cont, "RecentOpenSQLPath");
+		if (extStore == null)
+			extStore = Environment.getExternalStorageDirectory().toString();
+		Utils.logD("Calling Filepicker", _logging);
+		Intent i = new Intent(_cont, FilePicker.class);
+		i.putExtra("StartDir", extStore);
+		i.putExtra("UseRoot", false);
+		i.putExtra("GetDir", false);
+		i.putExtra("UseBB", false);
+		i.putExtra("OpenFile", false);
+		String[] filetypes = { ".sql"};
+		i.putExtra("FileTypes", filetypes);
+		i.putExtra("SQLtype", true);
+		i.putExtra("dbPath", _dbPath);
+		Utils.logD("Find the SQL file to open", _logging);
+		startActivityForResult(i, FILEPICKER_SQL);
+	}
+	
+	/**
+	 * Open a sql file in the script viewer / runner
+	 * @param file Path to the file
+	 */
+	private void openSQL(File file) {
+		Utils.logD("SQL file", _logging);
+		// Look in last location
+		final SharedPreferences settings = getSharedPreferences("aSQLiteManager",
+				MODE_PRIVATE);
+		settings.getString("RecentOpenSQLPath", _dbPath);
+		Intent iSqlViewer = new Intent(_cont, SQLViewer.class);
+		iSqlViewer.putExtra("script", "" + file.getAbsolutePath());
+		iSqlViewer.putExtra("db", _dbPath);
+		startActivity(iSqlViewer);
 	}
 }

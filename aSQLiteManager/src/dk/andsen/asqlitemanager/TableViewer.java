@@ -16,6 +16,7 @@
  */
 package dk.andsen.asqlitemanager;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -29,6 +30,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -44,6 +46,9 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import dk.andsen.RecordEditor.RecordEditorBuilder;
 import dk.andsen.RecordEditor.types.TableField;
+import dk.andsen.csv.CsvExport;
+import dk.andsen.csv.CsvImport;
+import dk.andsen.filepicker.FilePicker;
 import dk.andsen.types.AField;
 import dk.andsen.types.AField.FieldType;
 import dk.andsen.types.Record;
@@ -54,8 +59,6 @@ import dk.andsen.utils.Utils;
  * @author andsen
  *
  */
-//TODO Configurable csv importer / exporter select fields to exports and lines and 
-//			fields to skip during import 
 public class TableViewer extends Activity implements OnClickListener {
 	private Database _db = null;
 	private String _table;
@@ -95,7 +98,6 @@ public class TableViewer extends Activity implements OnClickListener {
 	private boolean _showTip = false;
 	private int _maxWidth;
 	private TextView tvDB;
-	//private String _dbPath;
 	private boolean resize = false;
 	private boolean resizing;
 	private boolean measured = false;
@@ -151,7 +153,6 @@ public class TableViewer extends Activity implements OnClickListener {
 			sourceType = extras.getInt("type");
 			Utils.logD("Opening database", _logging);
 			_table = extras.getString("Table");
-			//_dbPath = extras.getString("db");
 			_db = aSQLiteManager.database;
 			Utils.logD("Database open", _logging);
 			if (sourceType == Types.TABLE) {
@@ -313,7 +314,7 @@ public class TableViewer extends Activity implements OnClickListener {
 			final Button btnOK = new Button(_cont);
 			btnOK.setText(getText(R.string.OK));
 			btnOK.setLayoutParams(new LinearLayout.LayoutParams(
-					LinearLayout.LayoutParams.FILL_PARENT,
+					LinearLayout.LayoutParams.MATCH_PARENT,
 					LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
 			btnOK.setOnClickListener(new OnClickListener() {
 				public void onClick(View v) {
@@ -369,6 +370,7 @@ public class TableViewer extends Activity implements OnClickListener {
 				setWidths();
 			if (_updateTable) {
 				onClick((Button) this.findViewById(R.id.Data));
+				_updateTable = false;
 			}
 		}
 	}
@@ -383,7 +385,7 @@ public class TableViewer extends Activity implements OnClickListener {
 				TextView vT = (TextView) _trHeadings.getChildAt(i);
 				TextView vD = (TextView) _trLastRow.getChildAt(i);
 				if (vT != null && vD != null) {
-					Utils.logD("Width " + i + " " + vT.getWidth() + " " + vD.getWidth(), _logging);
+					//Utils.logD("Width " + i + " " + vT.getWidth() + " " + vD.getWidth(), _logging);
 					if (vT.getWidth() > vD.getWidth())
 						vD.setWidth(vT.getWidth());
 					else
@@ -469,6 +471,8 @@ public class TableViewer extends Activity implements OnClickListener {
 					} else {
 						c.setOnClickListener(new OnClickListener() {
 							// if the field is not a BLOB field copy it to the clip board
+							@SuppressWarnings("deprecation")
+							@SuppressLint("NewApi")
 							public void onClick(View v) {
 								String text = (String) ((TextView) v).getText();
 								int currentapiVersion = android.os.Build.VERSION.SDK_INT;
@@ -580,7 +584,6 @@ public class TableViewer extends Activity implements OnClickListener {
 										Utils.showException(_cont.getText(R.string.MustGiveFileName).toString(), _cont);
 									} else {
 										Utils.logD("File name " + input.getText().toString().trim(), _logging);
-										//TODO test for file exists
 										_db.loadBlobData(input.getText().toString(), _table, _rowNo, _columnNo, _cont);
 										updateData();
 										dialog.cancel();
@@ -741,7 +744,9 @@ public class TableViewer extends Activity implements OnClickListener {
 									} else {
 										if (aTable) {
 											_db.updateRecord(_table, rowid, res, _cont);
-										} else  {
+										} else  { 
+											//TODO seems like nulls turns up as 0 for int fields
+											//TODO bug here!!!!
 											Record oldData = _data[rowid.intValue()];
 											_db.updateViewRecord(_table, oldData, res, _cont);
 										}
@@ -1010,7 +1015,7 @@ public class TableViewer extends Activity implements OnClickListener {
 						final Button btnOK = new Button(_cont);
 						btnOK.setText(getText(R.string.OK));
 						btnOK.setLayoutParams(new LinearLayout.LayoutParams(
-								LinearLayout.LayoutParams.FILL_PARENT,
+								LinearLayout.LayoutParams.MATCH_PARENT,
 								LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
 						btnOK.setOnClickListener(new OnClickListener() {
 							public void onClick(View v) {
@@ -1031,7 +1036,7 @@ public class TableViewer extends Activity implements OnClickListener {
 						final Button btnCancel = new Button(_cont);
 						btnCancel.setText(getText(R.string.Cancel));
 						btnCancel.setLayoutParams(new LinearLayout.LayoutParams(
-								LinearLayout.LayoutParams.FILL_PARENT,
+								LinearLayout.LayoutParams.MATCH_PARENT,
 								LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
 						btnCancel.setOnClickListener(new OnClickListener() {
 							public void onClick(View v) {
@@ -1043,7 +1048,7 @@ public class TableViewer extends Activity implements OnClickListener {
 						LinearLayout llButtons = new LinearLayout(_cont);
 						llButtons.setOrientation(LinearLayout.HORIZONTAL);
 						llButtons.setLayoutParams(new LinearLayout.LayoutParams(
-								LinearLayout.LayoutParams.FILL_PARENT,
+								LinearLayout.LayoutParams.MATCH_PARENT,
 								LinearLayout.LayoutParams.WRAP_CONTENT));
 						llButtons.addView(btnOK);
 						llButtons.addView(btnCancel);
@@ -1171,28 +1176,24 @@ public class TableViewer extends Activity implements OnClickListener {
     	  Utils.toastMsg(this, this.getString(R.string.DumpFailed));
     	return true;
     case MENU_CSV_EXPORT_TABLE:
-    	String exportFile = null;
-    	//TODO Let user select file
-    	//TODO Run in thread
-    	String exportRes = _db.csvExport(_cont, _table, exportFile);
-    	if (exportRes == null) {
-    		
-    	} else {
-    		Utils.showMessage(getString(R.string.Message).toString(), exportRes, _cont);
-    	}
+    	Utils.logD("TableViewer calling csvExport", _logging);
+    	csvExport();
     	break;
     case MENU_CSV_IMPORT_TABLE:
-    	String importFile = null;
-    	//TODO let user select file and configure which items to import in to which fields
-    	//TODO Run in thread
-    	String importRes = _db.cvsImport(_cont, _table, importFile);
-    	updateData();
-    	if (importRes == null) {
-    		
-    	} else {
-    		Utils.showMessage(getString(R.string.Message).toString(), importRes, _cont);
-    	}
-    	break;
+    	Utils.logD("TableViewer calling csvImport", _logging);
+    	String oPath = Environment.getExternalStorageDirectory().toString();
+			Utils.logD("Calling Filepicker", _logging);
+			Intent i = new Intent(this, FilePicker.class);
+			i.putExtra("StartDir", oPath);
+			i.putExtra("UseRoot", false);
+			i.putExtra("GetDir", false);
+			i.putExtra("UseBB", false);
+			i.putExtra("OpenFile", false);
+			String[] filetypes = {".csv"};
+			i.putExtra("FileTypes", filetypes);
+			startActivityForResult(i,3);
+			return true;
+			//break;
     case MENU_FIRST_REC:
     	offset = 0;
     	fillDataTableWithArgs();
@@ -1206,10 +1207,10 @@ public class TableViewer extends Activity implements OnClickListener {
     	//TODO GoTo page option
     	
     case MENU_FILETR:
-			Intent i = new Intent(_cont, FilterBuilder.class);
-			i.putExtra("FILTER", _where);
-			i.putExtra("TABLE", _table);
-    	startActivityForResult(i, 2);
+			Intent f = new Intent(_cont, FilterBuilder.class);
+			f.putExtra("FILTER", _where);
+			f.putExtra("TABLE", _table);
+    	startActivityForResult(f, 2);
     	return true;
     case MENU_TABLE_DEF:
     	getTableDefinition();
@@ -1218,6 +1219,29 @@ public class TableViewer extends Activity implements OnClickListener {
 		return false;
 	}
 	
+	private void csvImport(String importFile) {
+		Intent i = new Intent(_cont, CsvImport.class);
+		i.putExtra("FILTER", _where);
+		i.putExtra("TABLE", _table);
+		i.putExtra("FILENAME", importFile);
+		startActivity(i);
+	}
+
+	private void csvExport() {
+  	//TODO Let user select file
+		Intent i = new Intent(_cont, CsvExport.class);
+		i.putExtra("FILTER", _where);
+		i.putExtra("TABLE", _table);
+  	startActivity(i);
+  	
+//  	String exportRes = _db.csvExport(_cont, _table, exportFile);
+//  	if (exportRes == null) {
+//  	// all went well
+//  	} else {
+//  		Utils.showMessage(getString(R.string.Message).toString(), exportRes, _cont);
+//  	}
+	}
+
 	/**
 	 * Retrieve the tabledefinition
 	 */
@@ -1295,7 +1319,11 @@ public class TableViewer extends Activity implements OnClickListener {
 
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// Return here if a activity is called with startActivityForResult
-		if (resultCode == 2) {
+		if (data == null) {
+			return;
+		}
+		Utils.logD("onActivityResult: " + resultCode, _logging);
+		if (requestCode == 2 && resultCode == 2) {
 			// returned from FilterBuilder
 			Bundle res = data.getExtras();
 			String filter = res.getString("FILTER");
@@ -1309,6 +1337,13 @@ public class TableViewer extends Activity implements OnClickListener {
 				tvDB.setText(getString(R.string.DBTable) + " " + _table + " (f)");
 			}
 			fillDataTableWithArgs();
+		} else if (requestCode == 3) {
+			Bundle res = data.getExtras();
+			String fileName = res.getString("RESULT");
+			Utils.logD("File selected " + fileName, _logging);
+			csvImport(fileName);  
+    	_updateTable = true;
+    	//updateData();
 		}
 	}
 }

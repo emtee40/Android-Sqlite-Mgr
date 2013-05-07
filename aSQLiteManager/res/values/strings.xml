@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--β-->
-    <string name="VersionNo">3.5+</string>
+    <string name="VersionNo">3.6</string>
     <string name="Version">Version</string>
     <string name="hello">aSQLiteManager</string>
     <string name="app_name">aSQLiteManager</string>
@@ -256,9 +256,6 @@
 		    		    		    
     <string name="Translation">Translate aSQLiteManager to your language and get your name here</string>
         
-    <!-- Translated to German to here -->
-    <!-- Translated to Catalan to here -->
-    <!-- Translated to French to here -->
     <!-- Translated to Italian to here -->
     <!-- Translated to Brazilian to here -->
     <!-- Translated to Spanish to here -->
@@ -292,10 +289,49 @@
     <string name="FileNotFound">File not found!</string>
     <string name="CanNotReadFile">Can not read file!</string>
     
-    <!-- Translated to Danish to here -->
-		<!-- Translated to Russian to here -->
+    <!-- Translated to Rusian to here -->
+
+    <string name="PlaceItHere">Place it here</string>
+    <string name="IgnoreCase">Ignore case</string>
+    <string name="NewDBName">Database name</string>
+    <string name="Ascending">Ascending</string>
+    <string name="ByName">By name</string>
+    <string name="ByExtension">By extension</string>
+    <string name="ByDate">By date</string>
+    <string name="BySize">By size</string>
+    <string name="Sorting">Sorting</string>
+    <string name="SortingAndFilter">Sorting and filter</string>
+    <string name="FileTypeFilter">Filtypes ; separated</string>
+    <string name="UseRoot">Use root?</string>
+    <string name="UseRootText">Allow root access to system files?</string>
+    <string name="CommitText">Database has ben changed.\nCommit changes?</string>
+    <string name="ReRead">Reread csv</string>
+    <string name="NoFieldsSelected">No fields selected</string>
+    <string name="LinesToSkip">Lines to skip</string>
+    <string name="FieldsToImport">Fields to import into</string>
+    <string name="FieldsToExport">Fields to export</string>
+    <string name="NewFileName">File name</string>
+    <string name="NewFilePath">Path</string>
+    <string name="FileNameAndPath">Enter file name and select path</string>
+    <string name="Save">Save</string>
+    <string name="Exit">Exit</string>
+    <string name="Favorites">Favorites</string>
+    <string name="NoFavorites">No favorites ;-(</string>
+    <string name="AddToFavorites">Add to favorites</string>
+    <string name="NoRootMsg">Root shell not found looked in:
+				\nsu,
+				\n/system/bin/su and
+				\n/system/xbin/su
+				\n\nIf you know the location of su you can configure it in the configuration</string>
+    <string name="SuFoundMSG">Root shell found</string>
+    <string name="CannotReadSystemDirs">Cannot read system directories</string>
     
-    <!-- Place new text above here -->
+    <!-- Translated to German to here -->
+    <!-- Translated to Catalan to here -->
+    <!-- Translated to French to here -->
+    <!-- Translated to Danish to here -->
+
+    <!-- Place new text just above here -->
     <!-- From here text changes in every version -->
     
     <!-- List of functionality for help screen -->
@@ -343,32 +379,30 @@
     <!-- Here write what is new in this version -->
     <string name="WelcomeMsg">aSQLiteManager is a free open source
   	  SQLite manager / front end for Android devices.
-      \n\nNew in version 3.5:
+  	  
+  	  You can support development by
+  	  buying the donate version. If you do this you will be among the first to get the
+  	  new features. Right now the donate version support direct editing of system
+  	  databases on rooted devices.
 
-      \n\nYou can now support development of this app by buying the donate version. If you
-      	do that you will get more frequent updates and new features will appear in the
-      	donate version before they show up in this version.
-   		\n\n•	Load and extract data from BLOB fields from / to file
-   		\n•	SQL Editor in Query viewer now shrinks to a configurable number of
-   			lines when not in focus
-			\n•	New and more advanced (I know - it don\'t say much) filter builder to filter
-				data in the TableViewer
-			\n•	Simple export of data on CSV format from table viewer
-			\n•	Simple import of data on CSV formatted file from table viewer
-			\n•	Headings always visible in datagrid
-			\n\nBug fixes – thanks for reporting! And please report bug by both report feature
-				and email:
-			\n•	Copy of text in table viewer no longer fc on Android 4.0 (but does not copy the text)
-			\n•	Editing of a record with aBLOB field no longer clear the BLOB field
-			\n•	Fixed problems with blank values in integer preferences
-			\n•	Some other problem solved
+      \n\nThere is quite a few new features in version 3.6:
+			\n\n•	New file picker with:
+			\n	•	Show file names, sizes, dates and icons
+			\n	•	Sorting (name, extension, size, date - ascending, descending, ignore case) and
+			\n	•	filtering of files (e.g. *.sqlite;*.db) in file picker
+			\n	•	Favorites directories for fast navigation to often visited places 
+			\n	•	CSV export wizards that allows export of user selected fields
+			\n	•	Import wizards that allows the user select a CSV file and which column from
+			the CSV file to import into which fields in the current table. 
+			\n	•	Now the user dictionary are updated with your words
+			\n	•	Code clean up binaries decreased with approximately 20%
+			\n	•	Import and export of tables with triggers
+			\n	•	Better handling of triggers during update with record editor
+			\n	•	Translated to Russian, updated German, Catalan and French translations
+			\n	•	Fixed problems with CSV export - nulls and special table names are now
+			handled correctly
+			\n	•	Some other problem solved
 
-			\n\nYou can edit system database on rooted devices with aSQLiteManager using
-				aShell(beta). You find aShell here:
-      \nhttp://market.android.com/search?q=pub:Andsen
-      \n\nPlease report problems with aShell. I have only access to a few
-      	rooted phones so testing is difficult. When aShell works properly the
-      	functionality will be implemented in aSQLiteManager
       \n\nFor a description of all features check:
       \naaa.andsen.dk/aSQLiteManager.html
       \n\nComments, bug reports and feature requests are welcome.

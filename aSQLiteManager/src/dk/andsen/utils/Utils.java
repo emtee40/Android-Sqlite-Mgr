@@ -8,15 +8,16 @@ package dk.andsen.utils;
 
 import java.io.File;
 
-import dk.andsen.asqlitemanager.R;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Environment;
 import android.util.Log;
 import android.view.Gravity;
+import android.widget.TextView;
 import android.widget.Toast;
+import dk.andsen.asqlitemanager.R;
 
 /**
  * @author mh
@@ -183,8 +184,22 @@ public class Utils {
 	 * @param msg - The message to display
 	 */
 	public static void toastMsg(Context context, String msg) {
-		Toast toast = Toast.makeText(context, msg, Toast.LENGTH_SHORT);
-		toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 0);
+		Toast toast = Toast.makeText(context, msg, Toast.LENGTH_LONG);
+		toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 0);
+		toast.show();
+	}
+
+	/**
+	 * Display the message in red text as a short toast message
+	 * @param context
+	 * @param msg - The message to display
+	 */
+	public static void redToastMsg(Context context, String msg) {
+		Toast toast = Toast.makeText(context, msg, Toast.LENGTH_LONG);
+		toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 0);
+		TextView v = (TextView) toast.getView().findViewById(android.R.id.message);
+		v.setTextColor(Color.RED);
+		v.setBackgroundColor(Color.WHITE);
 		toast.show();
 	}
 

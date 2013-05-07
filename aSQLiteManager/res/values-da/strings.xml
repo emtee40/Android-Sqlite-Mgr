@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="Version">Version</string>
-    <string name="hello">aSQLiteManager</string>
-    <string name="app_name">aSQLiteManager</string>
     <string name="AboutHeader">Om aSQLiteManager</string>
     <string name="AboutText">Andsens SQLite manager. Håndter alle dine Android databaser</string>
     <string name="WWW">Tjek for opdateringer her:\nhttp://asqlitemanager.sourceforge.net</string>
@@ -152,7 +150,6 @@
     <string name="CreateTable">Ny Tabel</string>
     <string name="AddField">Nyt felt</string>
     <string name="CreateField">Nyt felt</string>
-    <string name="MustEnterFieldNameAndType">Du skal angive både feltnavn og type!</string>
     <string name="MustEnterTableNameAndOneField">Du skal angive tabelnavn og mindst et felt!</string>
     <string name="CannotDeleteAutoIndex">Kan ikke slette auto generatede index</string>
     <string name="DeleteIndex">Slet index</string>
@@ -177,7 +174,7 @@
     <string name="FKLists">FK lister</string>
     <string name="FKListsText">Brug lister til redigering af FK felter</string>
     <string name="SaveSQL">Gem SQL</string>
-    <string name="SaveSQLText">Gem SQL i databasen</string>
+    <string name="SaveSQLText">Gæm SQL i databasen</string>
     <string name="ForeignKeys">Slå fremmednøgler til</string>
     <string name="ForeignKeysText">Slå fremmednøgler constraints til</string>
     <!-- Common strings for Dialogs -->    
@@ -274,6 +271,42 @@
     <string name="CSVImported">CSV importeret fra:\n</string>
     <string name="FileNotFound">Filen ikke fundet!</string>
     <string name="CanNotReadFile">Kan ikke læse filen!</string>
+    <string name="PlaceItHere">Plaser her</string>
+    <string name="IgnoreCase">Ignorer case</string>
+    <string name="NewDBName">Database navn</string>
+    <string name="Ascending">Stigende</string>
+    <string name="ByName">Efter navn</string>
+    <string name="ByExtension">Efter type</string>
+    <string name="ByDate">Efter dato</string>
+    <string name="BySize">Efter størrelse</string>
+    <string name="Sorting">Sortering</string>
+    <string name="SortingAndFilter">Sortering og filter</string>
+    <string name="FileTypeFilter">Filtyper ; adskilt</string>
+
+    
+    <string name="UseRoot">Brug root?</string>
+    <string name="UseRootText">Tillad adgang til system filer?</string>
+    <string name="CommitText">Databasen er ændret.\nCommit ændringer?</string>
+    <string name="ReRead">Genlæs csv</string>
+    <string name="NoFieldsSelected">Ingen felter valgt</string>
+    <string name="LinesToSkip">Skip linjer</string>
+    <string name="FieldsToImport">Importer til fleterne</string>
+    <string name="FieldsToExport">Eksporter felterne</string>
+    <string name="NewFileName">Fil navn</string>
+    <string name="NewFilePath">Sti</string>
+    <string name="FileNameAndPath">Indtast fil navn og vælg sti</string>
+    <string name="Save">Gem</string>
+    <string name="Exit">Exit</string>
+    <string name="Favorites">Favoritter</string>
+    <string name="NoFavorites">Ingen favoritter ;-(</string>
+    <string name="AddToFavorites">Føj til favoritter</string>
+    <string name="NoRootMsg">Root shell ikke fundet ledte i:
+				\nsu,
+				\n/system/bin/su and
+				\n/system/xbin/su
+				\n\nDu kan selv konfigurere placeringen</string>
+    <string name="SuFoundMSG">Root shell fundet</string>
+    <string name="CannotReadSystemDirs">Kan ikkelæse system foldere</string>
     
     <!-- From here text changes in every version -->
         
@@ -312,30 +345,29 @@
         		    
   	<string name="WelcomeMsg">aSQLiteManager er en gratis open source
       SQLite manager / front end til Android enheder.
-      \n\nNew in version 3.5:
-      \n\nYou can now support development of this app by buying the donate version. If you
-      	do that you will get more frequent updates and new features will appear in the
-      	donate version before they show up in this version.
-   		\n\n•	Load and extract data from BLOB fields from / to file
-   		\n•	SQL Editor in Query viewer now shrinks to a configurable number of
-   			lines when not in focus
-			\n•	New and more advanced (I know - it don\'t say much) filter builder to filter
-				data in the TableViewer
-			\n•	Simple export of data on CSV format from table viewer
-			\n•	Simple import of data on CSV formatted file from table viewer
-			\n•	Headings always visible in datagrid
-			\n\nBug fixes – thanks for reporting! And please report bug by both report feature
-				and email:
-			\n•	Copy of text in table viewer no longer fc on Android 4.0 (but does not copy the text)
-			\n•	Editing of a record with aBLOB field no longer clear the BLOB field
-			\n•	Fixed problems with blank values in integer preferences
-			\n•	Some other problem solved
+      Du kan støtte udviklingen ved at købe donate versionen. Hvis du gør det vil du
+      blive blandt de første der får adagng til til nye features. Du vil også få
+      adgang til direkte redigering af system databaser på rooted enheder.
 
-      \n\nDu kan redigere system databaser med aShell (beta) på rooted telefoner
-      med aSQLiteManager. Du finder aShell her:
-      \nhttp://market.android.com/search?q=pub:Andsen
-      \n\nHar du problemer med aShell, så fortæl mig om dem. Jeg har kun adgang til
-      få Android telefoner og har derfor svært ved at test ordentligt.
+      \n\nNyt i version 3.6:
+      \n\nThere is quite a few new features in version 3.6:
+			\n\n•	New file picker with:
+			\n	•	Show file names, sizes, dates and icons
+			\n	•	Sorting (name, extension, size, date - ascending, descending, ignore case) and
+			\n	•	filtering of files (e.g. *.sqlite;*.db) in file picker
+			\n	•	Favorites directories for fast navigation to often visited places 
+			\n	•	CSV export wizards that allows export of user selected fields
+			\n	•	Import wizards that allows the user select a CSV file and which column from
+			the CSV file to import into which fields in the current table. 
+			\n	•	Now the user dictionary are updated with your words
+			\n	•	Code clean up binaries decreased with approximately 20%
+			\n	•	Import and export of tables with triggers
+			\n	•	Better handling of triggers during update with record editor
+			\n	•	Translated to Russian, updated German, Catalan and French translations
+			\n	•	Fixed problems with CSV export - nulls and special table names are now
+			handled correctly
+			\n	•	Some other problem solved
+      
       \n\nSe en liste over alle features på:
       \naaa.andsen.dk/aSQLiteManager.html
       \n\nKommentarer, bug rapporter og ønsker om ny funktionalitet velkommen.

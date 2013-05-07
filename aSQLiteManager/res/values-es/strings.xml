@@ -2,8 +2,6 @@
 <resources>
     <!--β-->
     <string name="Version">Versión</string>
-    <string name="hello">aSQLiteManager</string>
-    <string name="app_name">aSQLiteManager</string>
     <string name="AboutHeader">Acerca de aSQLiteManager</string>
     <string name="AboutText">Andsens SQLite manager. Administra tus bases de datos Android</string>
     <string name="WWW">Busca actualizaciones en:\nhttp://asqlitemanager.sourceforge.net</string>
@@ -213,7 +211,7 @@
 			\nVer una breve descripción de aSQLiteManager
 			\n\nTambién puedes configurar aSQLiteManager, ver una lista de funciones
 			implementadas y restablecer la configuración pulsando el botón Menú.
-			\n\nComo aSQLIteManager es un interfaz de SQLite sólo es posible trabajar con
+			\n\nComo aSQLIteManager es una interfaz de SQLite sólo es posible trabajar con
 			BDs que SQLite permita. Esto excluye casi cualquier cambio a 
 			la estructura de tabla.</string>
 		<string name="Tip2">Desde la pantalla de consulta puedes:
@@ -299,33 +297,32 @@
     <!-- Here write what is new in this version -->
     <string name="WelcomeMsg">aSQLiteManager is a free open source
   	  Administrador SQLite / interfaz para dispositivos Android.
-      \n\nNuevo en esta versión 3.5:
 
-      \n\nYou can now support development of this app by buying the donate version. If you
-      	do that you will get more frequent updates and new features will appear in the
-      	donate version before they show up in this version.
-   		\n\n•	Load and extract data from BLOB fields from / to file
-   		\n•	SQL Editor in Query viewer now shrinks to a configurable number of
-   			lines when not in focus
-			\n•	New and more advanced (I know - it don\'t say much) filter builder to filter
-				data in the TableViewer
-			\n•	Simple export of data on CSV format from table viewer
-			\n•	Simple import of data on CSV formatted file from table viewer
-			\n•	Headings always visible in datagrid
-			\n\nBug fixes – thanks for reporting! And please report bug by both report feature
-				and email:
-			\n•	Copy of text in table viewer no longer fc on Android 4.0 (but does not copy the text)
-			\n•	Editing of a record with aBLOB field no longer clear the BLOB field
-			\n•	Fixed problems with blank values in integer preferences
-			\n•	Some other problem solved
+  	  You can support development by
+  	  buying the donate version. If you do this you will be among the first to get the
+  	  new features. Right now the donate version support direct editing of system
+  	  databases on rooted devices.
+
+      \n\nNuevo en esta versión 3.6:
+
+      \n\nThere is quite a few new features in version 3.6:
+			\n\n•	New file picker with:
+			\n	•	Show file names, sizes, dates and icons
+			\n	•	Sorting (name, extension, size, date - ascending, descending, ignore case) and
+			\n	•	filtering of files (e.g. *.sqlite;*.db) in file picker
+			\n	•	Favorites directories for fast navigation to often visited places 
+			\n	•	CSV export wizards that allows export of user selected fields
+			\n	•	Import wizards that allows the user select a CSV file and which column from
+			the CSV file to import into which fields in the current table. 
+			\n	•	Now the user dictionary are updated with your words
+			\n	•	Code clean up binaries decreased with approximately 20%
+			\n	•	Import and export of tables with triggers
+			\n	•	Better handling of triggers during update with record editor
+			\n	•	Translated to Russian, updated German, Catalan and French translations
+			\n	•	Fixed problems with CSV export - nulls and special table names are now
+			handled correctly
+			\n	•	Some other problem solved
       
-		\n\nYou can edit system database on rooted devices with aSQLiteManager using
-		aShell(beta). You find aShell here:
-      \nhttp://market.android.com/search?q=pub:Andsen
-      \n\nPlease report problems with aShell. I have only access to a few
-      rooted phones so testing is difficult. When aShell works properly the
-      functionality will be implemented in aSQLiteManager
-       
       \n\nPara una descripción de todas las características visita:
       \naaa.andsen.dk/aSQLiteManager.html
       \n\nComentarios, informes de error y peticiones son bienvenidas.

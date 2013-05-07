@@ -10,13 +10,12 @@
 
 package dk.andsen.asqlitemanager;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -31,18 +30,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
-import android.widget.AdapterView.OnItemClickListener;
-import dk.andsen.asqlitemanager.R;
+import dk.andsen.utils.SQLTools;
 import dk.andsen.utils.Utils;
 //extends ListActivity
 public class SQLViewer extends Activity implements OnClickListener, Runnable {
 
 	private String _dbPath;
 	private ProgressDialog _pd;
-	private FileReader _f;
-	private BufferedReader _in;
+//	private FileReader _f;
+//	private BufferedReader _in;
 	private ListView _lv;
 	private static final int MENU_RUN = 0;
 	private static final int RUN_STATEMENT = 1;
@@ -52,7 +51,6 @@ public class SQLViewer extends Activity implements OnClickListener, Runnable {
 	private SQLViewer _cont;
 	protected String _sql;
 	private boolean logging;
-	
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -73,46 +71,66 @@ public class SQLViewer extends Activity implements OnClickListener, Runnable {
 					getString(R.string.ReadingScript), true, false);
 			Utils.logD("Fetching SQLListView", logging);
 	    _lv = (ListView)findViewById(R.id.SQLListView);
-			final ArrayList<HashMap<String, String>> mylist = new ArrayList<HashMap<String, String>>();
-			HashMap<String, String> map;
-	    try {
-	    	String nl = "\n";
-				_f = new FileReader(_scriptPath);
-				_in = new BufferedReader(_f);
-				Utils.logD("Importing from; " + _scriptPath, logging);
-				String line = "";
-				String nline;
-				// put each statement in the list
-				while ((nline = _in.readLine()) != null) {
-					line += nline;
-					// if more of statement coming append newline
-					if (!(line.endsWith(";") || line.equals("")))
-						line += nl;
-		      if(line.startsWith("--")) {
-		        // It a comment just empty line
-						map = new HashMap<String, String>();
-						map.put("Sql", line);
-						mylist.add(map);
-		      	line = "";
-		      } else if(line.endsWith(";")) {
-		        // If line ends with ; we have a statement ready to execute
-		      	line = line.substring(0, line.length() - 1);
-		      	//Utils.logD("SQL: " + line, logging);
-						map = new HashMap<String, String>();
-						map.put("Sql", line);
-						mylist.add(map);
-		      	line = "";
-		      }
-				}
-		    _in.close();
-		    _f.close();
-	    }  catch (Exception e) {
-	    	Utils.logD("Exception!", logging);
-	    }
-			Utils.logD("All lines read", logging);
+
+	    List<String> statements = SQLTools.parseSQLFile(_cont, _scriptPath);
+	    
+//	    final ArrayList<HashMap<String, String>> mylist = new ArrayList<HashMap<String, String>>();
+//			HashMap<String, String> hmSql;
+//	    try {
+//	    	String nl = "\n";
+//				_f = new FileReader(_scriptPath);
+//				_in = new BufferedReader(_f);
+//				Utils.logD("Importing from; " + _scriptPath, logging);
+//				String line = "";
+//				String nline;
+//				boolean inTrigger = false;
+//				// put each statement in the list
+//				while ((nline = _in.readLine()) != null) {
+//					line += nline;
+//					// starting to read a trigger definition?
+//					if (nline.trim().toUpperCase(Locale.US).startsWith("CREATE TRIGGER")) {
+//						inTrigger = true;
+//					}
+//					// if more of statement coming append newline
+//					if (!(line.endsWith(";") || line.equals("")) || inTrigger)
+//						line += nl;
+//		      if(line.startsWith("--")) {
+//		        // It a comment just empty line
+//						hmSql = new HashMap<String, String>();
+//						hmSql.put("Sql", line);
+//						mylist.add(hmSql);
+//		      	line = "";
+//		      } else if((nline.trim().endsWith(";") && !inTrigger) || 
+//		      		(inTrigger && nline.trim().toUpperCase(Locale.US).endsWith("END;"))) {
+//		        // If line ends with ";" or "end;" if it is a trigger we have a statement
+//		      	// ready to execute
+//						inTrigger = false;
+//		      	line = line.substring(0, line.length() - 1);
+//		      	//Utils.logD("SQL: " + line, logging);
+//						hmSql = new HashMap<String, String>();
+//						hmSql.put("Sql", line);
+//						mylist.add(hmSql);
+//		      	line = "";
+//		      }
+//				}
+//		    _in.close();
+//		    _f.close();
+//	    }  catch (Exception e) {
+//	    	Utils.logD("Exception!", logging);
+//	    }
+//			Utils.logD("All lines read", logging);
+
+	    final ArrayList<HashMap<String, String>> mylist = new ArrayList<HashMap<String, String>>();
+			HashMap<String, String> hmSql;
+			for (String line: statements) {
+				hmSql = new HashMap<String, String>();
+				hmSql.put("Sql", line);
+				mylist.add(hmSql);
+			}
 			SimpleAdapter mSchedule = new SimpleAdapter(this, mylist,
 					R.layout.sql_line, new String[] {"Sql"},
 					new int[] { R.id.Sql});
+			
 			_lv.setAdapter(mSchedule);
 			_lv.setOnItemClickListener(new OnItemClickListener() {
 				public void onItemClick(AdapterView<?> parent, View v, int position,
@@ -128,6 +146,7 @@ public class SQLViewer extends Activity implements OnClickListener, Runnable {
 					}
 					Dialog executeLine = new AlertDialog.Builder(_cont)
 					.setTitle(getText(R.string.ExecuteStatement))
+					.setMessage(_sql)
 					.setPositiveButton(getText(R.string.OK), new DialogButtonClickHandler())
 					.setNegativeButton(getText(R.string.Cancel), null)
 					.create();
@@ -148,7 +167,6 @@ public class SQLViewer extends Activity implements OnClickListener, Runnable {
 	};
 
 	public void run() {
-		
 		handler.sendEmptyMessage(0);
 	}
 	
@@ -214,9 +232,5 @@ public class SQLViewer extends Activity implements OnClickListener, Runnable {
 
 	public void onClick(View v) {
 		Utils.logD("SQLViewer onClick called!", logging);
-		
-		
 	}
-
-	
 }

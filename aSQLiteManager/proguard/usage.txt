@@ -1,0 +1,218 @@
+dk.andsen.RecordEditor.RecordEditorBuilder:
+    static final int DATE_DIALOG_ID
+    static final int TIME_DIALOG_ID
+    public static final int idBase
+    public static final int lineIdBase
+    439:439:public int getFieldNameWidth()
+    455:455:public boolean isTreatEmptyFieldsAsNull()
+dk.andsen.RecordEditor.types.TableField:
+    public static final int TYPE_STRING
+    public static final int TYPE_INTEGER
+    public static final int TYPE_FLOAT
+    public static final int TYPE_DATE
+    public static final int TYPE_TIME
+    public static final int TYPE_DATETIME
+    public static final int TYPE_BOOLEAN
+    public static final int TYPE_PHONENO
+    58:59:public void setHint(java.lang.String)
+    154:154:public java.lang.Boolean getPrimaryKey()
+dk.andsen.asqlitemanager.AppRater:
+    private static final int DAYS_UNTIL_PROMPT
+    private static final int LAUNCHES_UNTIL_PROMPT
+    26:26:public AppRater()
+dk.andsen.asqlitemanager.AppSettings:
+    8:8:public AppSettings()
+    113:119:public static void saveRecentFiles(android.content.Context,java.lang.String)
+    128:134:public static void saveSaveSQL(android.content.Context,boolean)
+dk.andsen.asqlitemanager.BuildConfig
+dk.andsen.asqlitemanager.DBViewer:
+    protected boolean editingDatabase
+    protected java.lang.String databasePath
+dk.andsen.asqlitemanager.Database:
+    324:329:public int getNumCols(java.lang.String)
+    341:389:public dk.andsen.types.Record[] getTableData(java.lang.String,int,java.lang.String,int,boolean)
+    495:521:public java.lang.String[][] oldgetTableData(java.lang.String,int,int,boolean)
+    693:716:public java.lang.String[] getSQLQuery(java.lang.String)
+    1737:1743:private static byte[] hexStringToByteArray(java.lang.String)
+    1915:1929:public java.lang.String[] getFKList(java.lang.String)
+    2049:2082:public java.lang.String csvExport(android.content.Context,java.lang.String,java.lang.String)
+    2138:2173:public java.lang.String cvsImport(android.content.Context,java.lang.String,java.lang.String)
+dk.andsen.asqlitemanager.MyCursorAdapter
+dk.andsen.asqlitemanager.Prefs:
+    private static final java.lang.String OPT_PAGESIZE
+    private static final java.lang.String OPT_PAGESIZE_DEF
+    private static final java.lang.String OPT_SAVESQL
+    private static final boolean OPT_SAVESQL_DEF
+    private static final java.lang.String OPT_FILENO
+    private static final java.lang.String OPT_FILENO_DEF
+    private static final java.lang.String OPT_FONTSIZE
+    private static final java.lang.String OPT_FONTSIZE_DEF
+    private static final java.lang.String OPT_FK2LIST
+    private static final boolean OPT_FK2LIST_DEF
+    private static final java.lang.String OPT_FKON
+    private static final boolean OPT_FKON_DEF
+    private static final java.lang.String OPT_LOGGING
+    private static final boolean OPT_LOGGING_DEF
+    private static final java.lang.String OPT_VERTICAL
+    private static final boolean OPT_VERTICAL_DEF
+    private static final java.lang.String OPT_PAUSE
+    private static final java.lang.String OPT_PAUSE_DEF
+    private static final java.lang.String OPT_SULOCATION
+    private static final java.lang.String OPT_TESTROOT
+    private static final boolean OPT_TESTROOT_DEF
+    private static final java.lang.String OPT_MAX_WIDTH
+    private static final java.lang.String OPT_MAX_WIDTH_DEF
+    private static final java.lang.String OPT_QEDIT_MAX_LINES
+    private static final java.lang.String OPT_QEDIT_MAX_LINES_DEF
+    private static final java.lang.String OPT_QEDIT_MIN_LINES
+    private static final java.lang.String OPT_QEDIT_MIN_LINES_DEF
+    private static final java.lang.String OPT_SPATIALITE
+    private static final boolean OPT_SPATIALITE_DEF
+    128:128:public static int getPause(android.content.Context)
+    133:133:public static java.lang.String getSuLocation(android.content.Context)
+    138:138:public static boolean getTestRoot(android.content.Context)
+    148:148:public static boolean getUseSpatialite(android.content.Context)
+dk.andsen.asqlitemanager.QueryViewer:
+    private static final int MENU_TABLES
+    private static final int MENU_FIELDS
+    private static final int MENU_QUERYTYPE
+    private static final int MENU_RESENT_SQL
+    private static final int MENU_TRANSACTION
+    private static final int MENU_EXPORT
+    private static final int TRANSACTION_BEGIN
+    private static final int TRANSACTION_ROLLBACK
+    private static final int TRANSACTION_COMMIT
+    private static final int QUERYTYPE_SELECT
+    private static final int QUERYTYPE_CREATEVIEW
+    private static final int QUERYTYPE_CREATETABLE
+    private static final int QUERYTYPE_DROPTABLE
+    private static final int QUERYTYPE_DROPVIEW
+    private static final int QUERYTYPE_DELETE
+    private static final int QUERYTYPE_INSERT_INTO
+dk.andsen.asqlitemanager.R
+dk.andsen.asqlitemanager.R$array
+dk.andsen.asqlitemanager.R$attr
+dk.andsen.asqlitemanager.R$color
+dk.andsen.asqlitemanager.R$drawable
+dk.andsen.asqlitemanager.R$id
+dk.andsen.asqlitemanager.R$layout
+dk.andsen.asqlitemanager.R$string
+dk.andsen.asqlitemanager.R$xml
+dk.andsen.asqlitemanager.SQLViewer:
+    private static final int MENU_RUN
+    private static final int RUN_STATEMENT
+dk.andsen.asqlitemanager.TableViewer:
+    private static final int MENU_DUMP_TABLE
+    private static final int MENU_FIRST_REC
+    private static final int MENU_LAST_REC
+    private static final int MENU_FILETR
+    private static final int MENU_TABLE_DEF
+    private static final int MENU_CSV_EXPORT_TABLE
+    private static final int MENU_CSV_IMPORT_TABLE
+dk.andsen.asqlitemanager.TableViewer$DialogButtonClickHandler
+dk.andsen.asqlitemanager.aSQLiteManager:
+    private static final int MENU_OPT
+    private static final int MENU_HLP
+    private static final int MENU_RESET
+dk.andsen.csv.CSVUtils:
+    12:12:public CSVUtils()
+dk.andsen.filepicker.FPSettings:
+    8:8:public FPSettings()
+    27:29:public static java.lang.String getRecentRootDirs(android.content.Context)
+    33:39:public static void saveRecentRootDirs(android.content.Context,java.lang.String)
+    42:44:public static boolean getSuWorking(android.content.Context)
+    48:54:public static void saveSuWorking(android.content.Context,boolean)
+dk.andsen.filepicker.FileItem:
+    public static final int MODE_WIDTH
+    public static final int NARROW_MODE
+    public static final int WIDE_MODE
+    public static final int MODE_DETAILS
+    public static final int SIMPLE_MODE
+    public static final int DETAILED_MODE
+    public static final int MODE_FINGERF
+    public static final int SLIM_MODE
+    public static final int FAT_MODE
+    public static final int MODE_HIDDEN
+    public static final int SHOW_MODE
+    public static final int HIDE_MODE
+    public static final int MODE_SORTING
+    public static final int SORT_NAME
+    public static final int SORT_SIZE
+    public static final int SORT_DATE
+    public static final int SORT_EXT
+    public static final int MODE_SORT_DIR
+    public static final int SORT_ASC
+    public static final int SORT_DSC
+    public static final int MODE_CASE
+    public static final int CASE_SENS
+    public static final int CASE_IGNORE
+    public static final int MODE_ATTR
+    public static final int NO_ATTR
+    public static final int SHOW_ATTR
+    public static final int ATTR_ONLY
+    public static final int MODE_ROOT
+    public static final int BASIC_MODE
+    public static final int ROOT_MODE
+    public static final int MODE_ICONS
+    public static final int TEXT_MODE
+    public static final int ICON_MODE
+    public static final int ICON_TINY
+    public static final int LIST_STATE
+    public static final int STATE_IDLE
+    public static final int STATE_BUSY
+    public static final int SET_TBN_SIZE
+    public static final int SET_FONT_SIZE
+    76:162:public FileItem(java.lang.String)
+    192:193:public void setName(java.lang.String)
+    203:204:public void setDate(java.util.Date)
+    214:215:public final void setLength(long)
+    221:221:public final boolean isValid()
+    232:233:public void setDirectory(boolean)
+    245:245:public final java.lang.String getAttr()
+    310:310:public static dk.andsen.filepicker.FileItem[] createArray(int)
+dk.andsen.filepicker.FileItemComparator:
+    public static final int SORT_NAME
+    public static final int SORT_DATE
+    public static final int SORT_SIZE
+    public static final int SORT_EXT
+dk.andsen.filepicker.FilePicker:
+    public static final java.lang.String NOTIFY_RECEIVER_HASH
+    public static final java.lang.String NOTIFY_ITEMS_TO_RECEIVE
+    private static final int MENU_SORTING
+    private static final int MENU_EXIT
+    private static final int MENU_AD_TO_FAVORITES
+    private static final int MENU_FAVORITES
+dk.andsen.filepicker.RecentlyDirs:
+    14:14:public RecentlyDirs()
+dk.andsen.types.Field:
+    23:23:public java.lang.String getDef()
+    29:29:public int getNotNull()
+    35:35:public int getPk()
+    47:47:public java.lang.String getFieldType()
+dk.andsen.types.FieldDescr:
+    12:12:public int getCid()
+dk.andsen.types.FileHolder
+dk.andsen.types.QueryResult:
+    24:25:public void setData(java.lang.String[][])
+dk.andsen.types.Record:
+    8:8:public java.lang.String[] getFieldNames()
+dk.andsen.types.ShellOutputHolder
+dk.andsen.types.SpatialQueryResult
+dk.andsen.types.Types
+dk.andsen.utils.FilePickerMode
+dk.andsen.utils.MyArrayAdapter
+dk.andsen.utils.MyArrayAdapter$ViewHolder
+dk.andsen.utils.Recently:
+    14:14:public Recently()
+dk.andsen.utils.SQLTools:
+    12:12:public SQLTools()
+dk.andsen.utils.Utils:
+    26:26:public Utils()
+    114:115:public static void showMessage(java.lang.String,java.lang.String,java.lang.String,android.content.Context)
+    137:138:public static void showModalDialog(java.lang.String,java.lang.String,java.lang.String,java.lang.String,android.content.Context)
+    142:143:public static void showModalDialog(java.lang.String,java.lang.String,java.lang.String,android.content.DialogInterface$OnClickListener,java.lang.String,android.content.Context)
+    147:148:public static void showModalDialog(java.lang.String,java.lang.String,java.lang.String,java.lang.String,android.content.DialogInterface$OnClickListener,android.content.Context)
+    152:153:public static void showModalDialog(java.lang.String,java.lang.String,java.lang.Integer,java.lang.String,java.lang.String,android.content.Context)
+    158:159:public static void showModalDialog(java.lang.String,java.lang.String,java.lang.Integer,java.lang.String,android.content.DialogInterface$OnClickListener,java.lang.String,android.content.Context)
+    164:165:public static void showModalDialog(java.lang.String,java.lang.String,java.lang.Integer,java.lang.String,java.lang.String,android.content.DialogInterface$OnClickListener,android.content.Context)
+    170:179:public static void showModalDialog(java.lang.String,java.lang.String,java.lang.Integer,java.lang.String,android.content.DialogInterface$OnClickListener,java.lang.String,android.content.DialogInterface$OnClickListener,android.content.Context)

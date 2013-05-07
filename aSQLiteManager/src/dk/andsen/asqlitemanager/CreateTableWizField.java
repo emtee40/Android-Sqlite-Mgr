@@ -18,7 +18,6 @@ import dk.andsen.utils.Utils;
 
 public class CreateTableWizField extends Activity implements OnClickListener {
 
-	private static final int FieldOK = R.id.tabWizFieldOK;
 	private EditText fName;
 	private EditText fDef;
 	private CheckBox fNotNull;

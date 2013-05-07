@@ -1,4 +1,22 @@
-Download binaries here: http://market.android.com/details?pub=Andsen
+Download the app here: http://market.android.com/details?pub=Andsen
+
+Next version:
+	News:
+		Code clean up binaries decreased with approximately 20%
+		Import and export of tables with triggers
+		Better handling of triggers during update with record editor
+		Translated to Russian, updated German, Catalan and French translations
+		New file picker with:
+			Show file names, sizes, dates and icons
+			Sorting (name, extension, size, date - ascending, descending, ignore case) and
+				filtering of files (e.g. .sqlite;.db) in file picker
+			Favorites directories for fast navigation to often visited places 
+		Now the user dictionary are updated with your words
+		Export wizards that allows export of user selected fields
+		Import wizards that allows the user select a CSV file and which column from
+			the CSV file to import into which fields in the current table. 
+	Bug fixes:
+		CSV export - nulls and special table names are now handled correctly
 
 Version 3.5:
 	News:

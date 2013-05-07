@@ -6,6 +6,6 @@
     android:layout_height="wrap_content"
     android:singleLine="false"
     android:textSize="16sp"
-    android:paddingBottom="2px"
-    android:paddingTop="2px"
-      />
+    android:paddingBottom="2dp"
+    android:paddingTop="2dp"
+/>
