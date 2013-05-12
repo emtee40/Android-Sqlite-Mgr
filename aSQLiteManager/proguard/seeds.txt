@@ -484,7 +484,11 @@ dk.andsen.asqlitemanager.TableViewer: void onClick(android.view.View)
 dk.andsen.asqlitemanager.aSQLiteManager
 dk.andsen.asqlitemanager.aSQLiteManager: aSQLiteManager()
 dk.andsen.asqlitemanager.aSQLiteManager: void onClick(android.view.View)
+dk.andsen.csv.CsvExport
+dk.andsen.csv.CsvExport: CsvExport()
 dk.andsen.csv.CsvExport: void onClick(android.view.View)
+dk.andsen.csv.CsvImport
+dk.andsen.csv.CsvImport: CsvImport()
 dk.andsen.csv.CsvImport: void onClick(android.view.View)
 dk.andsen.filepicker.FilePicker
 dk.andsen.filepicker.FilePicker: FilePicker()

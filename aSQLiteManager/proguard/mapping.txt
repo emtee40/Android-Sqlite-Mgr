@@ -745,11 +745,11 @@ dk.andsen.asqlitemanager.aSQLiteManager$6 -> dk.andsen.asqlitemanager.bf:
 dk.andsen.asqlitemanager.aSQLiteManager$ResentFileOnClickHandler -> dk.andsen.asqlitemanager.bg:
     dk.andsen.asqlitemanager.aSQLiteManager this$0 -> a
     void onClick(android.content.DialogInterface,int) -> onClick
-dk.andsen.csv.CSVUtils -> dk.andsen.b.a:
+dk.andsen.csv.CSVUtils -> dk.andsen.csv.a:
     void writeLine(java.io.Writer,java.util.List) -> a
     java.util.List parseLine(java.lang.String) -> a
     java.util.List readFirstLines(java.lang.String,int,int) -> a
-dk.andsen.csv.CsvExport -> dk.andsen.b.b:
+dk.andsen.csv.CsvExport -> dk.andsen.csv.CsvExport:
     boolean _logging -> a
     java.lang.String _table -> b
     dk.andsen.asqlitemanager.Database _db -> c
@@ -761,7 +761,7 @@ dk.andsen.csv.CsvExport -> dk.andsen.b.b:
     void onCreate(android.os.Bundle) -> onCreate
     void setUpUi() -> a
     void onClick(android.view.View) -> onClick
-dk.andsen.csv.CsvImport -> dk.andsen.b.c:
+dk.andsen.csv.CsvImport -> dk.andsen.csv.CsvImport:
     boolean _logging -> a
     java.lang.String _table -> b
     dk.andsen.asqlitemanager.Database _db -> c
@@ -894,7 +894,7 @@ dk.andsen.filepicker.FilePicker$ResentFileOnClickHandler -> dk.andsen.filepicker
     void onClick(android.content.DialogInterface,int) -> onClick
 dk.andsen.filepicker.RecentlyDirs -> dk.andsen.filepicker.j:
     java.lang.String updateList(java.lang.String,java.lang.String,int) -> a
-dk.andsen.types.AField -> dk.andsen.c.a:
+dk.andsen.types.AField -> dk.andsen.b.a:
     java.lang.String fieldData -> a
     dk.andsen.types.AField$FieldType fieldType -> b
     java.lang.String toString() -> toString
@@ -902,7 +902,7 @@ dk.andsen.types.AField -> dk.andsen.c.a:
     void setFieldData(java.lang.String) -> a
     dk.andsen.types.AField$FieldType getFieldType() -> b
     void setFieldType(dk.andsen.types.AField$FieldType) -> a
-dk.andsen.types.AField$FieldType -> dk.andsen.c.b:
+dk.andsen.types.AField$FieldType -> dk.andsen.b.b:
     dk.andsen.types.AField$FieldType NULL -> a
     dk.andsen.types.AField$FieldType INTEGER -> b
     dk.andsen.types.AField$FieldType REAL -> c
@@ -912,7 +912,7 @@ dk.andsen.types.AField$FieldType -> dk.andsen.c.b:
     dk.andsen.types.AField$FieldType[] ENUM$VALUES -> g
     dk.andsen.types.AField$FieldType[] values() -> values
     dk.andsen.types.AField$FieldType valueOf(java.lang.String) -> valueOf
-dk.andsen.types.Field -> dk.andsen.c.c:
+dk.andsen.types.Field -> dk.andsen.b.c:
     java.lang.String fieldName -> a
     java.lang.String fieldType -> b
     int notNull -> c
@@ -924,7 +924,7 @@ dk.andsen.types.Field -> dk.andsen.c.c:
     java.lang.String getFieldName() -> a
     void setFieldName(java.lang.String) -> b
     void setFieldType(java.lang.String) -> c
-dk.andsen.types.FieldDescr -> dk.andsen.c.d:
+dk.andsen.types.FieldDescr -> dk.andsen.b.d:
     int cid -> a
     java.lang.String name -> b
     int type -> c
@@ -942,26 +942,26 @@ dk.andsen.types.FieldDescr -> dk.andsen.c.d:
     void setDefaultValue(java.lang.String) -> b
     boolean isPk() -> e
     void setPk(boolean) -> b
-dk.andsen.types.ForeignKeyHolder -> dk.andsen.c.e:
+dk.andsen.types.ForeignKeyHolder -> dk.andsen.b.e:
     java.lang.String[] ids -> a
     java.lang.String[] texts -> b
     java.lang.String[] getIds() -> a
     void setId(java.lang.String[]) -> a
     java.lang.String[] getText() -> b
     void setText(java.lang.String[]) -> b
-dk.andsen.types.QueryResult -> dk.andsen.c.f:
+dk.andsen.types.QueryResult -> dk.andsen.b.f:
     java.lang.String[] columnNames -> a
     java.lang.String[][] Data -> b
     java.lang.String[] getColumnNames() -> a
     void setColumnNames(java.lang.String[]) -> a
     java.lang.String[][] getData() -> b
-dk.andsen.types.Record -> dk.andsen.c.g:
+dk.andsen.types.Record -> dk.andsen.b.g:
     dk.andsen.types.AField[] fields -> a
     java.lang.String[] fieldNames -> b
     void setFieldNames(java.lang.String[]) -> a
     void setFields(dk.andsen.types.AField[]) -> a
     dk.andsen.types.AField[] getFields() -> a
-dk.andsen.types.ViewUpdateable -> dk.andsen.c.h:
+dk.andsen.types.ViewUpdateable -> dk.andsen.b.h:
     boolean editable -> a
     boolean insertable -> b
     boolean deleteable -> c
@@ -971,19 +971,19 @@ dk.andsen.types.ViewUpdateable -> dk.andsen.c.h:
     void setInsertable(boolean) -> b
     boolean isDeleteable() -> c
     void setDeleteable(boolean) -> c
-dk.andsen.utils.MyDBArrayAdapter -> dk.andsen.d.a:
+dk.andsen.utils.MyDBArrayAdapter -> dk.andsen.c.a:
     android.app.Activity context -> a
     java.util.List names -> b
     float fontSize -> c
     android.view.View getView(int,android.view.View,android.view.ViewGroup) -> getView
-dk.andsen.utils.MyDBArrayAdapter$ViewHolder -> dk.andsen.d.b:
+dk.andsen.utils.MyDBArrayAdapter$ViewHolder -> dk.andsen.c.b:
     android.widget.TextView textView -> a
-dk.andsen.utils.Recently -> dk.andsen.d.c:
+dk.andsen.utils.Recently -> dk.andsen.c.c:
     java.lang.String updateList(java.lang.String,java.lang.String,int) -> a
-dk.andsen.utils.SQLTools -> dk.andsen.d.d:
+dk.andsen.utils.SQLTools -> dk.andsen.c.d:
     boolean _logging -> a
     java.util.List parseSQLFile(android.content.Context,java.lang.String) -> a
-dk.andsen.utils.Utils -> dk.andsen.d.e:
+dk.andsen.utils.Utils -> dk.andsen.c.e:
     java.lang.String app -> a
     void logD(java.lang.String,boolean) -> a
     void logE(java.lang.String,boolean) -> b
@@ -996,7 +996,7 @@ dk.andsen.utils.Utils -> dk.andsen.d.e:
     void printStackTrace(java.lang.Exception,boolean) -> a
     java.lang.String addSlashIfNotEnding(java.lang.String) -> a
     boolean isPathAValidDirectory(java.lang.String) -> b
-dk.andsen.utils.Utils$1 -> dk.andsen.d.f:
+dk.andsen.utils.Utils$1 -> dk.andsen.c.f:
     void onClick(android.content.DialogInterface,int) -> onClick
-dk.andsen.utils.Utils$2 -> dk.andsen.d.g:
+dk.andsen.utils.Utils$2 -> dk.andsen.c.g:
     void onClick(android.content.DialogInterface,int) -> onClick
